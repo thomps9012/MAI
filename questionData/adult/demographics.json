@@ -10,6 +10,7 @@
     {
         "id": 2,
         "question": "What is your race?",
+        "detail": "One or more categories may be selected",
         "multiple": true,
         "answerChoices": [
             "White",
