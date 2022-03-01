@@ -31,15 +31,15 @@
       "server/middleware-runtime.js",
       "server/pages/_middleware.js"
     ],
-    "/attitudes": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/attitudes.js"
-    ],
     "/behavior": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/behavior.js"
+    ],
+    "/dataReview": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/dataReview.js"
     ]
   },
   "ampFirstPages": []
