@@ -55,7 +55,7 @@ export default function Demographics() {
                     )
                 }
             })}
-            <button onClick={() => Submit(demographic_info)}>Complete Interview Section</button>
+            <button onClick={() => Submit(demographic_info)}>Continue Interview</button>
         </div>
     )
 }

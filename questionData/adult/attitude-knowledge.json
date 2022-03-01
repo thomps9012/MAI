@@ -1,6 +1,7 @@
 [
     {
         "id": 1,
+        "state": "tobacco_use",
         "question": "What level of risk do you think people have of harming themselves physically or in other ways when they use tobacco once or twice a week?",
         "detail": "By tobacco, we mean menthol cigarettes, regular cigarettes, loose tobacco rolled into cigarettes or cigars, pipe tobacco, snuff, chewing tobacco, dipping tobacco, snus, and others.",
         "answerChoices": [
@@ -13,6 +14,7 @@
     },
     {
         "id": 2,
+        "state": "binge_alcohol_use",
         "question": "What level of risk do you think people have of harming themselves physically or in other ways when they binge drink alcoholic beverages once or twice a week?",
         "detail": "Binge drinking is five or more alcoholic beverages at the same time or within a couple of hours of each other for males; four or more for females. By alcoholic beverage we mean beer, wine, wine coolers, malt beverages, or hard liquor.",
         "answerChoices": [
@@ -25,6 +27,7 @@
     },
     {
         "id": 3,
+        "state": "marijuana_use",
         "question": "What level of risk do you think people have of harming themselves physically or in other ways when they use marijuana or hashish once or twice a week?",
         "detail": "Marijuana is sometimes called weed, blunt, hydro, grass, or pot. Hashish is sometimes called hash or hash oil.",
         "answerChoices": [
@@ -37,6 +40,7 @@
     },
     {
         "id": 4,
+        "state": "shared_needle_use",
         "question": "What level of risk do you think people have of harming themselves physically if they share needles, syringes, or other injection equipment when using drugs?",
         "answerChoices": [
             "No risk",
@@ -48,6 +52,7 @@
     },
     {
         "id": 5,
+        "state": "nonprescription_opioid",
         "question": "What level of risk do you think people have of harming themselves physically or in other ways when they use non-prescription opioid drugs once or twice a week?",
         "detail": "By non-prescription opioid drugs, we mean the illegal drug heroin, and illicitly made synthetic opioids, such as fentanyl.",
         "answerChoices": [
@@ -60,6 +65,7 @@
     },
     {
         "id": 6,
+        "state": "prescription_opioid",
         "question": "What level of risk do you think people have of harming themselves physically, or in other ways, when they take prescription opioid drugs without a doctor's order once or twice a week?",
         "detail": "By prescription opioid drugs, we mean pain relievers such as oxycodone (OxyContin), hydrocodone (Vicodin), codeine, morphine, oxymorphine, tapentadol.",
         "answerChoices": [
@@ -72,6 +78,7 @@
     },
     {
         "id": 7,
+        "state": "unprotected_sex",
         "question": "What level of risk do you think people have of harming themselves if they have sex (oral, vaginal, or anal) without a condom or dental damn?",
         "answerChoices": [
             "No risk",
@@ -83,6 +90,7 @@
     },
     {
         "id": 8,
+        "state": "sex_under_influence",
         "question": "What level of risk do you think people have of harming themselves if they have sex while high on drugs or under the influence of alcohol?",
         "answerChoices": [
             "No risk",
@@ -94,6 +102,7 @@
     },
     {
         "id": 9,
+        "state": "could_refuse_unprotected_sex",
         "question": "I could refuse if someone wanted to have sex without a condom or a dental damn.",
         "answerChoices": [
             "Strongly agree",

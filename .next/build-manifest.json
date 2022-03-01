@@ -25,15 +25,21 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/_middleware": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "server/middleware-runtime.js",
+      "server/pages/_middleware.js"
+    ],
+    "/attitudes": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/attitudes.js"
+    ],
     "/demographics": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/demographics.js"
-    ],
-    "/interview_select": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/interview_select.js"
     ]
   },
   "ampFirstPages": []
