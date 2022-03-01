@@ -36,7 +36,7 @@ export default function InterviewSelect() {
                 <option>NORA</option>
                 <option>Task Force</option>
             </select>
-            <button onClick={Submit}>Begin Interview</button>
+            <button onClick={() => Submit(interview_info)}>Begin Interview</button>
         </div>
     )
 }
