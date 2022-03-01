@@ -30,7 +30,7 @@ export default function Behavior() {
     const behavior_info = { drug_behavior, sexual_behavior }
     const Submit = async (behavior_info: {}) => {
         sessionStorage.setItem('behavior_info', JSON.stringify(behavior_info))
-        window.location.replace('/dataReview')
+        window.location.replace('/careAlliance')
     }
     return (
         <div>

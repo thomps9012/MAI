@@ -21,10 +21,10 @@ export default function Attitudes() {
     return (
         <div>
             {attitudeQs.map((questionInfo): any => {
-                const { state } = questionInfo;
+                const { state, id } = questionInfo;
                 return (
                     <ButtonSelect
-                        key={state}
+                        key={id}
                         questionInfo={questionInfo}
                         updateState={setAttitude}
                         state_details={risk_attitudes}

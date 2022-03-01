@@ -2,6 +2,7 @@
     {
         "id": 1,
         "question": "Have you injected / shot up any drugs in the past 12 months?",
+        "state": "injected_drugs_annual",
         "answerChoices": [
             "Yes",
             "No"
@@ -10,6 +11,7 @@
     {
         "id": 2,
         "question": "What is your current employment status?",
+        "state": "employment_status",
         "answerChoices": [
             "Employed, not looking for work",
             "Part-time, seeking full time work",
@@ -21,6 +23,7 @@
     {
         "id": 3,
         "question": "Do you feel safe in your relationship?",
+        "state": "safe_in_relationship",
         "answerChoices": [
             "Yes",
             "No"
@@ -29,14 +32,7 @@
     {
         "id": 4,
         "question": "Does your partner pressure you into having sex?",
-        "answerChoices": [
-            "Yes",
-            "No"
-        ]
-    },
-    {
-        "id": 5,
-        "question": "Do you ever exchange sex for money, drugs, or something you need?",
+        "state": "partner_sexual_pressure",
         "answerChoices": [
             "Yes",
             "No"
