@@ -36,10 +36,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/attitudes.js"
     ],
-    "/demographics": [
+    "/behavior": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/demographics.js"
+      "static/chunks/pages/behavior.js"
     ]
   },
   "ampFirstPages": []

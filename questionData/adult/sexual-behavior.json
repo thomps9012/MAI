@@ -1,6 +1,7 @@
 [
     {
         "id": 1,
+        "state": "sexual_partners",
         "question": "During the past 30 days, how many sexual partners have you had?",
         "detail": "A sexual partner is someone with whom you have sex, that is, engage in sexual activity.",
         "answerChoices": [
@@ -13,15 +14,16 @@
             "6 people",
             "7 people",
             "8 people",
-            "8 people",
             "9 people",
             "10 people or more"
         ]
     },
     {
         "id": 2,
+        "state": "unprotected_partners",
         "question": "During the past 30 days, have you had unprotected sex with ...",
         "detail": "Unprotected sex is vaginal, oral, or anal sex without a barrier such as a condom or dental dam",
+        "multiple": true,
         "answerChoices": [
             "A Male",
             "A Female",
@@ -36,6 +38,7 @@
     },
     {
         "id": 3,
+        "state": "exchanged_sex_for_goods",
         "question": "Have you ever had sex (vaginal, anal, or oral) with someone in exchange for money, drugs, or shelter?",
         "answerChoices": [
             "No, never had sex in exchange for money, drugs, or shelter",
@@ -45,6 +48,7 @@
     },
     {
         "id": 4,
+        "state": "relationship_abuse",
         "question": "In the past 3 months, how often has anyone with whome you had an intimate relationship (sexual or not) abused you emotionally, physically, or sexually?",
         "answerChoices": [
             "Never",
