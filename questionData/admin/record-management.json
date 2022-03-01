@@ -132,5 +132,13 @@
             "Yes",
             "No"
         ]
+    },
+    {
+        "id": 12,
+        "question": "Study Design Group",
+        "answerChoices": [
+            "Intervention",
+            "Comparison"
+        ]
     }
 ]
