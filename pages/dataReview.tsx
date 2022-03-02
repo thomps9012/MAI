@@ -1,11 +1,7 @@
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function DataReview() {
     const [interviewObj, setInterview] = useState({});
-    // const [demographicObj, setDemo] = useState({});
-    // const [behaviorObj, setBehavior] = useState({});
-    // const [attitudeObj, setAttitude] = useState({});
     const [interview_data, setInterviewData] = useState({});
     useEffect(() => {
         const interview_info = JSON.parse(sessionStorage.getItem('interview_info') as string);
@@ -21,11 +17,11 @@ export default function DataReview() {
             if(item === 'interview_info'){
                 interviewDiv.innerHTML +=
                 `<a href=/><h3>${item}</h3></a>
-                <pre> ${JSON.stringify(interviewData[item], null, '\t')}</pre>`
+                <p> ${JSON.stringify(interviewData[item], null, '\t')}</p>`
             }else{
                 interviewDiv.innerHTML +=
                 `<a href=/${item}><h3>${item}</h3></a>
-                <pre> ${JSON.stringify(interviewData[item], null, '\t')}</pre>`
+                <p> ${JSON.stringify(interviewData[item], null, '\t')}</p>`
             }
         }
     }, [])
@@ -46,7 +42,7 @@ export default function DataReview() {
     }
     return (
         <div className="dataReview">
-            <h2>Please Review Your Data before Submission</h2>
+            <h2>Please Review Your Data before Submitting</h2>
             <div className="interview_data"></div>
             <button onClick={() => Submit(interview_data, interviewObj)}>Submit Interview Data</button>
         </div>
