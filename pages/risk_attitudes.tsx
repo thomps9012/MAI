@@ -21,7 +21,7 @@ export default function Attitudes() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="riskInfo">
             <h1 className="title">Attitudes and Knowledge</h1>
-            <h1>What level of risk do you think people have of harming themselves physically or in other ways when ...</h1>
+            <h3>What level of risk do you think people have of harming themselves physically or in other ways when ...</h3>
             {attitudeQs.map((questionInfo): any => {
                 const { id } = questionInfo;
                 return (

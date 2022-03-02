@@ -37,7 +37,7 @@ export default function Behavior() {
         window.location.assign('/dataReview')
     }
     return (
-        <div style={{display: 'flex', flexDirection: 'column'}} className='behaviorInfo'>
+        <div style={{display: 'flex', flexDirection: 'column' }} className='behaviorInfo'>
             <h1>Over the past 30 days how many days, if any did you ...</h1>
             {drugBehaviorQs.map((questionInfo: any) => {
                 const { state } = questionInfo;

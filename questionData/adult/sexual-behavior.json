@@ -41,8 +41,8 @@
         "state": "exchanged_sex_for_goods",
         "question": "Have you ever had sex (vaginal, anal, or oral) with someone in exchange for money, drugs, or shelter?",
         "answerChoices": [
-            "No, never had sex in exchange for money, drugs, or shelter",
-            "Yes, within the past 3 months",
+            "No, never",
+            "Yes, within 3 months",
             "Yes, more than 3 months ago"
         ]
     },

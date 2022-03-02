@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;600&family=Cabin:wght@500&family=Fjalla+One&family=Fredoka:wght@400;700&family=IBM+Plex+Sans:wght@100&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Prompt:wght@100&display=swap');
 .title {
-    font-size: 48px;
+    font-size: 35px;
     text-align: center;
 }
 
@@ -44,21 +44,6 @@ button {
     border-radius: .2em;
 }
 
-.twoButton {
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    display: inline-flex;
-    flex-direction: column;
-}
-
-.multiButton {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
 .dataReview {
     min-height: 100vh;
     padding: 0 1rem;
@@ -92,7 +77,6 @@ button {
 
 input {
     text-align: center;
-    font-size: x-large;
 }
 
 span {
@@ -114,13 +98,12 @@ pre {
 }
 
 [type="radio"] {
-    width: 1.4em;
-    height: 1.4em;
+    min-width: 2em;
+    min-height: 2em;
     border-radius: 0;
 }
 
 label {
-    font-weight: bold;
     padding: 5px;
 }
 
@@ -128,6 +111,11 @@ label {
 [type="text"],
 select {
     all: unset;
+    text-align: center;
+    font-size: x-large;
+}
+
+[type="number"] {
     text-align: center;
     font-size: x-large;
 }

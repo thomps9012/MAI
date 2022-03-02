@@ -15,11 +15,6 @@
     "static/development/_middlewareManifest.js"
   ],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -35,10 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/behavior_info.js"
     ],
-    "/dataReview": [
+    "/risk_attitudes": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/dataReview.js"
+      "static/chunks/pages/risk_attitudes.js"
     ]
   },
   "ampFirstPages": []

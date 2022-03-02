@@ -7,8 +7,8 @@ const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
         console.log(state_details)
     }
     return (
-        <div key={id} className="multiButton">
-            <h2>{question}</h2>
+        <div key={id} className="numberButton">
+            <h3>{question}</h3>
             <span>{definition ?? ''}</span>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 10, textAlign: 'center' }}>
                 <input
