@@ -8,20 +8,24 @@ const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
     }
     return (
         <div key={id}>
-            <p>{question}</p>
+            <h3>{question}</h3>
             <span>{definition ?? ''}</span>
-            <input
-                type='number'
-                name={state}
-                onChange={handleChange}
-            />
-            <label>{"Don't know or can't say"}</label>
-            <input
-                type='radio'
-                name={state}
-                onClick={handleChange}
-                value='0'
-            />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <input
+                    type='number'
+                    name={state}
+                    onChange={handleChange}
+                />
+                <div className="row">
+                    <input
+                        type='radio'
+                        name={state}
+                        onClick={handleChange}
+                        value='0'
+                    />
+                    <label>{"Don't know or can't say"}</label>
+                </div>
+            </div>
         </div>
     )
 

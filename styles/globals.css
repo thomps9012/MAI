@@ -2,6 +2,8 @@
 .demographicInfo {
     padding: 5rem;
     margin: 1rem;
+    text-align: center;
+    align-items: center;
 }
 .interviewInput {
     margin: .1rem;
@@ -14,4 +16,19 @@
 
 button {
     max-width: max-content;
+    margin: 5px;
+    padding: 5px;
+    font-size: large;
+}
+
+.twoButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.multiButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }

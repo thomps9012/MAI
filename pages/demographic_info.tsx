@@ -14,6 +14,7 @@ export default function Demographics() {
         sexual_orientation: '',
         living_situtation: '',
         college_enrolled: '',
+        employment_status: '',
         military_service: '',
         arrested_in_last_month: '',
         parole_or_probation: '',
@@ -27,7 +28,7 @@ export default function Demographics() {
     const demographic_info = { date_of_birth, demographic_details }
     const Submit = async (demographic_info: {}) => {
         sessionStorage.setItem('demographic_info', JSON.stringify(demographic_info));
-        window.location.replace('/attitudes')
+        window.location.assign('/risk_attitudes')
     }
     return (
         <div style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center' }} className="demographicInfo">

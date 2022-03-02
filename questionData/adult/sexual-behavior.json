@@ -4,6 +4,7 @@
         "state": "sexual_partners",
         "question": "During the past 30 days, how many sexual partners have you had?",
         "detail": "A sexual partner is someone with whom you have sex, that is, engage in sexual activity.",
+        "drop_down": true,
         "answerChoices": [
             "None",
             "1 person",
@@ -56,6 +57,25 @@
             "Sometimes",
             "Often",
             "Very often"
+        ]
+    },
+    {
+        "id": 5,
+        "state": "partner_sexual_pressure",
+        "question": "Does your partner pressure you into having sex?",
+        "answerChoices": [
+            "Yes",
+            "No"
+        ]
+
+    },
+    {
+        "id": 6,
+        "state": "safe_in_relationship",
+        "question": "Do you feel safe in your relationship?",
+        "answerChoices": [
+            "Yes",
+            "No"
         ]
     }
 ]

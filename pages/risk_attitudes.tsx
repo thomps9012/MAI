@@ -16,7 +16,7 @@ export default function Attitudes() {
     })
     const Submit = async (risk_attitudes: {}) => {
         sessionStorage.setItem('risk_attitudes', JSON.stringify(risk_attitudes));
-        window.location.replace('/behavior')
+        window.location.assign('/behavior_info')
     }
     return (
         <div>

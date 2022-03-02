@@ -16,11 +16,11 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
     }
     return (
         <div key={JSON.stringify(id)}>
-            <label>{question}</label>
+            <h3>{question}</h3>
             <span>{detail ?? ''}</span>
             {answerChoices.map((choice: string) => {
                 return (
-                    <div key={choice}>
+                    <div key={choice} style={{fontSize: 'large', margin: 5, padding: 5}}>
                         <input type='checkbox'
                             value={choice}
                             name={state}

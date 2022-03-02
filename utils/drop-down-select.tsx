@@ -7,8 +7,8 @@ const DropDownSelect = ({questionInfo, state_details, updateState}: any) => {
         console.log(state_details)
     }
     return (
-        <div key={id}>
-            <p>{question}</p>
+        <div key={id} style={{display: 'flex', flexDirection: 'column'}}>
+            <h3>{question}</h3>
             <span>{detail ?? ''}</span>
             <select name={state} onChange={handleChange}>
             {answerChoices.map((choice: string) => {

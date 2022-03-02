@@ -18,7 +18,7 @@ export default function InterviewSelect() {
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
         if (confirm(`Your Identification Number is \n ${PID}`)) {
-            window.location.replace('/demographics')
+            window.location.assign('/demographic_info')
         }
     }
 
