@@ -1,5 +1,4 @@
-[
-    {
+[{
         "id": 1,
         "state": "latinx",
         "question": "Are you Hispanic, LatinX, or Spanish?",
@@ -145,7 +144,7 @@
     {
         "id": 15,
         "state": "pretax_household_income",
-        "question": "Think about the household members who live with you right now. About how much income have you and your family members made in the last year before taxes?",
+        "question": "How much income have you and your family members made in the last year before taxes?",
         "detail": "Include child support and cash payments from the government - for example wellface [TANF], SSI, or unemployment compensation.",
         "answerChoices": [
             "$0 - $10,000",

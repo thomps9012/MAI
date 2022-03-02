@@ -1,5 +1,4 @@
-[
-    {
+[{
         "id": 1,
         "state": "sexual_partners",
         "question": "During the past 30 days, how many sexual partners have you had?",
@@ -23,7 +22,7 @@
         "id": 2,
         "state": "unprotected_partners",
         "question": "During the past 30 days, have you had unprotected sex with ...",
-        "detail": "Unprotected sex is vaginal, oral, or anal sex without a barrier such as a condom or dental dam",
+        "detail": "Unprotected sex is vaginal, oral, or anal sex without a barrier such as a condom or dental dam. Select all that apply.",
         "multiple": true,
         "answerChoices": [
             "A Male",

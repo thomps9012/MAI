@@ -10,18 +10,12 @@ export default function DataReview() {
         const risk_attitudes = JSON.parse(sessionStorage.getItem('risk_attitudes') as string);
         setInterview(interview_info);
         setInterviewData({ interview_info, demographic_info, behavior_info, risk_attitudes });
-        const interviewData:any = {interview_info, demographic_info, behavior_info, risk_attitudes};
-        for(const item in interviewData){
-           const interviewDiv = document.querySelector('.interview_data') as HTMLElement;
-            if(item === 'interview_info'){
-                interviewDiv.innerHTML +=
-                `<a href=/><h3>${item}</h3></a>
-                <p> ${JSON.stringify(interviewData[item], null, '\t')}</p>`
-            }else{
-                interviewDiv.innerHTML +=
-                `<a href=/${item}><h3>${item}</h3></a>
-                <p> ${JSON.stringify(interviewData[item], null, '\t')}</p>`
-            }
+        const interviewData: any = { interview_info, demographic_info, behavior_info, risk_attitudes };
+        for (const item in interviewData) {
+            const interviewDiv = document.querySelector('.interview_data') as HTMLElement;
+            interviewDiv.innerHTML +=
+                `<h3>${item}</h3>
+                <pre> ${JSON.stringify(interviewData[item], null, '\t')}</pre>`
         }
     }, [])
     const Submit = async (interview_data: {}, interviewObj: any) => {
@@ -41,9 +35,11 @@ export default function DataReview() {
     }
     return (
         <div className="dataReview">
-            <h2>Please Review Your Data before Submitting</h2>
+            <h2 style={{textAlign: 'center'}}>Please Review Your Data before Submitting</h2>
             <div className="interview_data"></div>
-            <button onClick={() => Submit(interview_data, interviewObj)}>Submit Interview Data</button>
+            <div className="submitBtns">
+                <button onClick={() => Submit(interview_data, interviewObj)}>Submit Interview Data</button>
+            </div>
         </div>
     )
 }

@@ -7,12 +7,10 @@
     "display": "fullscreen",
     "scope": "/",
     "start_url": "/",
-    "icons": [
-        {
-            "src": "/nora_favicon.png",
-            "sizes": "72x72",
-            "type": "image/png"
-          }
-    ],
+    "icons": [{
+        "src": "/nora_favicon.png",
+        "sizes": "270x270",
+        "type": "image/png"
+    }],
     "splash_pages": null
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import demographicQs from '../questionData/adult/demographics.json';
 import MultipleSelect from "../utils/multiple-select";
 import ButtonSelect from "../utils/button-select";
@@ -31,8 +31,9 @@ export default function Demographics() {
         window.location.assign('/risk_attitudes')
     }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center' }} className="demographicInfo">
-            <label>Enter Date of Birth</label>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="demographicInfo">
+            <h1>Demographic Information</h1>
+            <h2>Date of Birth</h2>
             <input type='date' onChange={(e: any) => setDOB(e.target.value)} />
             {demographicQs.map((questionInfo): any => {
                 const { multiple, state } = questionInfo;
@@ -56,7 +57,9 @@ export default function Demographics() {
                     )
                 }
             })}
-            <button onClick={() => Submit(demographic_info)}>Continue Interview</button>
+            <div className="submitBtns">
+                <button onClick={() => Submit(demographic_info)}>Continue Interview</button>
+            </div>
         </div>
     )
 }

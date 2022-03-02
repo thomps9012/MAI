@@ -1,27 +1,26 @@
-[
-    {
+[{
         "id": 1,
         "state": "smoke_cigarettes",
-        "question": "Smoked cigarettes?",
+        "question": "Smoke cigarettes?",
         "definition": "By cigarettes we mean menthol cigarettes, regular cigarettes, and loose tobacco rolled into cigarettes or cigars."
     },
     {
         "id": 2,
         "state": "tobacco_products",
-        "question": "Used other tobacco products?",
+        "question": "Use other tobacco products?",
         "detail": "(excluding cigarettes)",
         "definition": "By other tobacco products, we mean pipe tobacco, snuff, chewing tobacco, dipping tobacco, snus, and others."
     },
     {
         "id": 3,
         "state": "electronic_vapor",
-        "question": "Used electronic vapor products?",
+        "question": "Use electronic vapor products?",
         "definition": "By electronic vapor products we mean Vapes, vaporizers, vape pens, hookah pens, electronic cigarettes (e-cigarettes or e-cigs), e-pipes, or electronic nictotine delivery systems (ENDS). Some brand examples include JUUL, NJOY, Blu, Vuse, MarkTen, Logic, Vapin Plus, eGo, and Halo."
     },
     {
         "id": 4,
         "state": "alcohol",
-        "question": "Drank alcohol?",
+        "question": "Drink alcohol?",
         "detail": "(any use at all)",
         "definition": "By alcohol we mean beer, wine, wine coolers, malt beverages, or hard liquor."
     },
@@ -34,45 +33,45 @@
     {
         "id": 6,
         "state": "marijuana",
-        "question": "Used marijuana or hashish?",
+        "question": "Use marijuana or hashish?",
         "definition": "Marijuana is sometimes called cannabis, weed, blunt, hydro, grass, or pot. Hashish is sometimes called hash or hash oil."
     },
     {
         "id": 7,
         "state": "prescription_opioid",
-        "question": "Used prescription opioid drugs without orders given to you by your doctor?",
+        "question": "Use prescription opioid drugs without orders given to you by your doctor?",
         "definition": "By prescription opioid drugs we mean pain relievers such as oxycodone (OxyContin), hydrocodone (Vicodin), codeine, morphine, methadone, tramadol, hydromorphone, oxymorphine, tapentadol."
     },
     {
         "id": 8,
         "state": "prescription_drugs",
-        "question": "Used other prescription drugs without orders given to you by your doctor?",
+        "question": "Use other prescription drugs without orders given to you by your doctor?",
         "detail": "(Please exclude prescription opioid drugs)",
         "definition": "By other prescription drugs, we mean substances like barbiturates, sedatives, hypnotics, non-benzo tranquilizers."
     },
     {
         "id": 9,
         "state": "nonprescription_opioids",
-        "question": "Used non-prescription opioid drugs?",
+        "question": "Use non-prescription opioid drugs?",
         "definition": "By non-prescription opioid drugs we mean the illegal drug heroin and illicitly made synthetic opioids such as fentanyl."
     },
     {
         "id": 10,
         "state": "illegal_drugs",
-        "question": "Used any other illegal drugs?",
+        "question": "Use any other illegal drugs?",
         "detail": "(Please exclude marijuana / hashish and non-prescription opioid drugs)",
         "definition": "By other illegal drugs, we mean substances like crack or cocaine, amphetamine, or methamphetamine, hallucinogens (such as LSD/acid, Ecstasy/MDMA, PCP/angel dust, peyote), inhalants (sniffed substances such as glue, gasoline, paint thinner, cleaning fluid, shoe polish)."
     },
     {
         "id": 11,
         "state": "inject_drugs",
-        "question": "Injected any drugs?",
+        "question": "Inject any drugs?",
         "definition": "Count only injections without orders from your doctor - those you had just to feel good or to get high."
     },
     {
         "id": 12,
         "state": "share_needles",
-        "question": "Shared injection equipment?",
+        "question": "Share injection equipment?",
         "definition": "By injection equipment, we mean needle and drug paraphernalia."
     },
     {

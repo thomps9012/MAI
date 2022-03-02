@@ -19,9 +19,11 @@ export default function Attitudes() {
         window.location.assign('/behavior_info')
     }
     return (
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="riskInfo">
+            <h1>Attitudes and Knowledge</h1>
+            <h2>What level of risk do you think people have of harming themselves physically or in other ways when ...</h2>
             {attitudeQs.map((questionInfo): any => {
-                const { state, id } = questionInfo;
+                const { id } = questionInfo;
                 return (
                     <ButtonSelect
                         key={id}
@@ -32,7 +34,9 @@ export default function Attitudes() {
                 )
             })
             }
-            <button onClick={() => Submit(risk_attitudes)}>Continue Interview</button>
+            <div className="submitBtns">
+                <button onClick={() => Submit(risk_attitudes)}>Continue Interview</button>
+            </div>
         </div>
     )
 }

@@ -4,11 +4,25 @@ body {
 }
 
 .interviewSelect,
-.demographicInfo {
+.demographicInfo,
+.riskInfo {
     padding: 5rem;
     margin: 1rem;
-    text-align: center;
+    text-align: left;
     align-items: center;
+}
+
+.successScreen {
+    padding: 1rem;
+    margin: 1rem;
+    margin-top: 10rem;
+    text-align: center;
+}
+
+.behaviorInfo {
+    padding: 1rem;
+    margin: 1rem;
+    text-align: left;
 }
 
 .interviewInput {
@@ -22,15 +36,24 @@ body {
 
 button {
     max-width: max-content;
-    margin: 5px;
+    all: unset;
+    background-color: white;
+    margin: 15px;
     padding: 5px;
     font-size: large;
+    text-align: left;
+}
+
+button:hover,
+.active {
+    color: rgb(0, 10, 99);
+    font-weight: bold;
 }
 
 .twoButton {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .multiButton {
@@ -41,18 +64,44 @@ button {
 
 .dataReview {
     min-height: 100vh;
-    padding: 0 0.5rem;
+    padding: 0 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.interview_data {
-    padding: 1rem 0;
-    display: inline-flex;
-    flex-direction: column;
+.submitBtns {
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+    padding: 10px;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.submitBtns>button {
+    border-radius: 10px;
+    border: solid 1px;
+    border-color: rgb(198, 202, 202);
+    margin: 15px;
+    padding: 15px;
+}
+
+select,
+input {
+    font-size: large;
+}
+
+span {
+    font-style: italic;
+    margin: 5px;
+    padding: 5px;
+}
+
+pre {
+    white-space: pre-wrap;
+    overflow-x: auto;
+    margin: 5px;
+    padding: 5px;
 }

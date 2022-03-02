@@ -10,8 +10,9 @@ const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
         <div key={id}>
             <h3>{question}</h3>
             <span>{definition ?? ''}</span>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 10, textAlign: 'center' }}>
                 <input
+                    style={{ textAlign: 'center', width: 150 }}
                     type='number'
                     name={state}
                     onChange={handleChange}

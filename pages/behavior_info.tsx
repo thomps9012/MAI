@@ -37,7 +37,8 @@ export default function Behavior() {
         window.location.assign('/dataReview')
     }
     return (
-        <div>
+        <div style={{display: 'flex', flexDirection: 'column'}} className='behaviorInfo'>
+            <h1>Over the past 30 days how many days, if any did you ...</h1>
             {drugBehaviorQs.map((questionInfo: any) => {
                 const { state } = questionInfo;
                 return (
@@ -81,7 +82,9 @@ export default function Behavior() {
                     )
                 }
             })}
-            <button onClick={() => Submit(behavior_info)}>Finish Interview</button>
+            <div className="submitBtns">
+                <button onClick={() => Submit(behavior_info)}>Finish Interview</button>
+            </div>
         </div>
     )
 }
