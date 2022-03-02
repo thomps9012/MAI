@@ -28,10 +28,10 @@ export default function InterviewSelect() {
                 <label>Select Interview Type</label>
                 <select onChange={(e: any) => setInterview(e.target.value)}>
                     <option>Select Type</option>
-                    <option>Baseline</option>
-                    <option>Exit</option>
-                    <option>Follow-up</option>
-                    <option>Testing Services Only</option>
+                    <option value='baseline'>Baseline</option>
+                    <option value='exit'>Exit</option>
+                    <option value='follow-up'>Follow-up</option>
+                    <option value='testing-services-only'>Testing Services Only</option>
                 </select>
             </div>
             <div className="interviewInput">

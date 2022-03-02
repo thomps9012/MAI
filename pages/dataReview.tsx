@@ -11,7 +11,6 @@ export default function DataReview() {
         setInterview(interview_info);
         setInterviewData({ interview_info, demographic_info, behavior_info, risk_attitudes });
         const interviewData:any = {interview_info, demographic_info, behavior_info, risk_attitudes};
-        console.log(interviewData)
         for(const item in interviewData){
            const interviewDiv = document.querySelector('.interview_data') as HTMLElement;
             if(item === 'interview_info'){
