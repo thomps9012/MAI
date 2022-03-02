@@ -38,7 +38,6 @@ body {
 button {
     all: unset;
     color: white;
-    margin: 15px;
     padding: 15px;
     font-size: large;
     border-radius: .2em;
@@ -54,25 +53,18 @@ button {
 }
 
 .submitBtns {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 10px;
-    margin: 10px;
-    font-weight: bold;
+    margin-top: 30px;
 }
 
 .submitBtns>button {
     border: solid 1px;
     background-color: #071E22;
     border-color: #679289;
-    margin: 15px;
-    padding: 15px;
     text-align: center;
 }
 
 .submitBtns>button:hover {
-    color: #F4C095;
+    background-color: #679289;
 }
 
 input {
