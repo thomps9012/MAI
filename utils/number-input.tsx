@@ -7,8 +7,8 @@ const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
         console.log(state_details)
     }
     return (
-        <div key={id}>
-            <h3>{question}</h3>
+        <div key={id} className="multiButton">
+            <h2>{question}</h2>
             <span>{definition ?? ''}</span>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 10, textAlign: 'center' }}>
                 <input
@@ -17,9 +17,9 @@ const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
                     name={state}
                     onChange={handleChange}
                 />
-                <div className="row">
+                <div className="row" style={{display: 'flex'}}>
                     <input
-                        type='radio'
+                        type='checkbox'
                         name={state}
                         onClick={handleChange}
                         value='0'

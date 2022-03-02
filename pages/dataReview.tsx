@@ -30,7 +30,9 @@ export default function DataReview() {
                 window.location.assign('/success')
             }
         } else {
-            alert('Your submission was unsuccessfull \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.')
+            if(confirm('Your submission was unsuccessfull \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.')){
+                window.location.assign('/')
+            }
         }
     }
     return (

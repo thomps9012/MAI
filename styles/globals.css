@@ -1,11 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;600&family=Cabin:wght@500&family=Fjalla+One&family=Fredoka:wght@400;700&family=IBM+Plex+Sans:wght@100&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Prompt:wght@100&display=swap');
+.title {
+    font-size: 48px;
+    text-align: center;
+}
+
 html,
 body {
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: #071E22;
 }
 
 .interviewSelect,
 .demographicInfo,
-.riskInfo {
+.riskInfo,
+.behaviorInfo {
     padding: 5rem;
     margin: 1rem;
     text-align: left;
@@ -19,47 +27,36 @@ body {
     text-align: center;
 }
 
-.behaviorInfo {
-    padding: 1rem;
-    margin: 1rem;
-    text-align: left;
-}
-
 .interviewInput {
     margin: .1rem;
-    flex-basis: 75%;
-    padding: .1rem;
-    text-align: left;
+    padding: 1rem;
+    text-align: center;
     display: flex;
     flex-direction: column;
 }
 
 button {
-    max-width: max-content;
     all: unset;
-    background-color: white;
+    color: white;
     margin: 15px;
-    padding: 5px;
+    padding: 15px;
     font-size: large;
-    text-align: left;
-}
-
-button:hover,
-.active {
-    color: rgb(0, 10, 99);
-    font-weight: bold;
+    border-radius: .2em;
 }
 
 .twoButton {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: inline-flex;
+    flex-direction: column;
 }
 
 .multiButton {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
 }
 
 .dataReview {
@@ -81,16 +78,21 @@ button:hover,
 }
 
 .submitBtns>button {
-    border-radius: 10px;
     border: solid 1px;
-    border-color: rgb(198, 202, 202);
+    background-color: #071E22;
+    border-color: #679289;
     margin: 15px;
     padding: 15px;
+    text-align: center;
 }
 
-select,
+.submitBtns>button:hover {
+    color: #F4C095;
+}
+
 input {
-    font-size: large;
+    text-align: center;
+    font-size: x-large;
 }
 
 span {
@@ -104,4 +106,28 @@ pre {
     overflow-x: auto;
     margin: 5px;
     padding: 5px;
+}
+
+[type="checkbox"] {
+    width: 1.4em;
+    height: 1.4em;
+}
+
+[type="radio"] {
+    width: 1.4em;
+    height: 1.4em;
+    border-radius: 0;
+}
+
+label {
+    font-weight: bold;
+    padding: 5px;
+}
+
+[type="date"],
+[type="text"],
+select {
+    all: unset;
+    text-align: center;
+    font-size: x-large;
 }

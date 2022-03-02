@@ -16,7 +16,7 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
     }
     return (
         <div key={JSON.stringify(id)}>
-            <h3>{question}</h3>
+            <h2>{question}</h2>
             <span>{detail ?? ''}</span>
             {answerChoices.map((choice: string) => {
                 return (

@@ -28,7 +28,7 @@ export default function InterviewSelect() {
             <div className="interviewInput">
                 <h2>Select Interview Type</h2>
                 <select onChange={(e: any) => setInterview(e.target.value)}>
-                    <option>Select Type</option>
+                    <option>Select Type  ↓</option>
                     <option value='baseline'>Baseline</option>
                     <option value='exit'>Exit</option>
                     <option value='follow-up'>Follow-up</option>
@@ -38,7 +38,7 @@ export default function InterviewSelect() {
             <div className="interviewInput">
                 <h2>Testing Agency</h2>
                 <select onChange={(e: any) => setAgency(e.target.value)}>
-                    <option>Select Agency</option>
+                    <option>Select Agency ↓</option>
                     <option>Care Alliance</option>
                     <option>NORA</option>
                     <option>Task Force</option>
@@ -48,7 +48,7 @@ export default function InterviewSelect() {
                 <h2>Phone Number</h2>
                 <input
                     type='text'
-                    placeholder="1-555-5555"
+                    placeholder="555-555-5555"
                     onChange={(e: any) => setPhone(e.target.value)}
                 />
             </div>

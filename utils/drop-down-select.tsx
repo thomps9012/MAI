@@ -11,6 +11,7 @@ const DropDownSelect = ({questionInfo, state_details, updateState}: any) => {
             <h3>{question}</h3>
             <span>{detail ?? ''}</span>
             <select name={state} onChange={handleChange}>
+                <option>Select Below ↓</option>
             {answerChoices.map((choice: string) => {
                 return (
                     <option value={choice} key={choice}>

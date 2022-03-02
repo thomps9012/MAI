@@ -6,18 +6,17 @@ const ButtonSelect = ({ questionInfo, state_details, updateState }: any) => {
         updateState(state_details)
     }
     return (
-        <div key={id} className='list-group'>
-            <h3>{question}</h3>
+        <div key={id} id='btn-group' className={answerChoices.length === 2 ? 'multiButton' : 'twoButton'}>
+            <h2>{question}</h2>
             <span>{detail ?? ''}</span>
-            <div key={state} id='btn-group' className={answerChoices.length === 2 ? 'multiButton' : 'twoButton'}>
-                {answerChoices.map((choice: string) => {
-                    return (
-                        <button name={state} key={`${choice}${state}`} value={choice} onClick={handleChange}>
-                            {choice}
-                        </button>
-                    )
-                })}
-            </div>
+            {answerChoices.map((choice: string) => {
+                return (
+                    <div key={`${choice}${state}`} style={{ fontSize: 'large', margin: 5, padding: 5, display: 'flex' }}>
+                        <input type='radio' name={state} value={choice} onClick={handleChange} />
+                        <label>{choice}</label>
+                    </div>
+                )
+            })}
         </div>
     )
 }

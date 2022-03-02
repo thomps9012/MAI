@@ -32,7 +32,7 @@ export default function Demographics() {
     }
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="demographicInfo">
-            <h1>Demographic Information</h1>
+            <h1 className="title">Demographic Information</h1>
             <h2>Date of Birth</h2>
             <input type='date' onChange={(e: any) => setDOB(e.target.value)} />
             {demographicQs.map((questionInfo): any => {
