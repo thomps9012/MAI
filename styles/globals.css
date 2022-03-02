@@ -99,7 +99,6 @@ label {
     padding: 5px;
 }
 
-[type="date"],
 [type="text"],
 select {
     all: unset;
@@ -107,7 +106,8 @@ select {
     font-size: x-large;
 }
 
-[type="number"] {
+[type="number"],
+[type="date"] {
     text-align: center;
     font-size: x-large;
 }
