@@ -1,11 +1,11 @@
-module.exports = {
-    async redirects() {
-        return [
-            {
-                source: '/',
-                destination: 'interview_select',
-                permanent: true
-            }
-        ]
-    }
-}
+// module.exports = {
+//     async redirects() {
+//         return [
+//             {
+//                 source: '/',
+//                 destination: 'interview_select',
+//                 permanent: true
+//             }
+//         ]
+//     }
+// }

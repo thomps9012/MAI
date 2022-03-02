@@ -30,7 +30,7 @@ export default function Demographics() {
         window.location.replace('/attitudes')
     }
     return (
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center' }} className="demographicInfo">
             <label>Enter Date of Birth</label>
             <input type='date' onChange={(e: any) => setDOB(e.target.value)} />
             {demographicQs.map((questionInfo): any => {

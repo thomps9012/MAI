@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { AppProps } from "next/dist/shared/lib/router/router";
+import '../styles/globals.css'
 
 function MAI({ Component, pageProps}: AppProps) {
     return (

@@ -20,15 +20,14 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
             <span>{detail ?? ''}</span>
             {answerChoices.map((choice: string) => {
                 return (
-                    <>
+                    <div key={choice}>
                         <input type='checkbox'
-                            key={choice}
                             value={choice}
                             name={state}
                             onClick={handleChange}
                         />
                         <label>{choice}</label>
-                    </>
+                    </div>
                 )
             })
             }

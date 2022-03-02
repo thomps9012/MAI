@@ -1,0 +1,17 @@
+.interviewSelect,
+.demographicInfo {
+    padding: 5rem;
+    margin: 1rem;
+}
+.interviewInput {
+    margin: .1rem;
+    flex-basis: 75%;
+    padding: .1rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    max-width: max-content;
+}
