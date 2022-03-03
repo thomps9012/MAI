@@ -49,7 +49,7 @@
     {
         "id": 4,
         "state": "relationship_abuse",
-        "question": "In the past 3 months, how often has anyone with whome you had an intimate relationship (sexual or not) abused you emotionally, physically, or sexually?",
+        "question": "In the past 3 months, how often has anyone with whom you had an intimate relationship (sexual or not) abused you emotionally, physically, or sexually?",
         "answerChoices": [
             "Never",
             "Rarely",

@@ -73,10 +73,5 @@
         "state": "share_needles",
         "question": "Share injection equipment?",
         "definition": "By injection equipment, we mean needle and drug paraphernalia."
-    },
-    {
-        "id": 13,
-        "state": "inject_drugs_annual",
-        "question": "Times you've injected drugs in the past 12 months?"
     }
 ]
