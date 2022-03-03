@@ -11,8 +11,10 @@ export default function InterviewSelect() {
     const [phone_number, setPhone] = useState('')
 
     useEffect(() => {
-        const generateId = GenerateID(testing_agency);
-        setPID(generateId)
+        if (interview_type === 'baseline' || interview_type === 'testing-services-only') {
+            const generateId = GenerateID(testing_agency);
+            setPID(generateId)
+        }
     }, [testing_agency])
     const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID }
 
@@ -35,6 +37,17 @@ export default function InterviewSelect() {
                     <option value='testing-services-only'>Testing Services Only</option>
                 </select>
             </div>
+            {interview_type === 'exit' || interview_type === 'follow-up' ?
+                <div className="interviewInput">
+                    <h2>Enter PID</h2>
+                    <input
+                        type='text'
+                        placeholder="PID"
+                        onChange={(e: any) => setPID(e.target.value)}
+                    />
+                </div>
+                : <></>
+            }
             <div className="interviewInput">
                 <h2>Testing Agency</h2>
                 <select onChange={(e: any) => setAgency(e.target.value)}>

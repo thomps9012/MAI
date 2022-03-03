@@ -1,20 +1,6 @@
 {
   "/_app": "pages/_app.js",
-  "/api/adult/baseline": "pages/api/adult/baseline.js",
-  "/api/adult/exit": "pages/api/adult/exit.js",
-  "/api/adult/follow-up": "pages/api/adult/follow-up.js",
-  "/api/adult/testing-services-only": "pages/api/adult/testing-services-only.js",
-  "/api/youth/baseline": "pages/api/youth/baseline.js",
-  "/api/youth/exit": "pages/api/youth/exit.js",
-  "/api/youth/follow-up": "pages/api/youth/follow-up.js",
-  "/api/youth/testing-services-only": "pages/api/youth/testing-services-only.js",
-  "/behavior_info": "pages/behavior_info.html",
-  "/dataReview": "pages/dataReview.html",
-  "/demographic_info": "pages/demographic_info.html",
-  "/": "pages/index.html",
-  "/risk_attitudes": "pages/risk_attitudes.html",
-  "/success": "pages/success.html",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/404": "pages/404.html"
+  "/": "pages/index.js"
 }
