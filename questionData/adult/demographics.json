@@ -90,11 +90,8 @@
     {
         "id": 9,
         "state": "arrested_in_last_month",
-        "question": "In the past 30 days, how many times have you been arrested?",
-        "answerChoices": [
-            "Yes",
-            "No"
-        ]
+        "number_input": true,
+        "question": "In the past 30 days, how many times have you been arrested?"
     },
     {
         "id": 10,
