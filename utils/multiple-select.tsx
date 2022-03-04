@@ -1,3 +1,5 @@
+import StateChecker from "./stateChecker";
+
 const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
     const { id, question, detail, state, answerChoices } = questionInfo;
     const handleChange = () => {
@@ -11,6 +13,7 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
         } finally {
             state_details[state] = inputArr
             updateState(state_details)
+            StateChecker(state_details)
         }
     }
     return (

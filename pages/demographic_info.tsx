@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import demographicQs from '../questionData/adult/demographics.json';
 import MultipleSelect from "../utils/multiple-select";
 import ButtonSelect from "../utils/button-select";
 import NumberInput from "../utils/number-input";
-import StateChecker from "../utils/stateChecker";
 
 export default function Demographics() {
     const [date_of_birth, setDOB] = useState(new Intl.DateTimeFormat('en', {
@@ -25,10 +24,6 @@ export default function Demographics() {
         knowledge_of_SUD_healthcare_treatment: '',
         knowledge_of_HIV_STD_healthcare_treatment: '',
         pretax_household_income: ''
-    })
-    useEffect(() => {
-        const demographic_state = { ...demographic_details }
-        StateChecker(demographic_state)
     })
     const demographic_info = { date_of_birth, demographic_details }
     const Submit = async (demographic_info: {}) => {

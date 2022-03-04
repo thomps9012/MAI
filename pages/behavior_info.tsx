@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import drugBehaviorQs from '../questionData/adult/drug-behavior.json'
 import sexualBehaviorQs from '../questionData/adult/sexual-behavior.json'
 import ButtonSelect from "../utils/button-select";
 import DropDownSelect from "../utils/drop-down-select";
 import MultipleSelect from "../utils/multiple-select";
 import NumberInput from "../utils/number-input";
-import StateChecker from "../utils/stateChecker";
 
 export default function Behavior() {
     const [drug_behavior, setDrugBehaviors] = useState({
@@ -32,10 +31,6 @@ export default function Behavior() {
         safe_in_relationship: ''
     })
     const behavior_info = { drug_behavior, sexual_behavior }
-    useEffect(() => {
-        const behavior_state = { ...sexual_behavior }
-        StateChecker(behavior_state)
-    })
     const Submit = async (behavior_info: {}) => {
         sessionStorage.setItem('behavior_info', JSON.stringify(behavior_info))
         window.location.assign('/dataReview')

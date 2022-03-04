@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import attitudeQs from '../questionData/adult/attitude-knowledge.json';
 import ButtonSelect from "../utils/button-select";
-import StateChecker from "../utils/stateChecker";
 
 export default function Attitudes() {
     const [risk_attitudes, setAttitude] = useState({
@@ -14,10 +13,6 @@ export default function Attitudes() {
         unprotected_sex: '',
         sex_under_influence: '',
         could_refuse_unprotected_sex: ''
-    })
-    useEffect(() => {
-        const risk_state = { ...risk_attitudes }
-        StateChecker(risk_state)
     })
     const Submit = async (risk_attitudes: {}) => {
         sessionStorage.setItem('risk_attitudes', JSON.stringify(risk_attitudes));
