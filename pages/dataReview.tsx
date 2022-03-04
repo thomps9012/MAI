@@ -25,7 +25,6 @@ export default function DataReview() {
             method: 'POST',
             body: body
         }); if (res.ok) {
-            sessionStorage.clear();
             if (confirm(`${PID} is your PID Number \n \n Save this for your records and follow up interviews`)) {
                 window.location.assign('/success')
             }
