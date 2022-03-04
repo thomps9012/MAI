@@ -2,7 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/adult": "pages/api/adult.js",
-  "/dataReview": "pages/dataReview.js",
-  "/success": "pages/success.js"
+  "/risk_attitudes": "pages/risk_attitudes.js"
 }

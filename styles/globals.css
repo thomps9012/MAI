@@ -34,12 +34,31 @@ body {
     flex-direction: column;
 }
 
+.submitBtns>button {
+    border: solid 1px;
+    background-color: #071E22;
+    border-color: #679289;
+    text-align: center;
+}
+
+.submitBtns>button:hover {
+    background-color: #679289;
+}
+
 button {
     all: unset;
     color: white;
     padding: 15px;
     font-size: large;
     border-radius: .2em;
+}
+
+button:disabled {
+    background-color: gray;
+}
+
+button:disabled:hover {
+    background-color: gray;
 }
 
 .dataReview {
@@ -53,17 +72,6 @@ button {
 
 .submitBtns {
     margin-top: 30px;
-}
-
-.submitBtns>button {
-    border: solid 1px;
-    background-color: #071E22;
-    border-color: #679289;
-    text-align: center;
-}
-
-.submitBtns>button:hover {
-    background-color: #679289;
 }
 
 input {
