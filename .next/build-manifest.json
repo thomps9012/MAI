@@ -5,16 +5,16 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/up3atbkkMOigPMivZNwJ6/_buildManifest.js",
-    "static/up3atbkkMOigPMivZNwJ6/_ssgManifest.js",
-    "static/up3atbkkMOigPMivZNwJ6/_middlewareManifest.js"
+    "static/C-bCsNltxXG95KRnKshtt/_buildManifest.js",
+    "static/C-bCsNltxXG95KRnKshtt/_ssgManifest.js",
+    "static/C-bCsNltxXG95KRnKshtt/_middlewareManifest.js"
   ],
   "pages": {
     "/": [
       "static/chunks/webpack-69bfa6990bb9e155.js",
       "static/chunks/framework-5f4595e5518b5600.js",
       "static/chunks/main-01df828e572375b9.js",
-      "static/chunks/pages/index-1f643d6fc6c365be.js"
+      "static/chunks/pages/index-04ec7ca7368f6cad.js"
     ],
     "/_app": [
       "static/chunks/webpack-69bfa6990bb9e155.js",
@@ -33,7 +33,7 @@
       "static/chunks/webpack-69bfa6990bb9e155.js",
       "static/chunks/framework-5f4595e5518b5600.js",
       "static/chunks/main-01df828e572375b9.js",
-      "static/chunks/pages/behavior_info-a2201145d24edd7c.js"
+      "static/chunks/pages/behavior_info-e0ebe91352a262c8.js"
     ],
     "/dataReview": [
       "static/chunks/webpack-69bfa6990bb9e155.js",
@@ -45,13 +45,13 @@
       "static/chunks/webpack-69bfa6990bb9e155.js",
       "static/chunks/framework-5f4595e5518b5600.js",
       "static/chunks/main-01df828e572375b9.js",
-      "static/chunks/pages/demographic_info-dd56d8235a39958c.js"
+      "static/chunks/pages/demographic_info-22b94e884dd4d4bd.js"
     ],
     "/risk_attitudes": [
       "static/chunks/webpack-69bfa6990bb9e155.js",
       "static/chunks/framework-5f4595e5518b5600.js",
       "static/chunks/main-01df828e572375b9.js",
-      "static/chunks/pages/risk_attitudes-ebdafa0ecb2d4254.js"
+      "static/chunks/pages/risk_attitudes-70d54be469c3e852.js"
     ],
     "/success": [
       "static/chunks/webpack-69bfa6990bb9e155.js",
