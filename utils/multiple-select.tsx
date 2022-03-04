@@ -11,7 +11,6 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
         } finally {
             state_details[state] = inputArr
             updateState(state_details)
-            console.log(state_details)
         }
     }
     return (

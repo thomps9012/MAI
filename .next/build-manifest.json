@@ -15,6 +15,11 @@
     "static/development/_middlewareManifest.js"
   ],
   "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -25,20 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/behavior_info": [
+    "/demographic_info": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/behavior_info.js"
-    ],
-    "/dataReview": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/dataReview.js"
-    ],
-    "/risk_attitudes": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/risk_attitudes.js"
+      "static/chunks/pages/demographic_info.js"
     ]
   },
   "ampFirstPages": []

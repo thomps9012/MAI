@@ -26,9 +26,10 @@ export default function Demographics() {
         knowledge_of_HIV_STD_healthcare_treatment: '',
         pretax_household_income: ''
     })
+    const demographic_state = { ...demographic_details }
     useEffect(() => {
-        StateChecker(demographic_details)
-    }, [demographic_details])
+        StateChecker(demographic_state)
+    }, [demographic_state])
     const demographic_info = { date_of_birth, demographic_details }
     const Submit = async (demographic_info: {}) => {
         sessionStorage.setItem('demographic_info', JSON.stringify(demographic_info));

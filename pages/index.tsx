@@ -18,9 +18,10 @@ export default function InterviewSelect() {
         }
     }, [testing_agency])
     const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID }
+    const info_state = {interview_type, testing_agency, phone_number}
     useEffect(() => {
-        StateChecker(interview_info)
-    }, [interview_info])
+        StateChecker(info_state)
+    }, [info_state])
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
         if (confirm(`Your Identification Number is \n ${PID}`)) {
