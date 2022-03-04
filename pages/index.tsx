@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import GenerateID from "../utils/generate-id";
+import StateChecker from "../utils/stateChecker";
 
 export default function InterviewSelect() {
     const [interview_date] = useState(new Intl.DateTimeFormat('en', {
@@ -17,7 +18,9 @@ export default function InterviewSelect() {
         }
     }, [testing_agency])
     const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID }
-
+    useEffect(() => {
+        StateChecker(interview_info)
+    }, [interview_info])
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
         if (confirm(`Your Identification Number is \n ${PID}`)) {

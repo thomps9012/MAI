@@ -3,6 +3,7 @@ import demographicQs from '../questionData/adult/demographics.json';
 import MultipleSelect from "../utils/multiple-select";
 import ButtonSelect from "../utils/button-select";
 import NumberInput from "../utils/number-input";
+import StateChecker from "../utils/stateChecker";
 
 export default function Demographics() {
     const [date_of_birth, setDOB] = useState(new Intl.DateTimeFormat('en', {
@@ -26,13 +27,8 @@ export default function Demographics() {
         pretax_household_income: ''
     })
     useEffect(() => {
-        const { employment_status, latinx, race, gender, sexual_orientation, living_situtation, college_enrolled, military_service, arrested_in_last_month, parole_or_probation, informed_of_HIV_status, informed_of_VH_status, knowledge_of_HIV_STD_healthcare_treatment, knowledge_of_SUD_healthcare_treatment, pretax_household_income } = demographic_details;
-        if ((employment_status || latinx || race || gender || sexual_orientation || living_situtation || college_enrolled || military_service || arrested_in_last_month || parole_or_probation || informed_of_HIV_status || informed_of_VH_status || knowledge_of_HIV_STD_healthcare_treatment || knowledge_of_SUD_healthcare_treatment || pretax_household_income) === '') {
-            document.querySelector('button')?.setAttribute('disabled', 'true')
-        } else {
-            document.querySelector('button')?.removeAttribute('disabled')
-        }
-    })
+        StateChecker(demographic_details)
+    }, [demographic_details])
     const demographic_info = { date_of_birth, demographic_details }
     const Submit = async (demographic_info: {}) => {
         sessionStorage.setItem('demographic_info', JSON.stringify(demographic_info));

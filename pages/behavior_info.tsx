@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import drugBehaviorQs from '../questionData/adult/drug-behavior.json'
 import sexualBehaviorQs from '../questionData/adult/sexual-behavior.json'
 import ButtonSelect from "../utils/button-select";
 import DropDownSelect from "../utils/drop-down-select";
 import MultipleSelect from "../utils/multiple-select";
 import NumberInput from "../utils/number-input";
+import StateChecker from "../utils/stateChecker";
 
 export default function Behavior() {
     const [drug_behavior, setDrugBehaviors] = useState({
@@ -30,14 +31,16 @@ export default function Behavior() {
         partner_sexual_pressure: '',
         safe_in_relationship: ''
     })
-
     const behavior_info = { drug_behavior, sexual_behavior }
+    useEffect(() => {
+        StateChecker(sexual_behavior)
+    }, [sexual_behavior])
     const Submit = async (behavior_info: {}) => {
         sessionStorage.setItem('behavior_info', JSON.stringify(behavior_info))
         window.location.assign('/dataReview')
     }
     return (
-        <div style={{display: 'flex', flexDirection: 'column' }} className='behaviorInfo'>
+        <div style={{ display: 'flex', flexDirection: 'column' }} className='behaviorInfo'>
             <h1>Over the past 30 days how many days, if any did you ...</h1>
             {drugBehaviorQs.map((questionInfo: any) => {
                 const { state } = questionInfo;
