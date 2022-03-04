@@ -15,7 +15,7 @@ export default function Attitudes() {
         sex_under_influence: '',
         could_refuse_unprotected_sex: ''
     })
-    const risk_state = { ...risk_attitudes };
+    const risk_state = { ...risk_attitudes }
     useEffect(() => {
         StateChecker(risk_state)
     }, [risk_state])
