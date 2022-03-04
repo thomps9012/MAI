@@ -32,10 +32,10 @@ export default function Behavior() {
         safe_in_relationship: ''
     })
     const behavior_info = { drug_behavior, sexual_behavior }
-    const behavior_state = {...sexual_behavior}
     useEffect(() => {
+        const behavior_state = { ...sexual_behavior }
         StateChecker(behavior_state)
-    }, [behavior_state])
+    })
     const Submit = async (behavior_info: {}) => {
         sessionStorage.setItem('behavior_info', JSON.stringify(behavior_info))
         window.location.assign('/dataReview')

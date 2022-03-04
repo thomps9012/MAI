@@ -15,10 +15,10 @@ export default function Attitudes() {
         sex_under_influence: '',
         could_refuse_unprotected_sex: ''
     })
-    const risk_state = { ...risk_attitudes }
     useEffect(() => {
+        const risk_state = { ...risk_attitudes }
         StateChecker(risk_state)
-    }, [risk_state])
+    })
     const Submit = async (risk_attitudes: {}) => {
         sessionStorage.setItem('risk_attitudes', JSON.stringify(risk_attitudes));
         window.location.assign('/behavior_info')
