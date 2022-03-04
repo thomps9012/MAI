@@ -13,7 +13,7 @@ export default function Demographics() {
         race: '',
         gender: '',
         sexual_orientation: '',
-        living_situtation: '',
+        living_situation: '',
         college_enrolled: '',
         employment_status: '',
         military_service: '',

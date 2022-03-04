@@ -1,9 +1,12 @@
+import StateChecker from "./stateChecker";
+
 const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
     const { id, question, definition, state } = questionInfo;
     const handleChange = (e: any) => {
         const { name, value } = e.target;
         state_details[name] = parseInt(value)
         updateState(state_details)
+        StateChecker(state_details)
     }
     return (
         <div key={id} className="numberButton">
