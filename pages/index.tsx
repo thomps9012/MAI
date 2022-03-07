@@ -1,8 +1,36 @@
 import { useEffect, useState } from "react"
 import GenerateID from "../utils/generate-id";
 import StateChecker from "../utils/stateChecker";
+import { GetServerSideProps } from "next";
+import { connectToDatabase } from "../utils/mongodb";
 
-export default function InterviewSelect() {
+export const getServerSideProps: GetServerSideProps = async () => {
+    const { db } = await connectToDatabase();
+
+    const collections = ['adult_baselines', 'adult_testing-services-only', 'youth_baselines', 'youth_testing-services-only']
+    let taskForceRecords = 101010;
+    let noraRecords = 0;
+    let caRecords = 0;
+
+    for (const item in collections) {
+        const taskForceCount = await db.collection(collections[item]).countDocuments({ "interview_info.testing_agency": "AIDS Task Force" });
+        const noraCount = await db.collection(collections[item]).countDocuments({ "interview_info.testing_agency": "NORA" });
+        const caCount = await db.collection(collections[item]).countDocuments({ "interview_info.testing_agency": "Care Alliance" });
+        taskForceRecords += taskForceCount;
+        noraRecords += noraCount;
+        caRecords += caCount;
+    }
+
+    return {
+        props: {
+            interviewCounts: {
+                taskForceRecords, noraRecords, caRecords
+            }
+        }
+    }
+};
+
+export default function InterviewSelect(interviewCounts: any) {
     const [interview_date] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',
     }).format(Date.now()));
@@ -10,15 +38,14 @@ export default function InterviewSelect() {
     const [testing_agency, setAgency] = useState('');
     const [PID, setPID] = useState('')
     const [phone_number, setPhone] = useState('')
-
     useEffect(() => {
         if (interview_type === 'baseline' || interview_type === 'testing-services-only') {
-            const generateId = GenerateID(testing_agency);
-            setPID(generateId)
+            const generateId = GenerateID(testing_agency, interviewCounts);
+            setPID(generateId as string)
         }
     }, [testing_agency])
     const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID }
-    const info_state = {interview_type, testing_agency, phone_number}
+    const info_state = { interview_type, testing_agency, phone_number }
     useEffect(() => {
         StateChecker(info_state)
     }, [info_state])
@@ -56,9 +83,9 @@ export default function InterviewSelect() {
                 <h2>Testing Agency</h2>
                 <select onChange={(e: any) => setAgency(e.target.value)}>
                     <option>Select Agency ↓</option>
-                    <option>Care Alliance</option>
-                    <option>NORA</option>
-                    <option>Task Force</option>
+                    <option value='Care Alliance'>Care Alliance</option>
+                    <option value='NORA'>Northern Ohio Recovery Association</option>
+                    <option value='AIDS Task Force'>AIDS Task Force</option>
                 </select>
             </div>
             <div className="interviewInput">

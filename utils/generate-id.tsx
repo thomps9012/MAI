@@ -1,12 +1,13 @@
-const GenerateID = (testing_agency: String) => {
-    if (testing_agency === 'Task Force') {
-        const recordCount = 0;
-        const PID = `ATF1010${recordCount}`
-        return PID;
-    } else {
-        const recordCount = 0;
-        const PID = JSON.stringify(Math.floor(Math.random() * 10) + recordCount);
-        return PID;
+const GenerateID = (testing_agency: String, interviewCounts: any) => {
+    console.log(testing_agency)
+    const { caRecords, noraRecords, taskForceRecords } = interviewCounts.interviewCounts
+    switch (testing_agency) {
+        case 'AIDS Task Force':
+            return `ATF${taskForceRecords + 1}`;
+        case 'NORA':
+            return `NORA${noraRecords + 1}`
+        case 'Care Alliance':
+            return `CA${caRecords + 1}`
     }
 }
 
