@@ -8,9 +8,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
     const { db } = await connectToDatabase();
 
     const collections = ['adult_baselines', 'adult_testing-services-only', 'youth_baselines', 'youth_testing-services-only']
-    let taskForceRecords = 101010;
-    let noraRecords = 0;
-    let caRecords = 0;
+    let taskForceRecords = 101025;
+    let noraRecords = 100;
+    let caRecords = 1501;
 
     for (const item in collections) {
         const taskForceCount = await db.collection(collections[item]).countDocuments({ "interview_info.testing_agency": "AIDS Task Force" });
