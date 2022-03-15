@@ -57,7 +57,7 @@ export default function InterviewSelect(interviewCounts: any) {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }} className='interviewSelect'>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='interviewSelect'>
             <div className="interviewInput">
                 <h2>Select Interview Type</h2>
                 <select onChange={(e: any) => setInterview(e.target.value)}>
