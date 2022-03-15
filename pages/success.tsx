@@ -11,9 +11,9 @@ export default function Success() {
     }, [])
     return (
         <div className="successScreen" style={{marginTop: 100}}>
-            <h1>Thank you for submitting your questionnaire, please show this screen to a testing administrator to receive your Gift Card.</h1>
-            <br />
             <h1>Client {PID} has successfully completed their {interview_type} Interview</h1>
+            <br />
+            <h1>Thank you for submitting your questionnaire, please show this screen to a testing administrator to receive your Gift Card.</h1>
         </div>
     )
 }
