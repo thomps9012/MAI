@@ -10,7 +10,7 @@ body {
     color: #071E22;
 }
 
-.interviewSelect,
+
 .demographicInfo,
 .riskInfo,
 .behaviorInfo {
@@ -20,6 +20,7 @@ body {
     align-items: center;
 }
 
+.interviewSelect,
 .successScreen {
     padding: 1rem;
     margin: 1rem;
