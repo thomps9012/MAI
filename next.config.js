@@ -1,11 +1,7 @@
-// module.exports = {
-//     async redirects() {
-//         return [
-//             {
-//                 source: '/',
-//                 destination: 'interview_select',
-//                 permanent: true
-//             }
-//         ]
-//     }
-// }
+const withPWA = require('next-pwa')
+
+module.exports = withPWA({
+    pwa: {
+        dest: 'public'
+    }
+})
