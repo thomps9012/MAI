@@ -7,7 +7,7 @@ import { connectToDatabase } from "../utils/mongodb";
 export const getServerSideProps: GetServerSideProps = async () => {
     const { db } = await connectToDatabase();
 
-    const collections = ['adult_baselines', 'adult_testing-services-only', 'youth_baselines', 'youth_testing-services-only']
+    const collections = ['adult_baseline', 'adult_testing-services-only', 'youth_baseline', 'youth_testing-services-only']
     let taskForceRecords = 101025;
     let noraRecords = 100;
     let caRecords = 1501;
