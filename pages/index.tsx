@@ -43,7 +43,7 @@ export default function InterviewSelect(interviewCounts: any) {
             const generateId = GenerateID(testing_agency, interviewCounts);
             setPID(generateId as string)
         }
-    }, [testing_agency])
+    }, [testing_agency, interview_type])
     const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID }
     const info_state = { interview_type, testing_agency, phone_number }
     useEffect(() => {
