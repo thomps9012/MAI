@@ -35,11 +35,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/behavior_info.js"
     ],
-    "/dataReview": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/dataReview.js"
-    ],
     "/demographic_info": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -49,11 +44,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/risk_attitudes.js"
-    ],
-    "/success": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/success.js"
     ]
   },
   "ampFirstPages": []

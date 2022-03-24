@@ -16,6 +16,7 @@ const NumberInput = (({ questionInfo, state_details, updateState }: any) => {
                 <input
                     style={{ textAlign: 'center', width: 150 }}
                     type='number'
+                    min={0}
                     name={state}
                     onChange={handleChange}
                 />
