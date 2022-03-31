@@ -1,5 +1,4 @@
-# National Minority AIDs (MAI) Initiative 
-# Adult Participant Survery
+# National Minority AIDs (MAI) Initiative <br /> Adult Participant Survery
 
 ### Short Description
 A participant survey which records demographic and program specific information about clients within the MAI program and notifies supervisors of client survey completion.
