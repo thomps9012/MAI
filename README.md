@@ -1,4 +1,5 @@
-# National Minority AIDs (MAI) Initiative Adult Participant Survery
+# National Minority AIDs (MAI) Initiative 
+# Adult Participant Survery
 
 ### Short Description
 A participant survey which records demographic and program specific information about clients within the MAI program and notifies supervisors of client survey completion.
@@ -59,7 +60,7 @@ docker build -t [tag] .
 ##### Middleware / Dependencies
 - SendGrid
 
-#### Sister Application
+### Sister Application
 The application has a sister application with a different set of questions for youth participants that can be found 
 [here](https://github.com/thomps9012/MAIyouth)
 
