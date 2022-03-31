@@ -33,13 +33,13 @@ yarn install
 ```
 docker build -t [tag] .
 ```
-6. Create a container registry and accompanying web application for deployment if you're using the Azure .NET framework
+6. Create a container registry and accompanying web application for deployment if you're using the Azure .NET framework <br />
 [Instructions on Docker Azure Deployments](https://docs.microsoft.com/en-us/azure/devops/pipelines/apps/cd/deploy-docker-webapp?view=azure-devops&tabs=java%2Cyaml)
 
     -- or -- 
     
-    if deploying to Heroku follow
-    [the Instructions Here](https://devcenter.heroku.com/categories/deploying-with-docker)
+    if deploying to Heroku follow the <br />
+    [Instructions Here](https://devcenter.heroku.com/categories/deploying-with-docker)
 
 7. et Voilá you now have a fully functioning 
 
