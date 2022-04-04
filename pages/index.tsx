@@ -38,17 +38,30 @@ export default function InterviewSelect(interviewCounts: any) {
     const [testing_agency, setAgency] = useState('');
     const [PID, setPID] = useState('')
     const [phone_number, setPhone] = useState('')
+    const [first_name, setName] = useState('')
     useEffect(() => {
         if (interview_type === 'baseline' || interview_type === 'testing-services-only') {
             const generateId = GenerateID(testing_agency, interviewCounts);
             setPID(generateId as string)
         }
     }, [testing_agency, interview_type])
-    const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID }
+    const interview_info = { interview_date, interview_type, testing_agency, phone_number, PID, first_name }
     const info_state = { interview_type, testing_agency, phone_number }
     useEffect(() => {
         StateChecker(info_state)
     }, [info_state])
+    const retrieveClientName = async (PID: string) => {
+        const res = await fetch(`/api/find_name?client_pid=${PID}`, {
+            method: 'GET'
+        })
+        if (res.ok) {
+            const data = await res.json();
+            const { first_name } = data;
+            setName(first_name)
+        } else {
+            setName('N/A')
+        }
+    }
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
         if (confirm(`Your Identification Number is \n ${PID}`)) {
@@ -75,9 +88,17 @@ export default function InterviewSelect(interviewCounts: any) {
                         type='text'
                         placeholder="PID"
                         onChange={(e: any) => setPID(e.target.value)}
+                        onBlur={() => retrieveClientName(PID)}
                     />
                 </div>
-                : <></>
+                : <div className="interviewInput">
+                    <h2>Enter Your First Name</h2>
+                    <input
+                        type='text'
+                        placeholder="First Name"
+                        onChange={(e: any) => setName(e.target.value)}
+                    />
+                </div>
             }
             <div className="interviewInput">
                 <h2>Testing Agency</h2>
