@@ -4,7 +4,25 @@
         "question": "Are you Hispanic, LatinX, or Spanish?",
         "answerChoices": [
             "Yes",
-            "No"
+            "No",
+            "Refused"
+        ]
+    },
+    {
+        "id": "latinxDetail",
+        "dependent": true,
+        "state": "latinx",
+        "question": "What ethnic group do you consider yourself?",
+        "detail": "You may say yes to more than one",
+        "answerChoices": [
+            "Central American",
+            "Cuban",
+            "Dominican",
+            "Mexican",
+            "Puerto Rican",
+            "South American",
+            "Other",
+            "Refused"
         ]
     },
     {
@@ -17,8 +35,18 @@
             "White",
             "Black or African American",
             "American Indian or Alaska Native",
-            "Asian",
-            "Native Hawaiian or Other Pacific Islander"
+            "Native Hawaiian",
+            "Asian Indian",
+            "Chinese",
+            "Japanese",
+            "Korean",
+            "Vietnamese",
+            "Filipino",
+            "Guamanian or Chamorro",
+            "Samoan",
+            "Other Asian",
+            "Other Pacific Islander",
+            "Refused"
         ]
     },
     {
@@ -29,7 +57,19 @@
             "Male",
             "Female",
             "Transgender",
-            "I do not identify as male, female, or transgender"
+            "Other",
+            "Refused"
+        ]
+    },
+    {
+        "id": "genderDetail",
+        "state": "gender",
+        "dependent": true,
+        "question": "Do you consider youself to be?",
+        "answerChoices": [
+            "Transgender, male to female",
+            "Transgender, female to male",
+            "Transgender, gender nonconforming"
         ]
     },
     {
@@ -40,6 +80,7 @@
             "Straight / Heterosexual",
             "Gay / Lesbian",
             "Bisexual",
+            "Queer, Pansexual, and/or Questioning",
             "Other",
             "Prefer not to say"
         ]
