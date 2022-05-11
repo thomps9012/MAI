@@ -1,9 +1,9 @@
 import { MongoClient } from 'mongodb';
-const { COSMOSDB_URI, DATABASE } = process.env;
+const { ATLAS_URI, DATABASE } = process.env;
 
-if (!COSMOSDB_URI) {
+if (!ATLAS_URI) {
     throw new Error(
-        'Please define the COSMOSDB_URI environment variable in the .env file'
+        'Please define the ATLAS_URI environment variable in the .env file'
     )
 }
 
@@ -30,7 +30,7 @@ export async function connectToDatabase() {
             useUnifiedTopology: true
         }
 
-        cached.promise = MongoClient.connect(COSMOSDB_URI, opts).then(client => {
+        cached.promise = MongoClient.connect(ATLAS_URI, opts).then(client => {
             return {
                 client,
                 db: client.db(DATABASE)
