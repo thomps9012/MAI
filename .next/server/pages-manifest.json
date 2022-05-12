@@ -1,6 +1,14 @@
 {
   "/_app": "pages/_app.js",
+  "/api/adult": "pages/api/adult.js",
+  "/api/find_name": "pages/api/find_name.js",
+  "/behavior_info": "pages/behavior_info.html",
+  "/dataReview": "pages/dataReview.html",
+  "/demographic_info": "pages/demographic_info.html",
+  "/": "pages/index.js",
+  "/risk_attitudes": "pages/risk_attitudes.html",
+  "/success": "pages/success.html",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/demographic_info": "pages/demographic_info.js"
+  "/404": "pages/404.html"
 }
