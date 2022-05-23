@@ -64,7 +64,7 @@ export default function InterviewSelect(interviewCounts: any) {
     }
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
-        if (confirm(`Your Identification Number is \n ${PID}`)) {
+        if (confirm(`This is your \n ${interview_info.interview_type} interview \n with ${interview_info.testing_agency} \n on ${interview_info.interview_date}`)) {
             window.location.assign('/demographic_info')
         }
     }
