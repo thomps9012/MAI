@@ -3,6 +3,7 @@ import GenerateID from "../utils/generate-id";
 import StateChecker from "../utils/stateChecker";
 import { GetServerSideProps } from "next";
 import { connectToDatabase } from "../utils/mongodb";
+import titleCase from "../utils/titleCase";
 
 export const getServerSideProps: GetServerSideProps = async () => {
     const { db } = await connectToDatabase();
@@ -61,13 +62,6 @@ export default function InterviewSelect(interviewCounts: any) {
         } else {
             setName('N/A')
         }
-    }
-    let titleCase = (str: string) => {
-        let splitStr = str.toLowerCase().split(' ');
-        for (let i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-        }
-        return splitStr.join(' ');
     }
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
