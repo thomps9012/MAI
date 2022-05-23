@@ -62,9 +62,17 @@ export default function InterviewSelect(interviewCounts: any) {
             setName('N/A')
         }
     }
+    let titleCase = (str: string) => {
+        let splitStr = str.toLowerCase().split(' ');
+        for (let i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+        }
+        return splitStr.join(' ');
+    }
     const Submit = async (interview_info: any) => {
         sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
-        if (confirm(`This is your \n ${interview_info.interview_type} interview \n with ${interview_info.testing_agency} \n on ${interview_info.interview_date}`)) {
+        const { interview_type, testing_agency } = interview_info;
+        if (confirm(`This is a(n) \n${titleCase(interview_type)} Interview \nwith ${testing_agency} \non ${interview_date}`)) {
             window.location.assign('/demographic_info')
         }
     }
