@@ -1,12 +1,13 @@
 import { connectToDatabase } from '../../utils/mongodb';
 import sgMail from '@sendgrid/mail';
+import { ObjectId } from 'mongodb';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
 export default async function handler(req: { body: string; }, res: { json: (arg0: any) => void; }) {
     const { db } = await connectToDatabase();
     let data = JSON.parse(req.body);
-    const { interview_date, interview_type, testing_agency, phone_number, PID } = data.interview_info;
+    const { interview_date, interview_type, testing_agency, phone_number, PID } = data;
     const msg = {
         // to: 'thomps9012@gmail.com',
         to: 'khill@norainc.org',
@@ -26,8 +27,16 @@ export default async function handler(req: { body: string; }, res: { json: (arg0
     } catch (error) {
         console.error(error);
     } finally {
-        const response = await db.collection(`adult_${interview_type}`).insertOne({ gift_card_received: false, ...data });
-        res.json(response);
+        const response = await db.collection(interview_type).insertOne({ gift_card_received: false, ...data });
+        const card_response = await db.collection('gift_cards').insertOne({
+            interview_id: new ObjectId(response._id),
+            amount: 0,
+            number: '',
+            type: '',
+            received_date: '',
+            PID: PID
+        })
+        card_response ? res.json(response) : res.json({error: 'Failed to create interview'})
     }
 
 }

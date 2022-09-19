@@ -6,8 +6,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { db } = await connectToDatabase();
     let client_pid = params?.client_pid;
     console.log(client_pid)
-    const response = await db.collection('adult_baseline').findOne({ 'interview_info.PID': client_pid });
-    const { first_name } = response.interview_info;
-    console.log(first_name)
-    res.json({ first_name });
+    const response = await db.collection('baseline').findOne({ 'PID': client_pid });
+    const { client_name } = response.demographics;
+    console.log(client_name)
+    res.json({ client_name });
 }
