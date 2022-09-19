@@ -1,7 +1,7 @@
 import StateChecker from "./stateChecker";
 
 const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
-    const { id, question, detail, state, answerChoices } = questionInfo;
+    const { id, question, detail, state, answers } = questionInfo;
     const handleChange = () => {
         let selected = document.getElementsByName(state);
         let inputArr = [];
@@ -20,7 +20,7 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
         <div key={JSON.stringify(id)}>
             <h3>{question}</h3>
             <span>{detail ?? ''}</span>
-            {answerChoices.map((choice: string) => {
+            {/* {choices.map((choice: string) => {
                 return (
                     <div key={choice} style={{margin: 5, padding: 5}}>
                         <input type='checkbox'
@@ -32,7 +32,7 @@ const MultipleSelect = ({ questionInfo, state_details, updateState }: any) => {
                     </div>
                 )
             })
-            }
+            } */}
         </div>
     )
 }

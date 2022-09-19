@@ -1,7 +1,7 @@
 import StateChecker from "./stateChecker";
 
 const DropDownSelect = ({questionInfo, state_details, updateState}: any) => {
-    const { id, question, detail, state, answerChoices } = questionInfo;
+    const { id, question, detail, state, answers } = questionInfo;
     const handleChange = (e: any) => {
         const {name, value} = e.target;
         state_details[name] = value
@@ -14,13 +14,13 @@ const DropDownSelect = ({questionInfo, state_details, updateState}: any) => {
             <span>{detail ?? ''}</span>
             <select name={state} onChange={handleChange}>
                 <option>Select Below ↓</option>
-            {answerChoices.map((choice: string) => {
+            {/* {answerChoices.map((choice: string) => {
                 return (
                     <option value={choice} key={choice}>
                         {choice}
                     </option>
                 )
-            })}
+            })} */}
             </select>
         </div>
     )

@@ -1,14 +1,13 @@
-import { AppProps } from "next/dist/shared/lib/router/router";
 import '../styles/globals.css';
-import DefaultHeader from "../components/defaultHeader";
-
-function MAI({ Component, pageProps}: AppProps) {
-    return (
-        <>
-        <DefaultHeader />
-        <Component {...pageProps} />
-        </>
-    )
+import store from "../utils/store";
+import { Provider } from 'react-redux';
+import Layout from "../components/layout";
+function MAI({ Component, pageProps }: any) {
+    return <Provider store={store}>
+        <Layout>
+            <Component {...pageProps} />
+        </Layout>
+    </Provider>
 }
 
 export default MAI;

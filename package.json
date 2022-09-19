@@ -8,12 +8,14 @@
         "export": "next export"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "^1.8.5",
         "@sendgrid/mail": "^7.6.2",
         "mongodb": "^4.4.0",
         "next": "^12.1.0",
         "next-pwa": "^5.4.6",
         "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react-dom": "^17.0.2",
+        "react-redux": "^8.0.2"
     },
     "devDependencies": {
         "@types/react": "^17.0.39",
