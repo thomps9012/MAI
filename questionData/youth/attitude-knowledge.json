@@ -1,8 +1,7 @@
-[
-    {
+[{
         "id": 1,
         "state": "tobacco_use",
-        "question": "they use tobacco once or twice a week?",
+        "question": "they use tobacco one or twice a week?",
         "detail": "By tobacco, we mean menthol cigarettes, regular cigarettes, loose tobacco rolled into cigarettes or cigars, pipe tobacco, snuff, chewing tobacco, dipping tobacco, snus, and others.",
         "answerChoices": [
             "No risk",
@@ -40,6 +39,18 @@
     },
     {
         "id": 4,
+        "state": "shared_needle_use",
+        "question": "they share needles, syringes, or other injection equipment when using drugs?",
+        "answerChoices": [
+            "No risk",
+            "Slight risk",
+            "Moderate risk",
+            "Great risk",
+            "Don't know or can't say"
+        ]
+    },
+    {
+        "id": 5,
         "state": "nonprescription_opioid",
         "question": "they use non-prescription opioid drugs once or twice a week?",
         "detail": "By non-prescription opioid drugs, we mean the illegal drug heroin, and illicitly made synthetic opioids, such as fentanyl.",
@@ -52,22 +63,10 @@
         ]
     },
     {
-        "id": 5,
-        "state": "prescription_opioid",
-        "question": "take prescription opioid drugs without a doctor's order once or twice a week?",
-        "detail": "By prescription opioid drugs, we mean pain relievers such as oxycodone (OxyContin), hydrocodone (Vicodin), codeine, morphine, oxymorphine, tapentadol.",
-        "answerChoices": [
-            "No risk",
-            "Slight risk",
-            "Moderate risk",
-            "Great risk",
-            "Don't know or can't say"
-        ]
-    },
-    {
         "id": 6,
-        "state": "inject_drugs",
-        "question": "they inject drugs for nonmedical reasons?",
+        "state": "prescription_opioid",
+        "question": "they take prescription opioid drugs without a doctor's order once or twice a week?",
+        "detail": "By prescription opioid drugs, we mean pain relievers such as oxycodone (OxyContin), hydrocodone (Vicodin), codeine, morphine, oxymorphine, tapentadol.",
         "answerChoices": [
             "No risk",
             "Slight risk",
@@ -79,7 +78,7 @@
     {
         "id": 7,
         "state": "unprotected_sex",
-        "question": "they have sex without a condom?",
+        "question": "they have sex (oral, vaginal, or anal) without a condom or dental damn?",
         "answerChoices": [
             "No risk",
             "Slight risk",
@@ -90,30 +89,20 @@
     },
     {
         "id": 8,
-        "state": "could_refuse_alcohol",
-        "question": "I would be able to say no if a friend offered me a drink or alcohol.",
+        "state": "sex_under_influence",
+        "question": "they have sex while high on drugs or under the influence of alcohol?",
         "answerChoices": [
-            "Strongly agree",
-            "Agree",
-            "Disagree",
-            "Strongly disagree"
+            "No risk",
+            "Slight risk",
+            "Moderate risk",
+            "Great risk",
+            "Don't know or can't say"
         ]
     },
     {
         "id": 9,
-        "state": "could_refuse_drugs",
-        "question": "I would be able to refuse if a friend offered me drugs, including marijuana.",
-        "answerChoices": [
-            "Strongly agree",
-            "Agree",
-            "Disagree",
-            "Strongly disagree"
-        ]
-    },
-    {
-        "id": 10,
         "state": "could_refuse_unprotected_sex",
-        "question": "I could refuse if someone wanted to have sex without a condom.",
+        "question": "I could refuse if someone wanted to have sex without a condom or a dental damn.",
         "answerChoices": [
             "Strongly agree",
             "Agree",
