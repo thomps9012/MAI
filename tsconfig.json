@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     "util/mongodb.js"
-  ],
+, "public/question_cache.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,8 +1,8 @@
 "use strict";
 (() => {
 var exports = {};
-exports.id = 888;
-exports.ids = [888];
+exports.id = 2888;
+exports.ids = [2888];
 exports.modules = {
 
 /***/ 7701:

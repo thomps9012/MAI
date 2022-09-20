@@ -1,13 +1,11 @@
-const GenerateID = (testing_agency: String, interviewCounts: any) => {
-    console.log(testing_agency)
-    const { caRecords, noraRecords, taskForceRecords } = interviewCounts.interviewCounts
+const GenerateID = (testing_agency: String, data: any) => {
     switch (testing_agency) {
         case 'AIDS Task Force':
-            return `ATF${taskForceRecords + 1}`;
+            return `ATF${data.AIDS_TASK_FORCE_RECORDS + 1}`;
         case 'NORA':
-            return `NORA${noraRecords + 1}`
+            return `NORA${data.NORA_RECORDS + 1}`
         case 'Care Alliance':
-            return `CA${caRecords + 1}`
+            return `CA${data.CARE_ALLIANCE_RECORDS + 1}`
     }
 }
 
