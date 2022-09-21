@@ -32,7 +32,7 @@ export default function DataReview() {
         <div className="dataReview">
             <h2 style={{ textAlign: 'center' }}>Please Review Your Data before Submitting</h2>
             <div className="interview_data"></div>
-            <a className="button" onClick={() => router.push('/interview/success')}>The Information Above is Correct</a>
+            <a className='page_button' onClick={() => router.push('/interview/success')}>The Information Above is Correct</a>
         </div>
     )
 }

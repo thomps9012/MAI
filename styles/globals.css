@@ -91,6 +91,18 @@ body {
 .page_button:hover {
     cursor: pointer;
 }
+a {
+    text-decoration: none;
+}
+.button-selected {
+    color: white;
+    background-color: #236e7c;
+    padding: 15px;
+    margin: 15px;
+    font-size: large;
+    border-radius: .2em;
+    width: 80%;
+}
 
 .page_button {
     color: white;

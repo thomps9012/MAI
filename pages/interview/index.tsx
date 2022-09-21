@@ -38,7 +38,7 @@ export default function InterviewSelect() {
         }
     }
     const handleAdultSelect = (e: any) => {
-        const adult = e.target.name;
+        const adult = e.target.id;
         adult === 'adult' ? setAdult(true) : setAdult(false);
         document.querySelector('.agency_select')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }
@@ -63,7 +63,6 @@ export default function InterviewSelect() {
     const validPhoneNumber = (e: any) => {
         if (phone_number.match(/^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$/g)) {
             document.querySelector('#page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;')
-
         }
     }
     const Submit = async (type: string, date: string, agency: string, PID: string, phone_number: string, client_name: string, adult: boolean) => {
@@ -160,7 +159,7 @@ export default function InterviewSelect() {
                     onBlur={validPhoneNumber}
                 />
             </div>
-            <a className='button' id="page_submit" onClick={() => Submit(
+            <a className='page_button' id="page_submit" onClick={() => Submit(
                 type,
                 date,
                 agency,

@@ -25,20 +25,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/interview/review": [
+    "/interview/adult/demographics": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/interview/review.js"
+      "static/chunks/pages/interview/adult/demographics.js"
     ],
-    "/interview/success": [
+    "/interview/adult/risk_attitudes": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/interview/success.js"
-    ],
-    "/interview/youth/sexual_behavior": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/interview/youth/sexual_behavior.js"
+      "static/chunks/pages/interview/adult/risk_attitudes.js"
     ]
   },
   "ampFirstPages": []
