@@ -1,26 +1,23 @@
 import StateChecker from "./stateChecker";
 
-const DropDownSelect = ({questionInfo, state_details, updateState}: any) => {
-    const { id, question, detail, state, answers } = questionInfo;
+const DropDownSelect = ({ question, id, setCurrentQuestion }: any) => {
+    const { state, answer_choices } = question;
     const handleChange = (e: any) => {
-        const {name, value} = e.target;
-        state_details[name] = value
-        updateState(state_details)
-        StateChecker(state_details)
+        setCurrentQuestion(parseInt(id.split('_')[1]) + 1)
     }
     return (
-        <div key={id} style={{display: 'flex', flexDirection: 'column'}}>
-            <h3>{question}</h3>
-            <span>{detail ?? ''}</span>
-            <select name={state} onChange={handleChange}>
-                <option>Select Below ↓</option>
-            {/* {answerChoices.map((choice: string) => {
-                return (
-                    <option value={choice} key={choice}>
-                        {choice}
-                    </option>
-                )
-            })} */}
+        <div key={id} style={{ display: 'flex', flexDirection: 'column' }}>
+            <h2>{question.question}</h2>
+            <span>{question.detail && question.detail}</span>
+            <select name={state} id={state} onChange={handleChange}>
+                <option>Select...</option>
+                {answer_choices?.map((choice: string) => {
+                    return (
+                        <option value={choice} key={choice}>
+                            {choice}
+                        </option>
+                    )
+                })}
             </select>
         </div>
     )

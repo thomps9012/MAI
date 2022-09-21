@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react"
 import GenerateID from "../../utils/generate-id";
-import StateChecker from "../../utils/stateChecker";
+// import StateChecker from "../../utils/stateChecker";
 import titleCase from "../../utils/titleCase";
 import useSWR from 'swr';
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { setClientName, setClientPID, setInterviewAgency, setInterviewDate, setInterviewID, setInterviewType } from "../../utils/interviewReducer";
+import fetcher from "../../utils/fetcher";
 
 export default function InterviewSelect() {
+    const router = useRouter();
+    const dispatch = useDispatch();
     const { data, error } = useSWR('/api/count_records', fetcher)
+    if (error) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
     const [date] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',
     }).format(Date.now()));
@@ -19,11 +25,6 @@ export default function InterviewSelect() {
     useEffect(() => {
         PID != '' && document.querySelector('.phone_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }, [PID])
-    // const interview_info = { date, type, agency, phone_number, PID, client_name }
-    // const info_state = { type, agency, phone_number }
-    // useEffect(() => {
-    //     StateChecker(info_state)
-    // }, [info_state])
     const retrieveClientName = async (PID: string) => {
         const res = await fetch(`/api/find_name?client_pid=${PID}`, {
             method: 'GET'
@@ -38,12 +39,12 @@ export default function InterviewSelect() {
     }
     const handleAdultSelect = (e: any) => {
         const adult = e.target.name;
-        console.log('hit')
         adult === 'adult' ? setAdult(true) : setAdult(false);
         document.querySelector('.agency_select')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }
     const handleCategorySelect = (e: any) => {
         const { id } = e.target;
+        setInterview(id)
         if (id === 'baseline' || id == 'testing_only') {
             document.querySelector('.pid_input')?.setAttribute('style', 'display: none')
             document.querySelector('.name_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
@@ -58,21 +59,59 @@ export default function InterviewSelect() {
         const { id } = e.target;
         document.querySelector('.interview_select')?.setAttribute('style', 'display: flex; flex-direction: column;')
         setAgency(id)
-        //    add in api call to create record
     }
     const validPhoneNumber = (e: any) => {
-        if (phone_number.match(/^(\+)?([ 0-9]){10,16}$/g)) {
+        if (phone_number.match(/^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$/g)) {
             document.querySelector('#page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;')
 
         }
     }
-    // const Submit = async (interview_info: any) => {
-    //     sessionStorage.setItem('interview_info', JSON.stringify(interview_info))
-    //     const { type, agency } = interview_info;
-    //     if (confirm(`This is a(n) \n${titleCase(type)} Interview \nwith ${agency} \non ${date}`)) {
-    //         window.location.assign('/interview/adult/demographics')
-    //     }
-    // }
+    const Submit = async (type: string, date: string, agency: string, PID: string, phone_number: string, client_name: string, adult: boolean) => {
+        if (type === '') { return; }
+        if (date === '') { return; }
+        if (agency === '') { return; }
+        if (PID === '') { return; }
+        if (phone_number === '') { return; }
+        if (client_name === '') { return; }
+        sessionStorage.setItem('interview_type', type)
+        sessionStorage.setItem('interview_date', date)
+        sessionStorage.setItem('testing_agency', agency)
+        sessionStorage.setItem('client_PID', PID)
+        sessionStorage.setItem('client_phone_number', phone_number)
+        sessionStorage.setItem('client_name', client_name)
+        sessionStorage.setItem('client_adult', JSON.stringify(adult))
+        dispatch
+        const res = await fetch('/api/create_client', {
+            method: 'POST',
+            body: JSON.stringify({
+                type,
+                date,
+                agency,
+                PID,
+                phone_number,
+                client_name,
+                adult
+            })
+        }).then(response => response.json())
+        if (res.acknowledged) {
+            sessionStorage.setItem('interview_id', res.insertedIds[0])
+            dispatch(setInterviewID(res.insertedIds[0]))
+            dispatch(setInterviewType(type))
+            dispatch(setInterviewAgency(agency))
+            dispatch(setInterviewDate(date))
+            dispatch(setClientPID(PID))
+            dispatch(setClientName(client_name))
+            if (confirm(`This is a(n) \n\n ${titleCase(type)} Interview \n\n with ${agency} \n\n on ${date}`)) {
+                adult ?
+                    router.push('/interview/adult/demographics')
+                    : router.push('/interview/youth/demographics')
+            }
+        } else {
+            if (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.')) {
+                window.location.assign('/')
+            }
+        }
+    }
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
             <h2>Select Interview Type</h2>
@@ -117,13 +156,19 @@ export default function InterviewSelect() {
                 <input
                     type='text'
                     placeholder="555-555-5555"
-                    // add in phone validation here
                     onChange={(e: any) => setPhone(e.target.value)}
                     onBlur={validPhoneNumber}
                 />
             </div>
-            <a className='button' id="page_submit">Begin Interview</a>
-            {/* <a className="page_submit" onClick={() => Submit(interview_info)}>Begin Interview</a> */}
+            <a className='button' id="page_submit" onClick={() => Submit(
+                type,
+                date,
+                agency,
+                PID,
+                phone_number,
+                client_name,
+                adult
+            )}>Begin Interview</a>
         </div>
     )
 }

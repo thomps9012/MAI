@@ -1,31 +1,20 @@
-import StateChecker from "./stateChecker";
+import { useState } from "react";
 
-const ButtonSelect = ({ questionInfo, state_details, updateState }: any) => {
-    const { id, question, detail, state, answers } = questionInfo;
+const ButtonSelect = ({ question, id, setCurrentQuestion }: any) => {
+    const { state, answer_choices } = question;
+    const [question_state, setQuestionState] = useState('')
     const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        state_details[name] = value
-        updateState(state_details)
-        StateChecker(state_details)
+        setQuestionState( e.target.id)
+        setCurrentQuestion(parseInt(id.split('_')[1]) + 1)
     }
-    return (
-        <div key={id} id='btn-group'>
-            <div className="col">
-                <h3>{question}</h3>
-                <span>{detail ?? ''}</span>
-            </div>
-            <div className="col">
-                {/* {answerChoices.map((choice: string) => {
-                    return (
-                        <div key={`${choice}${state}`} style={{ margin: 2, padding: 2, display: 'flex' }}>
-                            <input type='radio' name={state} value={choice} onClick={handleChange} />
-                            <label>{choice}</label>
-                        </div>
-                    )
-                })} */}
-            </div>
-        </div>
-    )
+    return <div id={id} className='section_question'>
+        <h2>{question.question}</h2>
+        <input style={{ display: 'none' }} name={state} id={state} defaultValue={question_state} />
+        <span>{question.detail && question.detail}</span>
+        {answer_choices?.map((choice: string) => (
+            <a className="button" key={choice} onClick={handleChange} title={state} id={choice}>{choice}</a>
+        ))}
+    </div>
 }
 
 export default ButtonSelect;

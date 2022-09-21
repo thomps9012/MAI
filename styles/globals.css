@@ -11,6 +11,25 @@ body {
     color: #071E22;
 }
 
+.progress_bar {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
+.progress_outline {
+    height: 20px;
+    width: 80%;
+    border-radius: .2em;
+    border: 1px solid #071E22;
+}
+
+.progress_filled {
+    background-color: #071E22;
+    height: 20px;
+}
+
 /* 
 .demographicInfo,
 .riskInfo,
@@ -51,7 +70,8 @@ body {
 .phone_input,
 .pid_input,
 .name_input,
-#page_submit {
+#page_submit,
+.section_question {
     display: none;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -67,13 +87,35 @@ body {
     width: 80%;
 }
 
-input {
+.button:hover,
+.page_button:hover {
+    cursor: pointer;
+}
+
+.page_button {
+    color: white;
+    background-color: #0c4a55;
+    padding: 15px;
+    margin: 15px;
+    font-size: large;
+    border-radius: .2em;
+    width: 80%;
+}
+
+input,
+select {
     color: #071E22;
     padding: 15px;
     margin: 15px;
     font-size: large;
     border-radius: .2em;
     width: 80%;
+}
+
+[type="checkbox"] {
+    min-width: 2em;
+    min-height: 2em;
+    border-radius: 0;
 }
 
 /* 
@@ -116,16 +158,8 @@ pre {
     padding: 5px;
 }
 
-[type="checkbox"] {
-    width: 1.4em;
-    height: 1.4em;
-}
 
-[type="radio"] {
-    min-width: 2em;
-    min-height: 2em;
-    border-radius: 0;
-}
+
 
 label {
     padding: 5px;

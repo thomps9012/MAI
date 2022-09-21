@@ -1,18 +1,21 @@
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import drugBehaviorQs from "../../../question_data/youth/drug-behavior.json"
+import sexualBehaviorQs from "../../../question_data/youth/sexual-behavior.json"
 import ButtonSelect from "../../../utils/button-select";
-import useSWR from 'swr';
-import fetcher from "../../../utils/fetcher";
-import InterviewHeader from "../../../components/interview-header";
-import MultipleSelect from "../../../utils/multiple-select";
-import NumberInput from "../../../utils/number-input";
 import DropDownSelect from "../../../utils/drop-down-select";
-export default function Attitudes() {
+import fetcher from "../../../utils/fetcher";
+import NumberInput from "../../../utils/number-input";
+import useSWR from 'swr';
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import MultipleSelect from "../../../utils/multiple-select";
+import InterviewHeader from "../../../components/interview-header";
+
+export default function SexualBehavior() {
     const [current_question, setCurrentQuestion] = useState(0);
-    const router = useRouter();
     const interview_data = useSelector((state: any) => state.interview)
-    const { data: questions, error: question_err } = useSWR('/api/youth_risk_attitudes', fetcher)
+    const router = useRouter();
+    const { data: questions, error: question_err } = useSWR('/api/youth_sexual_behavior', fetcher)
     const { data: answers, error: answer_err } = useSWR('/api/answers', fetcher)
     if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
@@ -23,7 +26,7 @@ export default function Attitudes() {
     }, [current_question])
     const pageSubmit = async (e: any) => {
         e.preventDefault();
-        let section = 'risk_attitudes'
+        let section = 'sexual_behavior'
         const state = questions.map((question: any) => question.number_input ? [question.state, 0] : question.multiple ? [question.state, []] : [question.state, ''])
         let section_info = Object.fromEntries(state);
         console.log(section_info)
@@ -48,33 +51,34 @@ export default function Attitudes() {
             headers: { 'interview_section': section, 'interview_type': interview_data.type, 'record_id': interview_data.id },
             body: JSON.stringify(section_info)
         }).then(response => response.json())
-        res.acknowledged ? router.push('/interview/youth/sexual_behavior')
+        res.acknowledged ? router.push('/interview/youth/drug_behavior')
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
-    return <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="demographicInfo">
-        <InterviewHeader section={2} />
-        <h1 className="title">Attitudes and Knowledge</h1>
-        <h3>What level of risk do you think people have of harming themselves physically or in other ways when ...</h3>
-        <form className="section_questions" onSubmit={pageSubmit}>
-            {questions?.map((question: any, i: number) => {
-                if (question.multiple) {
-                    return <MultipleSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
-                }
-                else if (question.number_input) {
-                    return <NumberInput question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
-                }
-                else if (question.drop_down) {
-                    return <DropDownSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
-                }
-                else {
-                    return <ButtonSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
-                }
-            })}
-            <br />
-            <hr />
-            <br />
-            <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
-        </form >
-    </div >
-
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column' }} className='behaviorInfo'>
+            <InterviewHeader section={3} />
+            <h1 className="title">Sexual Behavior</h1>
+            <h3>Over the past 30 days how many days, if any did you ...</h3>
+            <form className="section_questions" onSubmit={pageSubmit}>
+                {questions?.map((question: any, i: number) => {
+                    if (question.multiple) {
+                        return <MultipleSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                    }
+                    else if (question.number_input) {
+                        return <NumberInput question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                    }
+                    else if (question.drop_down) {
+                        return <DropDownSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                    }
+                    else {
+                        return <ButtonSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                    }
+                })}
+                <br />
+                <hr />
+                <br />
+                <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
+            </form >
+        </div>
+    )
 }
