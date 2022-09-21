@@ -14,6 +14,7 @@ const MultipleSelect = ({ question, id, setCurrentQuestion }: any) => {
         } finally {
             setQuestionState(inputArr)
             setCurrentQuestion(parseInt(id.split('_')[1]) + 1)
+            document.getElementById(id)?.setAttribute('class', 'finished-question')
         }
     }
     return <div className='section_question' id={id}>

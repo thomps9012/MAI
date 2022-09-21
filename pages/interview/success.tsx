@@ -1,13 +1,22 @@
-import { useEffect, useState } from "react"
+import Link from "next/link"
 import { useSelector } from "react-redux"
 
 export default function Success() {
     const interview_data = useSelector((state: any) => state.interview)
+    const user_data = useSelector((state: any) => state.user)
     return (
-        <div className="successScreen" style={{ marginTop: 100 }}>
+        <main className="landing">
             <h1>Client {interview_data.PID} has successfully completed their {interview_data.type} Interview</h1>
             <br />
-            <h1>Thank you for submitting your questionnaire, please show this screen to a testing administrator to receive your Gift Card.</h1>
-        </div>
+            {!user_data.admin && <h1>Thank you for submitting your questionnaire, please show this screen to a testing administrator to receive your Gift Card.</h1>}
+            {user_data.admin && <>
+                <a className='landing-link'><Link href={`/gift_card/${interview_data.id}/disperse`}>Disperse Gift Card</Link></a>
+                <a className='landing-link'><Link href='/interview'>Enter New Interview</Link></a>
+                <a className='landing-link'><Link href={`/admin/client_detail/${interview_data.PID}`}><>Review Client {interview_data.PID}</></Link></a>
+                <a className='landing-link'><Link href='/admin/clients'>Review All Clients</Link></a>
+                <a className='landing-link'><Link href={`/interview_detail/${interview_data.id}`}><>Review Client {interview_data.PID} {interview_data.type} Interview</></Link></a>
+                <a className='landing-link'><Link href='/admin/interviews'>Review All Interviews</Link></a>
+            </>}
+        </main>
     )
 }

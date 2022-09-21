@@ -16,6 +16,8 @@ export default function Demographics() {
     const { data: questions, error: question_err } = useSWR('/api/adult_demographics', fetcher)
     const { data: answers, error: answer_err } = useSWR('/api/answers', fetcher)
     if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
+    console.log(questions)
+    console.log(answers)
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
     const [date_of_birth, setDOB] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',
@@ -62,7 +64,7 @@ export default function Demographics() {
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="demographicInfo">
+        <main className="container">
             <InterviewHeader section={1} />
             <h1 className="title">Demographic Information</h1>
             <h2>Date of Birth</h2>
@@ -87,6 +89,6 @@ export default function Demographics() {
                 <br />
                 <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
             </form >
-        </div >
+        </main >
     )
 }

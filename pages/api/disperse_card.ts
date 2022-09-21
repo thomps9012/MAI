@@ -7,7 +7,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 export default async function handler(req: { body: string; }, res: { json: (arg0: any) => void; }) {
     const { db } = await connectToDatabase();
     let data = JSON.parse(req.body);
-    const { interview_id, PID, amount, type, received_date, interview_type, number } = data;
+    const { interview_id, PID, amount, type, received_date, interview_type, card_number, record_id } = data;
     const msg = {
         // to: 'thomps9012@gmail.com',
         to: 'khill@norainc.org',
@@ -24,13 +24,13 @@ export default async function handler(req: { body: string; }, res: { json: (arg0
         console.error(error);
     } finally {
         const updated = await db.collection(interview_type).updateOne({ _id: new ObjectId(interview_id) }, { $set: { gift_card_received: true } })
-        const response = await db.collection('gift_cards').updateOne({ interview_id: new ObjectId(interview_id) },
+        const response = await db.collection('gift_cards').updateOne({ _id: new ObjectId(record_id) },
             {
                 $set: {
                     amount: amount,
                     type: type,
                     received_date: received_date,
-                    number: number
+                    number: card_number
                 }
             });
         res.json(response);

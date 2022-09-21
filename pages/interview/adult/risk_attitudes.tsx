@@ -18,10 +18,9 @@ export default function Attitudes() {
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
     console.log(questions)
     useEffect(() => {
-        console.log(current_question)
         document.getElementById(`question_${current_question}`)?.setAttribute('style', 'display: flex; flex-direction: column;')
         current_question > questions?.length - 1 && document.querySelector('#page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;');
-    }, [current_question])
+    }, [current_question, questions])
     const pageSubmit = async (e: any) => {
         e.preventDefault();
         let section = 'risk_attitudes'
@@ -52,7 +51,7 @@ export default function Attitudes() {
         res.acknowledged ? router.push('/interview/adult/sexual_behavior')
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
-    return <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="demographicInfo">
+    return <main className="container">
         <InterviewHeader section={2} />
         <h1 className="title">Attitudes and Knowledge</h1>
         <h3>What level of risk do you think people have of harming themselves physically or in other ways when ...</h3>
@@ -76,6 +75,6 @@ export default function Attitudes() {
             <br />
             <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
         </form >
-    </div >
+    </main >
 
 }

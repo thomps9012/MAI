@@ -2,10 +2,15 @@ import { createSlice } from '@reduxjs/toolkit'
 
 export const userSlice = createSlice({
     name: 'user',
+    // initialState: {
+    //     admin: false,
+    //     id: '',
+    //     name: ''
+    // },
     initialState: {
-        admin: false,
-        id: '',
-        name: ''
+        admin: true,
+        id: '1234567',
+        name: 'Test Admin'
     },
     reducers: {
         setUser: (state, action) => {

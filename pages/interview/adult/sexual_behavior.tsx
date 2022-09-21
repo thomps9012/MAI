@@ -23,7 +23,7 @@ export default function SexualBehavior() {
     useEffect(() => {
         document.getElementById(`question_${current_question}`)?.setAttribute('style', 'display: flex; flex-direction: column;')
         current_question > questions?.length - 1 && document.querySelector('#page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;');
-    }, [current_question])
+    }, [current_question, questions])
     const pageSubmit = async (e: any) => {
         e.preventDefault();
         let section = 'sexual_behavior'
@@ -55,7 +55,7 @@ export default function SexualBehavior() {
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }} className='behaviorInfo'>
+        <main className="container">
             <InterviewHeader section={3} />
             <h1 className="title">Sexual Behavior</h1>
             <h3>Over the past 30 days how many days, if any did you ...</h3>
@@ -79,6 +79,6 @@ export default function SexualBehavior() {
                 <br />
                 <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
             </form >
-        </div>
+        </main>
     )
 }

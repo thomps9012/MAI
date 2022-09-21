@@ -62,7 +62,7 @@ export default function Demographics() {
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="demographicInfo">
+        <main className="container">
             <InterviewHeader section={1} />
             <h1 className="title">Demographic Information</h1>
             <h2>Date of Birth</h2>
@@ -87,6 +87,6 @@ export default function Demographics() {
                 <br />
                 <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
             </form >
-        </div >
+        </main >
     )
 }

@@ -4,19 +4,20 @@ const NumberInput = ({ question, id, setCurrentQuestion }: any) => {
     const { state } = question;
     const handleChange = (e: any) => {
         setCurrentQuestion(parseInt(id.split('_')[1]) + 1)
+        document.getElementById(id)?.setAttribute('class', 'finished-question')
     }
     return <div id={id} className='section_question'>
         <h2>{question.question}</h2>
         <span>{question.detail && question.detail}</span>
         <input
-            style={{ textAlign: 'center', width: 150 }}
+            className='number-input'
             type='number'
             min={0}
             name={state}
             id={state}
             onChange={handleChange}
         />
-        <div className="row" style={{ display: 'flex' }}>
+        <div className="unknown-checkbox">
             <input
                 id={state}
                 type='checkbox'

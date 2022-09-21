@@ -13,14 +13,12 @@ body {
 
 .progress_bar {
     display: flex;
-    flex-direction: column;
-    text-align: center;
     justify-content: center;
 }
 
 .progress_outline {
     height: 20px;
-    width: 80%;
+    width: 50%;
     border-radius: .2em;
     border: 1px solid #071E22;
 }
@@ -29,41 +27,6 @@ body {
     background-color: #071E22;
     height: 20px;
 }
-
-/* 
-.demographicInfo,
-.riskInfo,
-.behaviorInfo {
-    padding: 5rem;
-    margin: 1rem;
-    text-align: left;
-    align-items: center;
-} */
-
-/* .interviewSelect,
-.successScreen {
-    padding: 1rem;
-    margin: 1rem;
-    text-align: center;
-} */
-/* 
-.interviewInput {
-    margin: .1rem;
-    padding: 1rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-} */
-
-/* .submitBtns>button {
-    border: solid 1px;
-    border-color: #679289;
-    text-align: center;
-}
-
-.submitBtns>button:hover {
-    background-color: #679289;
-} */
 
 .interview_select,
 .agency_select,
@@ -91,9 +54,11 @@ body {
 .page_button:hover {
     cursor: pointer;
 }
+
 a {
     text-decoration: none;
 }
+
 .button-selected {
     color: white;
     background-color: #236e7c;
@@ -128,64 +93,49 @@ select {
     min-width: 2em;
     min-height: 2em;
     border-radius: 0;
+    margin: 0;
+    padding: 0;
 }
 
-/* 
-button:disabled {
-    background-color: gray;
+.finished-question {
+    color: #236e7c;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-button:disabled:hover {
-    background-color: gray;
-} */
+.number-input {
+    width: 30%;
+}
 
-/* 
-.dataReview {
-    min-height: 100vh;
-    padding: 0 1rem;
+.unknown-checkbox {
+    display: flex;
+    width: 30%;
+    flex-direction: row;
+    justify-content: flex-start;
+    float: left;
+    margin-top: 10px;
+}
+
+.container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    padding: 20px;
+    margin: 10px;
 }
 
-.submitBtns {
-    margin-top: 30px;
+.landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    margin: 2rem;
 }
 
-input {
-    text-align: center;
+.landing-link {
+    font-size: xx-large;
+    padding: 20px;
 }
-
-span {
-    font-style: italic;
-    margin: 5px;
-    padding: 5px;
+.landing-link:hover {
+    text-decoration: underline;
 }
-
-pre {
-    white-space: pre-wrap;
-    overflow-x: auto;
-    margin: 5px;
-    padding: 5px;
-}
-
-
-
-
-label {
-    padding: 5px;
-}
-
-[type="text"],
-select {
-    all: unset;
-    text-align: center;
-    font-size: x-large;
-}
-
-[type="number"],
-[type="date"] {
-    text-align: center;
-    font-size: x-large;
-} */

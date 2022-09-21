@@ -14,10 +14,10 @@ const ButtonSelect = ({ question, id, setCurrentQuestion }: any) => {
                 (other_elements[parseInt(item)] as HTMLElement)?.setAttribute('class', 'button')
             } else {
                 document.getElementById(e.target.id)?.setAttribute('class', 'button-selected')
-
             }
         }
         setCurrentQuestion(parseInt(id.split('_')[1]) + 1)
+        document.getElementById(id)?.setAttribute('class', 'finished-question')
     }
     return <div id={id} className='section_question'>
         <h2 className="other_element">{question.question}</h2>

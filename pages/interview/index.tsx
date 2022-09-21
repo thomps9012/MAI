@@ -112,7 +112,7 @@ export default function InterviewSelect() {
         }
     }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
+        <main className="container">
             <h2>Select Interview Type</h2>
             <br />
             <a className='button' id='adult' onClick={handleAdultSelect}>Adult</a>
@@ -168,6 +168,6 @@ export default function InterviewSelect() {
                 client_name,
                 adult
             )}>Begin Interview</a>
-        </div>
+        </main>
     )
 }
