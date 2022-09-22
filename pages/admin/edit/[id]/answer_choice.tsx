@@ -1,12 +1,36 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { connectToDatabase } from "../../../../utils/mongodb";
 
 export default function BasePage({ answer_id, answer_choice }: { answer_choice: any, answer_id: string }) {
-    const saveEdits = async (item_id: string) => {
-
+    const router = useRouter();
+    const saveEdits = async () => {
+        const answer_choices = document.getElementsByClassName('answer_choice')
+        let choice_arr = [];
+        for (let i = 0; i < answer_choices.length; i++) {
+            const choice = (answer_choices[i] as HTMLInputElement).value
+            choice != '' && choice_arr.push(choice)
+        }
+        const response = await fetch('/api/edit_answer', {
+            headers: { 'answer_id': answer_id },
+            body: JSON.stringify({
+                type: answer_choice.type,
+                choices: choice_arr
+            })
+        }).then(res => res.json())
+        response.acknowledged && router.push('/admin/answer_choices')
     }
     return <main className="container">
         <h1>Current Answer Choices</h1>
+        {answer_choice.choices.map((choice: string) => <input className='answer_choice' key={choice} defaultValue={choice} />)}
+        <h1>New Choices</h1>
+        <span>Add Up to Five in One Update</span>
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <a className="button" onClick={saveEdits}>Save Changes</a>
         <Link href="/admin/add/answer_choice">Add New Answer Option</Link>
     </main>
 }

@@ -21,7 +21,7 @@ export default function BasePage({ question_id, question_choice }: { question_ch
         const answer_id = e.target.value;
         setAnswer(answer_data.filter((answer: any) => answer._id === answer_id))
     }
-    const saveEdits = async (item_id: string) => {
+    const saveEdits = async () => {
         let question_data;
         answers_available && multiple && question_details != '' ?
             question_data = {
@@ -114,7 +114,7 @@ export default function BasePage({ question_id, question_choice }: { question_ch
             <span>*** Changing this will disable answer choices ***</span>
             <a className="button" onClick={() => { setNumberInput(true); setAnswersAvailable(false); setMultiple(false) }}>Change</a>
         </>}
-        <a className="button" onClick={() => saveEdits(question_id)}>Save Changes</a>
+        <a className="button" onClick={saveEdits}>Save Changes</a>
         <Link href="/admin/add/interview_question">Add New Question</Link>
     </main>
 }

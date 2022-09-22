@@ -1,6 +1,36 @@
 import { useRouter } from "next/router"
+import { useState } from "react";
 
 export default function BasePage() {
     const router = useRouter();
-    return <h1>This is test page on the <span>{router.pathname}</span> route with nothing built out yet</h1>
+    const [answer_type, setAnswerType] = useState("")
+    const addNew = async () => {
+        const answer_choices = document.getElementsByClassName('answer_choice')
+        let choice_arr = [];
+        for (let i = 0; i < answer_choices.length; i++) {
+            const choice = (answer_choices[i] as HTMLInputElement).value
+            choice != '' && choice_arr.push(choice)
+        }
+        const response = await fetch('/api/add_answer', {
+            body: JSON.stringify({
+                type: answer_type.toUpperCase().split(" ").join("_"),
+                choices: choice_arr
+            })
+        }).then(res => res.json())
+        response.acknowledged && router.push('/admin/answer_choices')
+    }
+    return <main className="container">
+        <h1>Add New Answer</h1>
+        <h2>Type</h2>
+        <span>Use the Category for the Question it is Responsible for Answering i.e. risk</span>
+        <input name='agency' value={answer_type} onChange={(e: any) => setAnswerType(e.target.value)} />
+        <h2>Choices</h2>
+        <span>Add up to five at one time</span>
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <input className='answer_choice' />
+        <a className="button" onClick={addNew}>Add Answer</a>
+    </main>
 }

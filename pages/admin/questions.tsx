@@ -9,7 +9,7 @@ export default function QuestionsPage() {
     const adult_questions = data?.filter((question: any) => question.adult)
     const youth_questions = data?.filter((question: any) => question.adult === false)
     const agnostic_questions = data?.filter((question: any) => question.adult === null)
-    const question_sections = NoDuplicates(data?.reduce((question: any) => question.section))
+    const question_sections = data && NoDuplicates(data?.map((question: any) => question.section))
     return <main className="container">
         <section className="interview_question_section">
             <h1>Sections</h1>
