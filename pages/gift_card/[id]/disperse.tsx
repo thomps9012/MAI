@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
 
-export default function BasePage({ card_record, card_types, card_amounts }: any) {
+export default function DisperseCardPage({ card_record, card_types, card_amounts }: any) {
     const router = useRouter();
     const [date] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',

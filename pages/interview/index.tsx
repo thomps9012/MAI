@@ -12,7 +12,8 @@ export default function InterviewSelect() {
     const router = useRouter();
     const dispatch = useDispatch();
     const { data, error } = useSWR('/api/count_records', fetcher)
-    if (error) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
+    const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/testing_agencies', fetcher)
+    if (error || testing_agency_err) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
     const [date] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',
     }).format(Date.now()));
@@ -120,9 +121,7 @@ export default function InterviewSelect() {
             <div className="agency_select">
                 <h2>Agency...</h2>
                 <br />
-                <a className="button" onClick={handleAgencySelect} id="Care Alliance">Care Alliance</a>
-                <a className="button" onClick={handleAgencySelect} id="NORA">NORA</a>
-                <a className="button" onClick={handleAgencySelect} id="AIDS Task Force">AIDS Task Force</a>
+                {testing_agencies?.choices.map((agency: string) => <a className="button" onClick={handleAgencySelect} key={agency} id={agency}>{agency}</a>)}
             </div>
             <div className="interview_select">
                 <h2>Category...</h2>
