@@ -1,6 +1,5 @@
 import useSWR from "swr";
 import fetcher from "../../../utils/fetcher";
-import NoDuplicates from "../../../utils/remove-duplicates";
 import titleCase from "../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -61,8 +60,7 @@ export default function BasePage() {
         }).then(res => res.json())
         response.acknowledged && router.push('/admin/questions')
     }
-
-    const question_sections = section_data && NoDuplicates(section_data?.map((question: any) => question.section))
+    const question_sections: Array<string> = section_data && Array.from(new Set(section_data?.map((question: any) => question.section)))
     return <main className="container">
         <h2>Question Language</h2>
         <input name='question' id='question' />

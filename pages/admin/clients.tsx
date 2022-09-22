@@ -16,8 +16,8 @@ export default function AllClientsPage({ all_clients }: any) {
 
 export async function getServerSideProps() {
     const { db } = await connectToDatabase();
-    const baseline_clients = await db.collection('baseline').find({}, { PID: 1, client_name: 1, adult: 1 })
-    const testing_only_clients = await db.collection('testing_only').find({}, { PID: 1, client_name: 1, adult: 1 })
+    const baseline_clients = await db.collection('baseline').find({}, { PID: 1, client_name: 1, adult: 1 }).toArray()
+    const testing_only_clients = await db.collection('testing_only').find({}, { PID: 1, client_name: 1, adult: 1 }).toArray()
     const all_clients = [...baseline_clients, ...testing_only_clients]
     return {
         props: {

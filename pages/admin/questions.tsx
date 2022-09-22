@@ -1,7 +1,6 @@
 import Link from "next/link";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
-import NoDuplicates from "../../utils/remove-duplicates";
 import titleCase from "../../utils/titleCase";
 export default function QuestionsPage() {
     const { data, error } = useSWR('/api/questions', fetcher)
@@ -9,7 +8,7 @@ export default function QuestionsPage() {
     const adult_questions = data?.filter((question: any) => question.adult)
     const youth_questions = data?.filter((question: any) => question.adult === false)
     const agnostic_questions = data?.filter((question: any) => question.adult === null)
-    const question_sections = data && NoDuplicates(data?.map((question: any) => question.section))
+    const question_sections: Array<string> = Array.from(new Set(data?.map((question: any) => question.section)))
     return <main className="container">
         <section className="interview_question_section">
             <h1>Sections</h1>

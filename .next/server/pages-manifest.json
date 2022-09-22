@@ -44,6 +44,7 @@
   "/api/edit_record": "pages/api/edit_record.js",
   "/api/edit_section": "pages/api/edit_section.js",
   "/api/exits": "pages/api/exits.js",
+  "/api/find_card": "pages/api/find_card.js",
   "/api/find_interview": "pages/api/find_interview.js",
   "/api/find_name": "pages/api/find_name.js",
   "/api/follow_ups": "pages/api/follow_ups.js",

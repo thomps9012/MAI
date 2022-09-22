@@ -26,6 +26,7 @@ export default function DataReview() {
             method: 'POST',
             body: JSON.stringify({
                 interview_id: interview_data.id,
+                interview_type: interview_data.type,
                 PID: interview_data.PID
             })
         }).then(response => response.json())
@@ -36,7 +37,6 @@ export default function DataReview() {
             <h2 style={{ textAlign: 'center' }}>Please Review Your Data before Submitting</h2>
             <div className="interview_data"></div>
             <a className='page_button' onClick={success}>The Information Above is Correct</a>
-
         </main>
     )
 }

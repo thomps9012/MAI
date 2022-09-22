@@ -65,7 +65,7 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
 export async function getServerSideProps(ctx: any) {
     const { db } = await connectToDatabase();
     console.log(ctx.params.id)
-    const card_record = await db.collection('cards').findOne({ interview_id: new ObjectId(ctx.params.id as string) })
+    const card_record = await db.collection('cards').findOne({ _id: new ObjectId(ctx.params.id as string) })
     const card_types = await db.collection('answers').findOne({ type: 'CARD_TYPES' });
     const card_amounts = await db.collection('answers').findOne({ type: 'CARD_AMOUNTS' });
     return {

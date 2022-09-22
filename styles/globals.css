@@ -58,6 +58,9 @@ body {
 a {
     text-decoration: none;
 }
+a:hover{
+    text-decoration: underline;
+}
 
 .button-selected {
     color: white;
@@ -136,6 +139,13 @@ select {
     font-size: xx-large;
     padding: 20px;
 }
+
 .landing-link:hover {
     text-decoration: underline;
+}
+
+.web-nav {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
 }
