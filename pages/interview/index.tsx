@@ -80,7 +80,6 @@ export default function InterviewSelect() {
         sessionStorage.setItem('client_phone_number', phone_number)
         sessionStorage.setItem('client_name', client_name)
         sessionStorage.setItem('client_adult', JSON.stringify(adult))
-        dispatch
         const res = await fetch('/api/create_client', {
             method: 'POST',
             body: JSON.stringify({

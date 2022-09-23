@@ -53,7 +53,7 @@ export default function DrugBehavior() {
     }
     return (
         <main className='container'>
-            <InterviewHeader section={4} />
+            <InterviewHeader section={4} edit={false} />
             <h1 className="title">Drug Behavior</h1>
             <h3>Over the past 30 days how many days, if any did you ...</h3>
             <form className="section_questions" onSubmit={pageSubmit}>

@@ -1,29 +1,22 @@
-import { useEffect, useState } from "react";
-import drugBehaviorQs from "../../../question_data/youth/drug-behavior.json"
-import sexualBehaviorQs from "../../../question_data/youth/sexual-behavior.json"
-import ButtonSelect from "../../../utils/button-select";
-import DropDownSelect from "../../../utils/drop-down-select";
-import fetcher from "../../../utils/fetcher";
-import NumberInput from "../../../utils/number-input";
-import useSWR from 'swr';
-import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import MultipleSelect from "../../../utils/multiple-select";
-import InterviewHeader from "../../../components/interview-header";
+import { ObjectId } from "mongodb";
+import { useRouter } from "next/router"
+import useSWR from "swr";
+import InterviewHeader from "../../../../../../../components/interview-header";
+import EditButtonSelect from "../../../../../../../utils/edit-button-select";
+import EditDropDownSelect from "../../../../../../../utils/edit-drop-down-select";
+import EditMultipleSelect from "../../../../../../../utils/edit-multiple-select";
+import EditNumberInput from "../../../../../../../utils/edit-number-input";
+import fetcher from "../../../../../../../utils/fetcher";
+import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
-export default function SexualBehavior() {
-    const [current_question, setCurrentQuestion] = useState(0);
-    const interview_data = useSelector((state: any) => state.interview)
+export default function EditInterviewPage({ interview_record, adult }: any) {
     const router = useRouter();
-    const { data: questions, error: question_err } = useSWR('/api/adult_sexual_behavior', fetcher)
+    const { _id, behaviors, type } = interview_record
+    const { sexual } = behaviors;
+    const { data: questions, error: question_err } = useSWR(`/api/${adult ? 'adult' : 'youth'}_sexual_behavior`, fetcher)
     const { data: answers, error: answer_err } = useSWR('/api/answers', fetcher)
     if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
-    console.log(questions)
-    useEffect(() => {
-        document.getElementById(`question_${current_question}`)?.setAttribute('style', 'display: flex; flex-direction: column;')
-        current_question > questions?.length - 1 && document.querySelector('#page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;');
-    }, [current_question, questions])
     const pageSubmit = async (e: any) => {
         e.preventDefault();
         let section = 'sexual_behavior'
@@ -48,37 +41,49 @@ export default function SexualBehavior() {
         sessionStorage.setItem(section, JSON.stringify(section_info))
         const res = await fetch('/api/update_section', {
             method: 'POST',
-            headers: { 'interview_section': section, 'interview_type': interview_data.type, 'record_id': interview_data.id },
+            headers: { 'interview_section': section, 'interview_type': type, 'record_id': _id },
             body: JSON.stringify(section_info)
         }).then(response => response.json())
-        res.acknowledged ? router.push('/interview/adult/drug_behavior')
+        res.acknowledged ? router.push(`/admin/interview_detail/${type}/edit/${adult}/${_id}/success`)
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
     return (
         <main className="container">
-            <InterviewHeader section={3} edit={false} />
-            <h1 className="title">Sexual Behavior</h1>
+            <h1 className="title">Edit Sexual Behavior</h1>
+            <InterviewHeader section={3} edit={true} />
             <h3>Over the past 30 days how many days, if any did you ...</h3>
             <form className="section_questions" onSubmit={pageSubmit}>
                 {questions?.map((question: any, i: number) => {
                     if (question.multiple) {
-                        return <MultipleSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                        return <EditMultipleSelect question={question} id={`question_${i}`} key={question._id} defaultValue={sexual[question.state]} />
                     }
                     else if (question.number_input) {
-                        return <NumberInput question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                        return <EditNumberInput question={question} id={`question_${i}`} key={question._id} defaultValue={sexual[question.state]} />
                     }
                     else if (question.drop_down) {
-                        return <DropDownSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                        return <EditDropDownSelect question={question} id={`question_${i}`} key={question._id} defaultValue={sexual[question.state]} />
                     }
                     else {
-                        return <ButtonSelect question={question} id={`question_${i}`} key={question._id} setCurrentQuestion={setCurrentQuestion} />
+                        return <EditButtonSelect question={question} id={`question_${i}`} key={question._id} defaultValue={sexual[question.state]} />
                     }
                 })}
                 <br />
                 <hr />
                 <br />
-                <button type="submit" className='page_button' id="page_submit">Continue Interview</button>
+                <button type="submit" className='page_button'>Save Changes</button>
             </form >
         </main>
     )
+}
+
+export async function getServerSideProps(ctx: any) {
+    const { db } = await connectToDatabase();
+    console.log(ctx.params.id)
+    const interview_record = await db.collection(ctx.params.type).findOne({ _id: new ObjectId(ctx.params.id as string) }, { _id: 1, "behaviors.sexual": 1 })
+    return {
+        props: {
+            interview_record: JSON.parse(JSON.stringify(interview_record)),
+            adult: JSON.parse(JSON.stringify(ctx.params.adult))
+        }
+    }
 }

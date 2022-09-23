@@ -56,7 +56,7 @@ export default function SexualBehavior() {
     }
     return (
         <main className="container">
-            <InterviewHeader section={3} />
+            <InterviewHeader section={3} edit={false} />
             <h1 className="title">Sexual Behavior</h1>
             <h3>Over the past 30 days how many days, if any did you ...</h3>
             <form className="section_questions" onSubmit={pageSubmit}>

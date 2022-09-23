@@ -65,7 +65,7 @@ export default function Demographics() {
     }
     return (
         <main className="container">
-            <InterviewHeader section={1} />
+            <InterviewHeader section={1} edit={false} />
             <h1 className="title">Demographic Information</h1>
             <h2>Date of Birth</h2>
             <input type='date' onChange={set_DOB} />

@@ -52,7 +52,7 @@ export default function Attitudes() {
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }
     return <main className="container">
-        <InterviewHeader section={2} />
+        <InterviewHeader section={2} edit={false} />
         <h1 className="title">Attitudes and Knowledge</h1>
         <h3>What level of risk do you think people have of harming themselves physically or in other ways when ...</h3>
         <form className="section_questions" onSubmit={pageSubmit}>

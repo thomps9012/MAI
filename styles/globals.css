@@ -40,6 +40,13 @@ body {
     margin-bottom: 10px;
 }
 
+.edit_section_question {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .button {
     color: white;
     background-color: #071E22;
@@ -58,7 +65,8 @@ body {
 a {
     text-decoration: none;
 }
-a:hover{
+
+a:hover {
     text-decoration: underline;
 }
 
@@ -104,6 +112,8 @@ select {
     color: #236e7c;
     margin-top: 10px;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .number-input {
