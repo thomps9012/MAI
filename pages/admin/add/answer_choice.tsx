@@ -11,7 +11,7 @@ export default function BasePage() {
             const choice = (answer_choices[i] as HTMLInputElement).value
             choice != '' && choice_arr.push(choice)
         }
-        const response = await fetch('/api/add_answer', {
+        const response = await fetch('/api/answers/all/add', {
             body: JSON.stringify({
                 type: answer_type.toUpperCase().split(" ").join("_"),
                 choices: choice_arr

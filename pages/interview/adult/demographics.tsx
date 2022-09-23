@@ -13,8 +13,8 @@ import DropDownSelect from "../../../utils/drop-down-select";
 export default function Demographics() {
     const router = useRouter();
     const interview_data = useSelector((state: any) => state.interview)
-    const { data: questions, error: question_err } = useSWR('/api/adult_demographics', fetcher)
-    const { data: answers, error: answer_err } = useSWR('/api/answers', fetcher)
+    const { data: questions, error: question_err } = useSWR('/api/questions/adult/demographics', fetcher)
+    const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
     if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     console.log(questions)
     console.log(answers)
@@ -55,7 +55,7 @@ export default function Demographics() {
             }
         })
         sessionStorage.setItem(section, JSON.stringify(section_info))
-        const res = await fetch('/api/update_section', {
+        const res = await fetch('/api/interviews/update', {
             method: 'POST',
             headers: { 'interview_section': section, 'interview_type': interview_data.type, 'record_id': interview_data.id },
             body: JSON.stringify(section_info)

@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 export default function BasePage({ section_name }: { section_name: string }) {
     const router = useRouter();
     const saveEdits = async () => {
-        const response = await fetch('/api/edit_section', {
+        const response = await fetch('/api/questions/edit_section', {
             headers: { 'section_name': (document.getElementById('section_name') as HTMLInputElement)?.value }
         }).then(res => res.json())
         response.acknowledged && router.push('/admin/questions')

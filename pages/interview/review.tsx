@@ -8,7 +8,7 @@ export default function DataReview() {
     const interview_data = useSelector((state: any) => state.interview)
 
     const router = useRouter();
-    const { data: interview, error: interview_err } = useSWR(`/api/find_interview?record_id=${interview_data.id}&interview_type=${interview_data.type}`, fetcher)
+    const { data: interview, error: interview_err } = useSWR(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`, fetcher)
     if (interview_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     console.log(interview)
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function DataReview() {
     }, [interview])
     const success = async (e: any) => {
         e.preventDefault();
-        const res = await fetch('/api/create_card', {
+        const res = await fetch('/api/cards/create', {
             method: 'POST',
             body: JSON.stringify({
                 interview_id: interview_data.id,

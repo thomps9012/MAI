@@ -11,7 +11,7 @@ export default function BasePage({ answer_id, answer_choice }: { answer_choice: 
             const choice = (answer_choices[i] as HTMLInputElement).value
             choice != '' && choice_arr.push(choice)
         }
-        const response = await fetch('/api/edit_answer', {
+        const response = await fetch('/api/answers/edit', {
             headers: { 'answer_id': answer_id },
             body: JSON.stringify({
                 type: answer_choice.type,

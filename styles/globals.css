@@ -133,8 +133,9 @@ select {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 20px;
-    margin: 10px;
+    padding: 20;
+    margin: 10;
+    margin-top: 100px;
 }
 
 .landing {
@@ -150,12 +151,26 @@ select {
     padding: 20px;
 }
 
-.landing-link:hover {
+.landing-link:hover, .nav-link:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .web-nav {
-    list-style: none;
     display: flex;
     justify-content: space-around;
+    list-style: none;
+}
+.nav-link {
+    margin: 10px;
+    font-weight: bold;
+    color: white;
+}
+
+
+nav {
+    position: fixed;
+    background: #fff;
+    top: 0;
+    width: 100%;
 }

@@ -5,7 +5,7 @@ import fetcher from "../../utils/fetcher"
 export default function Success() {
     const interview_data = useSelector((state: any) => state.interview)
     const user_data = useSelector((state: any) => state.user)
-    const { data: card_data, error: card_err } = useSWR(`/api/find_card?interview_id=${interview_data._id}`, fetcher)
+    const { data: card_data, error: card_err } = useSWR(`/api/cards/find?interview_id=${interview_data._id}`, fetcher)
     if (card_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     const gift_card_id = card_data?._id
     return <main className="landing">

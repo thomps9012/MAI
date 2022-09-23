@@ -6,7 +6,7 @@ export default function BasePage({ card_types }: any) {
     const router = useRouter();
     const [new_type, setNewCardType] = useState("")
     const addNew = async () => {
-        const response = await fetch('/api/edit_answer', {
+        const response = await fetch('/api/answers/edit', {
             headers: { 'answer_id': card_types._id },
             body: JSON.stringify({
                 type: 'CARD_TYPES',

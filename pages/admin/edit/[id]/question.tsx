@@ -53,15 +53,15 @@ export default function BasePage({ question_id, question_choice }: { question_ch
                         number_input: true
                     })
 
-        const response = await fetch('/api/edit_question', {
+        const response = await fetch('/api/questions/edit', {
             headers: { 'question_id': question_id },
             method: 'POST',
             body: JSON.stringify(question_data)
         }).then(res => res.json())
         response.acknowledged && router.push('/admin/questions')
     }
-    const { data: answer_data, error: answer_err } = useSWR('/api/answers', fetcher)
-    const { data: section_data, error: section_err } = useSWR('/api/questions', fetcher)
+    const { data: answer_data, error: answer_err } = useSWR('/api/answers/all', fetcher)
+    const { data: section_data, error: section_err } = useSWR('/api/questions/all', fetcher)
     const question_sections: Array<string> = Array.from(new Set(section_data?.map((question: any) => question.section)))
     if (section_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     return <main className="container">

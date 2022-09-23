@@ -129,6 +129,15 @@ function NavBar() {
                 /*#__PURE__*/ jsx_runtime_.jsx("li", {
                     className: "nav-link",
                     children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
+                        href: "/",
+                        children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                            children: "Home"
+                        })
+                    })
+                }),
+                /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                    className: "nav-link",
+                    children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                         href: "/interview",
                         children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
                             children: "Begin Interview"

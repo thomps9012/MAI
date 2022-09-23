@@ -1,14 +1,42 @@
 import Link from "next/link";
+import { useState } from "react";
+import useSWR from "swr";
+import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 
 export default function AllClientsPage({ all_clients }: any) {
+    const { data: agency_data, error: agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
+    if (agency_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
+    const [client_records, setClientRecords] = useState(all_clients);
+    const filterByPID = () => {
+        const selected_agency = (document.getElementById('agency') as HTMLInputElement)?.value
+        const PID_input = (document.getElementById('pid') as HTMLInputElement)?.value
+        selected_agency === "" ?
+            setClientRecords(all_clients.filter((record: any) => record.PID.includes(PID_input)))
+            :
+            setClientRecords(all_clients.filter((record: any) => record.PID.includes(selected_agency) && record.PID.split(selected_agency)[1].includes(PID_input)))
+    }
     return <main className="container">
-        {all_clients.map((client: any) => <div className="client_card">
+        <h3>Filters</h3>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+            <div style={{ flexDirection: 'column' }}>
+                <h3>Agency</h3>
+                <select name='agency' id='agency' onChange={filterByPID} defaultValue="">
+                    <option value="">All Agencies</option>
+                    {agency_data?.choices.map((agency: string) => <option value={agency === 'AIDS Task Force' ? 'ATF' : agency === 'Care Alliance' ? 'CA' : agency}>{agency}</option>)}
+                </select>
+            </div>
+            <div style={{ flexDirection: 'column' }}>
+                <h3>PID</h3>
+                <input name='pid' id='pid' type="number" onChange={filterByPID} />
+            </div>
+        </div>
+        {client_records.map((client: any) => <div className="client_card">
             <Link href={`/client_detail/${client.PID}`}>
-                <>
-                    <h1>{client.client_name}</h1>
-                    <h1>{client.adult ? "Adult" : "Youth"}</h1>
-                </>
+                <a>
+                    <h1>{client.adult ? "Adult" : "Youth"} {client.client_name}</h1>
+                    <h2>{client.PID}</h2>
+                </a>
             </Link>
         </div>)}
     </main>

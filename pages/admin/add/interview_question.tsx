@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 export default function BasePage() {
     const router = useRouter();
-    const { data: answer_data, error: answer_err } = useSWR('/api/answers', fetcher)
-    const { data: section_data, error: section_err } = useSWR('/api/questions', fetcher)
+    const { data: answer_data, error: answer_err } = useSWR('/api/answers/all', fetcher)
+    const { data: section_data, error: section_err } = useSWR('/api/questions/all', fetcher)
     if (section_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     const [selected_answer, setAnswer] = useState({
         _id: '',
@@ -54,7 +54,7 @@ export default function BasePage() {
                         number_input: true
                     })
 
-        const response = await fetch('/api/add_question', {
+        const response = await fetch('/api/questions/add', {
             method: 'POST',
             body: JSON.stringify(question_data)
         }).then(res => res.json())

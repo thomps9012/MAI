@@ -3,6 +3,7 @@ import Link from "next/link";
 export default function NavBar() {
     return <nav>
         <ul className="web-nav">
+            <li className="nav-link"><Link href="/"><a>Home</a></Link></li>
             <li className="nav-link"><Link href="/interview"><a>Begin Interview</a></Link></li>
             <li className="nav-link"><Link href="/admin/clients"><a>Review Clients</a></Link></li>
             <li className="nav-link"><Link href="/gift_card/records"><a>Gift Card Records</a></Link></li>

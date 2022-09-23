@@ -6,7 +6,7 @@ export default function BasePage({ agencies }: any) {
     const router = useRouter();
     const [new_agency, setNewAgency] = useState("")
     const addNew = async () => {
-        const response = await fetch('/api/edit_answer', {
+        const response = await fetch('/api/answers/edit', {
             headers: { 'answer_id': agencies._id },
             body: JSON.stringify({
                 type: 'TESTING_AGENCIES',

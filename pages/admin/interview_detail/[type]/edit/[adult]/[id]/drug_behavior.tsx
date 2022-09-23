@@ -13,8 +13,8 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
     const router = useRouter();
     const { _id, behaviors, type } = interview_record
     const { drug } = behaviors;
-    const { data: questions, error: question_err } = useSWR('/api/drug_behavior', fetcher)
-    const { data: answers, error: answer_err } = useSWR('/api/answers', fetcher)
+    const { data: questions, error: question_err } = useSWR('/api/questions/drug_behavior', fetcher)
+    const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
     console.log(interview_record)
     if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
@@ -40,7 +40,7 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
             }
         })
         sessionStorage.setItem(section, JSON.stringify(section_info))
-        const res = await fetch('/api/update_section', {
+        const res = await fetch('/api/interviews/update', {
             method: 'POST',
             headers: { 'interview_section': section, 'interview_type': type, 'record_id': _id },
             body: JSON.stringify(section_info)

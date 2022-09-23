@@ -12,7 +12,7 @@ export default function BasePage({ answer_id, agencies }: { agencies: any, answe
             const name = (agency_names[i] as HTMLInputElement).value.toUpperCase().split(" ").join("_")
             agency_arr.push(name)
         }
-        const response = await fetch('/api/edit_answer', {
+        const response = await fetch('/api/answers/edit', {
             headers: { 'answer_id': answer_id },
             body: JSON.stringify({
                 type: 'TESTING_AGENCIES',

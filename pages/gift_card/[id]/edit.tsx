@@ -16,7 +16,7 @@ export default function EditCardPage({ card_record, card_types, card_amounts }: 
         amount != -1 && type != '' && card_number != -1 && document.getElementById('page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }, [amount, type])
     const disperseCard = async (type: string, amount: number, card_number: number, date: string, record_id: string) => {
-        const res = await fetch('/api/disperse_card', {
+        const res = await fetch('/api/cards/disperse', {
             method: 'POST',
             body: JSON.stringify({
                 interview_id: card_record.interview_id,

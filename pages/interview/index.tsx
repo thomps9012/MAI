@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import GenerateID from "../../utils/generate-id";
-// import StateChecker from "../../utils/stateChecker";
 import titleCase from "../../utils/titleCase";
 import useSWR from 'swr';
 import { useRouter } from "next/router";
@@ -11,8 +10,8 @@ import fetcher from "../../utils/fetcher";
 export default function InterviewSelect() {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { data, error } = useSWR('/api/count_records', fetcher)
-    const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/testing_agencies', fetcher)
+    const { data, error } = useSWR('/api/clients/count_records', fetcher)
+    const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
     if (error || testing_agency_err) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
     const [date] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',
@@ -27,7 +26,7 @@ export default function InterviewSelect() {
         PID != '' && document.querySelector('.phone_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }, [PID])
     const retrieveClientName = async (PID: string) => {
-        const res = await fetch(`/api/find_name?client_pid=${PID}`, {
+        const res = await fetch(`/api/clients/find_name?client_pid=${PID}`, {
             method: 'GET'
         })
         if (res.ok) {
@@ -40,25 +39,80 @@ export default function InterviewSelect() {
     }
     const handleAdultSelect = (e: any) => {
         const adult = e.target.id;
-        adult === 'adult' ? setAdult(true) : setAdult(false);
+        if (adult === 'adult') {
+            document.getElementById('adult')?.setAttribute('class', 'button-selected')
+            document.getElementById('youth')?.setAttribute('class', 'button')
+            setAdult(true)
+        } else {
+            document.getElementById('youth')?.setAttribute('class', 'button-selected')
+            document.getElementById('adult')?.setAttribute('class', 'button')
+            setAdult(false)
+        }
         document.querySelector('.agency_select')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }
     const handleCategorySelect = (e: any) => {
         const { id } = e.target;
         setInterview(id)
-        if (id === 'baseline' || id == 'testing_only') {
-            document.querySelector('.pid_input')?.setAttribute('style', 'display: none')
-            document.querySelector('.name_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
-            const generateId = GenerateID(agency, data);
-            setPID(generateId as string)
-        } else {
-            document.querySelector('.pid_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
-            document.querySelector('.name_input')?.setAttribute('style', 'display: none')
+        let generateId
+        switch (id) {
+            case 'baseline':
+                document.getElementById('baseline')?.setAttribute('class', 'button-selected')
+                document.getElementById('testing_only')?.setAttribute('class', 'button')
+                document.getElementById('follow_up')?.setAttribute('class', 'button')
+                document.getElementById('exit')?.setAttribute('class', 'button')
+                document.querySelector('.pid_input')?.setAttribute('style', 'display: none')
+                document.querySelector('.name_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
+                generateId = GenerateID(agency, data);
+                setPID(generateId as string)
+                break;
+            case 'testing_only':
+                document.getElementById('baseline')?.setAttribute('class', 'button')
+                document.getElementById('testing_only')?.setAttribute('class', 'button-selected')
+                document.getElementById('follow_up')?.setAttribute('class', 'button')
+                document.getElementById('exit')?.setAttribute('class', 'button')
+                document.querySelector('.pid_input')?.setAttribute('style', 'display: none')
+                document.querySelector('.name_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
+                generateId = GenerateID(agency, data);
+                setPID(generateId as string)
+                break;
+            case 'follow_up':
+                document.getElementById('baseline')?.setAttribute('class', 'button')
+                document.getElementById('testing_only')?.setAttribute('class', 'button')
+                document.getElementById('follow_up')?.setAttribute('class', 'button-selected')
+                document.getElementById('exit')?.setAttribute('class', 'button')
+                document.querySelector('.pid_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
+                document.querySelector('.name_input')?.setAttribute('style', 'display: none')
+                break;
+            case 'exit':
+                document.getElementById('baseline')?.setAttribute('class', 'button')
+                document.getElementById('testing_only')?.setAttribute('class', 'button')
+                document.getElementById('follow_up')?.setAttribute('class', 'button')
+                document.getElementById('exit')?.setAttribute('class', 'button-selected')
+                document.querySelector('.pid_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
+                document.querySelector('.name_input')?.setAttribute('style', 'display: none')
+                break;
         }
     }
     const handleAgencySelect = (e: any) => {
         const { id } = e.target;
         document.querySelector('.interview_select')?.setAttribute('style', 'display: flex; flex-direction: column;')
+        switch (id) {
+            case 'NORA':
+                document.getElementById('NORA')?.setAttribute('class', 'button-selected')
+                document.getElementById('Care Alliance')?.setAttribute('class', 'button')
+                document.getElementById('AIDS Task Force')?.setAttribute('class', 'button')
+                break;
+            case 'Care Alliance':
+                document.getElementById('NORA')?.setAttribute('class', 'button')
+                document.getElementById('Care Alliance')?.setAttribute('class', 'button-selected')
+                document.getElementById('AIDS Task Force')?.setAttribute('class', 'button')
+                break;
+            case 'AIDS Task Force':
+                document.getElementById('NORA')?.setAttribute('class', 'button')
+                document.getElementById('Care Alliance')?.setAttribute('class', 'button')
+                document.getElementById('AIDS Task Force')?.setAttribute('class', 'button-selected')
+                break;
+        }
         setAgency(id)
     }
     const validPhoneNumber = (e: any) => {
@@ -80,7 +134,7 @@ export default function InterviewSelect() {
         sessionStorage.setItem('client_phone_number', phone_number)
         sessionStorage.setItem('client_name', client_name)
         sessionStorage.setItem('client_adult', JSON.stringify(adult))
-        const res = await fetch('/api/create_client', {
+        const res = await fetch('/api/clients/create', {
             method: 'POST',
             body: JSON.stringify({
                 type,
