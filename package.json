@@ -10,6 +10,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.5",
         "@sendgrid/mail": "^7.6.2",
+        "bcrypt": "^5.0.1",
         "mongodb": "^4.4.0",
         "next": "^12.1.0",
         "next-pwa": "^5.4.6",

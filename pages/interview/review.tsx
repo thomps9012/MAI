@@ -30,7 +30,8 @@ export default function DataReview() {
                 PID: interview_data.PID
             })
         }).then(response => response.json())
-        res.acknowledged && router.push('/interview/success')
+        res.insertedCount > 0 && sessionStorage.setItem('interview_id', res.insertedIds[0])
+        res.insertedCount > 0 && router.push('/interview/success')
     }
     return (
         <main className="container">

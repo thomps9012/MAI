@@ -1,8 +1,15 @@
 import { useRouter } from "next/router"
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../utils/mongodb";
 
 export default function BasePage({ card_types }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const [new_type, setNewCardType] = useState("")
     const addNew = async () => {

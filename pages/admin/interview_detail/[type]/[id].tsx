@@ -1,11 +1,17 @@
 import { ObjectId } from "mongodb";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setInterviewID, setInterviewType, setInterviewAgency, setInterviewDate, setClientPID, setClientName } from "../../../../utils/interviewReducer";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
 
 export default function InterviewDetailPage({ interview_record }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.admin) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const dispatch = useDispatch();
     dispatch(setInterviewID(interview_record._id))
     dispatch(setInterviewType(interview_record.type))
@@ -17,17 +23,18 @@ export default function InterviewDetailPage({ interview_record }: any) {
     return <main className="container">
         <h1>{titleCase(type.split("_").join(" "))} Interview</h1>
         <h2>{date}</h2>
-        <h3>{client_name} Tested by {agency}</h3>
         <h3>PID: {PID}</h3>
-        <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}>Edit Interview</Link>
+        <h3>{client_name}</h3>
+        <h3> Tested by {agency}</h3>
+        {user_data.editor && <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}><a className="page-link">Edit Interview</a></Link>}
         <h4>Demographics</h4>
         <hr />
         <pre>{JSON.stringify(demographics, null, '\t')}</pre>
-        <h4>Behaviors</h4>
+        <h4>Drug Behaviors</h4>
         <hr />
-        <h5>Drug</h5>
         <pre>{JSON.stringify(behaviors.drug, null, '\t')}</pre>
-        <h5>Sexual</h5>
+        <h4>Sexual Behaviors</h4>
+        <hr />
         <pre>{JSON.stringify(behaviors.sexual, null, '\t')}</pre>
         <h4>Risk Attitudes</h4>
         <hr />

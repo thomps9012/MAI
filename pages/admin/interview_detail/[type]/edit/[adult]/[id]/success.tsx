@@ -1,8 +1,15 @@
 import { ObjectId } from "mongodb";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
 export default function EditInterviewPage({ interview_record, gift_card }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const { type, _id, adult } = interview_record;
     return <main className="container">
         <h1>Edits Succesful!</h1>

@@ -1,7 +1,14 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useSelector } from "react-redux";
 
 export default function BasePage({ section_name }: { section_name: string }) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const saveEdits = async () => {
         const response = await fetch('/api/questions/edit_section', {

@@ -3,7 +3,7 @@ import { useState } from "react";
 const EditMultipleSelect = ({ question, id, defaultValue }: any) => {
     const { state, answer_choices } = question;
     console.log(state + 'multiple select default value', defaultValue)
-    const [question_state, setQuestionState] = useState(defaultValue)
+    const [question_state, setQuestionState] = useState(defaultValue === "" ? [] : defaultValue)
     const handleChange = () => {
         let selected = document.getElementsByName(state);
         let inputArr = [];

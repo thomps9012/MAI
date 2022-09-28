@@ -1,8 +1,15 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../utils/mongodb";
 
 export default function BasePage({ answer_id, answer_choice }: { answer_choice: any, answer_id: string }) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const saveEdits = async () => {
         const answer_choices = document.getElementsByClassName('answer_choice')

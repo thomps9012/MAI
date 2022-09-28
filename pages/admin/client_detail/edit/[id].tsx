@@ -4,8 +4,15 @@ import { connectToDatabase } from "../../../../utils/mongodb";
 import useSWR from "swr";
 import fetcher from "../../../../utils/fetcher";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 export default function ClientEditPage({ baseline_record, testing_only_record, client_PID }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
     const { data: gender_options, error: gender_option_err } = useSWR('/api/questions/gender_options', fetcher)
@@ -62,10 +69,10 @@ export default function ClientEditPage({ baseline_record, testing_only_record, c
         return false
     }
     const submitEdit = async () => {
-        const duplicate_PID = useSWR(`/api/clients/PID_exists?PID=${PID}`, fetcher)
+        const duplicate_PID = useSWR(`/api/client/PID_exists?PID=${PID}`, fetcher)
         if (duplicate_PID) return
         if (!validPhoneNumber) return
-        const response = await fetch(`/api/clients/edit_demographics?record_id=${interview_id}&interview_type=${type}`, {
+        const response = await fetch(`/api/client/edit_demographics?record_id=${interview_id}&interview_type=${type}`, {
             body: JSON.stringify({
                 date_of_birth: date_of_birth,
                 client_name: client_name,

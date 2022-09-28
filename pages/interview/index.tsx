@@ -10,7 +10,7 @@ import fetcher from "../../utils/fetcher";
 export default function InterviewSelect() {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { data, error } = useSWR('/api/clients/count_records', fetcher)
+    const { data, error } = useSWR('/api/client/count_records', fetcher)
     const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
     if (error || testing_agency_err) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
     const [date] = useState(new Intl.DateTimeFormat('en', {
@@ -26,7 +26,7 @@ export default function InterviewSelect() {
         PID != '' && document.querySelector('.phone_input')?.setAttribute('style', 'display: flex; flex-direction: column;')
     }, [PID])
     const retrieveClientName = async (PID: string) => {
-        const res = await fetch(`/api/clients/find_name?client_pid=${PID}`, {
+        const res = await fetch(`/api/client/find_name?client_pid=${PID}`, {
             method: 'GET'
         })
         if (res.ok) {
@@ -134,7 +134,7 @@ export default function InterviewSelect() {
         sessionStorage.setItem('client_phone_number', phone_number)
         sessionStorage.setItem('client_name', client_name)
         sessionStorage.setItem('client_adult', JSON.stringify(adult))
-        const res = await fetch('/api/clients/create', {
+        const res = await fetch('/api/client/create', {
             method: 'POST',
             body: JSON.stringify({
                 type,

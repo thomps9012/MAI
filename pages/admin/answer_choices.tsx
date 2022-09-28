@@ -1,8 +1,15 @@
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import titleCase from "../../utils/titleCase";
 export default function AnswersPage() {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.admin) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const { data, error } = useSWR('/api/answers/all', fetcher)
     if (error) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     return <main className="container">
@@ -12,7 +19,7 @@ export default function AnswersPage() {
             <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
             <h3>Choices</h3>
             {answer.choices.map((choice: string) => <p>{choice}</p>)}
-            <Link href={`/admin/edit/${answer._id}/answer_choice`}>Edit Answer</Link>
+            {user_data.editor && <Link href={`/admin/edit/${answer._id}/answer_choice`}>Edit Answer</Link>}
             <hr />
         </div>)}
     </main>

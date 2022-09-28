@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 
 export default function AllClientsPage({ all_clients }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.admin) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const { data: agency_data, error: agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
     if (agency_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     const [client_records, setClientRecords] = useState(all_clients);
@@ -34,10 +41,12 @@ export default function AllClientsPage({ all_clients }: any) {
         {client_records.map((client: any) => <div className="client_card">
             <Link href={`/client_detail/${client.PID}`}>
                 <a>
-                    <h1>{client.adult ? "Adult" : "Youth"} {client.client_name}</h1>
                     <h2>{client.PID}</h2>
+                    <p> {client.client_name}</p>
+                    <p>{client.adult ? "Adult" : "Youth"}</p>
                 </a>
             </Link>
+            <hr />
         </div>)}
     </main>
 }

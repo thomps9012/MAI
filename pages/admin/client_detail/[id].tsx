@@ -1,7 +1,14 @@
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 
 export default function ClientDetailPage({ baseline_record, testing_only_record, follow_up_record, exit_record, client_PID }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.admin) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     return <main className="container">
         <h1>{client_PID} Interviews</h1>
         {baseline_record._id != null && <section className="interview_overview">
@@ -24,7 +31,7 @@ export default function ClientDetailPage({ baseline_record, testing_only_record,
             <h1>{exit_record.date}</h1>
             <h2>Conducted by {exit_record.agency}</h2>
         </section>}
-        <Link href={`/admin/client_detail/edit/${client_PID}`}><a>Edit Client Demographics</a></Link>
+        {user_data.editor && <Link href={`/admin/client_detail/edit/${client_PID}`}><a>Edit Client Demographics</a></Link>}
     </main>
 }
 

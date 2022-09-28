@@ -20,13 +20,13 @@ export default function InterviewProgress({ section, edit }: { section: number, 
             break;
     }
     const interview_data = useSelector((state: any) => state.interview)
-    return <>
+    return <div className="interview_header">
+        <h2 style={{ textAlign: 'center' }}>{titleCase(interview_data.type.split("_").join(" "))} Interview for {interview_data.client_name} on {interview_data.date}</h2>
         {!edit && <div className="progress_bar">
             <div className="progress_outline">
                 <div className="progress_filled" style={{ width: `${percentage}%` }}></div>
             </div>
         </div>
         }
-        <h2 style={{ textAlign: 'center' }}>{titleCase(interview_data.type)} Interview for {interview_data.client_name} on {interview_data.date}</h2>
-    </>
+    </div>
 }

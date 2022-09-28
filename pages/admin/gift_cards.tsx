@@ -1,18 +1,29 @@
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../utils/mongodb";
 
 export default function BasePage({ card_amounts, card_types }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.admin) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     return <main className="container">
         <h1>Gift Card</h1>
         <h2>Amounts</h2>
         <hr />
         {card_amounts.choices?.map((amount: string) => <p>{amount}</p>)}
-        <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>Edit Amounts</Link>
-        <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>Add New Amount</Link>
+        {user_data.editor && <>
+            <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>Edit Amounts</Link>
+            <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>Add New Amount</Link>
+        </>}
         <h2>Types</h2>
         {card_types.choices?.map((amount: string) => <p>{amount}</p>)}
-        <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>Edit Amounts</Link>
-        <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>Add New Amount</Link>
+        {user_data.editor && <>
+            <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>Edit Amounts</Link>
+            <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>Add New Amount</Link>
+        </>}
         <hr />
     </main>
 }

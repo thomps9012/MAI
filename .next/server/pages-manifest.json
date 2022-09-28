@@ -61,6 +61,8 @@
   "/api/questions/youth/demographics": "pages/api/questions/youth/demographics.js",
   "/api/questions/youth/risk_attitudes": "pages/api/questions/youth/risk_attitudes.js",
   "/api/questions/youth/sexual_behavior": "pages/api/questions/youth/sexual_behavior.js",
+  "/api/user/add": "pages/api/user/add.js",
+  "/api/user/login": "pages/api/user/login.js",
   "/gift_card/[id]/detail": "pages/gift_card/[id]/detail.js",
   "/gift_card/[id]/disperse": "pages/gift_card/[id]/disperse.js",
   "/gift_card/[id]/edit": "pages/gift_card/[id]/edit.js",
@@ -77,6 +79,8 @@
   "/interview/youth/drug_behavior": "pages/interview/youth/drug_behavior.html",
   "/interview/youth/risk_attitudes": "pages/interview/youth/risk_attitudes.html",
   "/interview/youth/sexual_behavior": "pages/interview/youth/sexual_behavior.html",
+  "/sign_in": "pages/sign_in.html",
+  "/sign_up": "pages/sign_up.html",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/404": "pages/404.html"

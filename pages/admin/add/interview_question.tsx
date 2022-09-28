@@ -3,7 +3,14 @@ import fetcher from "../../../utils/fetcher";
 import titleCase from "../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 export default function BasePage() {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const { data: answer_data, error: answer_err } = useSWR('/api/answers/all', fetcher)
     const { data: section_data, error: section_err } = useSWR('/api/questions/all', fetcher)

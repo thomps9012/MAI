@@ -1,11 +1,18 @@
+import { useSelector } from "react-redux";
 import InterviewOverview from "../../components/interviewOverview";
 import { connectToDatabase } from "../../utils/mongodb";
 
 export default function InterviewRecordsPage({ baseline_records, testing_only_records, follow_up_records, exit_records }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.admin) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     return <main className="container">
-        <div style={{ display: 'flex', flexDirection: 'column', position: 'sticky', top: '10%', background: 'white', padding: 20, marginBottom: '10%' }}>
-            <p>Interview Type</p>
-            <div style={{ display: 'flex',  justifyContent: 'space-around', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', position: 'sticky', top: '11vh', background: 'white', padding: 20, marginBottom: '10%' }}>
+            <h5>Type</h5>
+            <div style={{ display: 'flex', justifyContent: 'space-around', flexDirection: 'row' }}>
                 {baseline_records?.length > 0 && <a href="#baseline">Baseline</a>}
                 {testing_only_records?.length > 0 && <a href="#testing_only">Testing Only</a>}
                 {follow_up_records?.length > 0 && <a href="#follow_up">Follow Ups</a>}

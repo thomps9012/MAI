@@ -5,7 +5,14 @@ import fetcher from "../../../../utils/fetcher";
 import titleCase from "../../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 export default function BasePage({ question_id, question_choice }: { question_choice: any, question_id: string }) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const [selected_answer, setAnswer] = useState({
         _id: '',

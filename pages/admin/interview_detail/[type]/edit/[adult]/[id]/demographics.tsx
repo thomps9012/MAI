@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { useRouter } from "next/router"
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import useSWR from "swr";
 import InterviewHeader from "../../../../../../../components/interview-header";
 import EditButtonSelect from "../../../../../../../utils/edit-button-select";
@@ -11,9 +12,15 @@ import fetcher from "../../../../../../../utils/fetcher";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
 export default function EditInterviewPage({ interview_record, adult }: any) {
+    const user_data = useSelector((state: any) => state.user)
+    if (!user_data.editor) {
+        return <main className="landing">
+            <h1>You are Unauthorized to View this Page</h1>
+        </main>
+    }
     const router = useRouter();
     const { _id, demographics, type } = interview_record;
-    const { data: questions, error: question_err } = useSWR(`/api/${adult ? 'adult' : 'youth'}_demographics`, fetcher)
+    const { data: questions, error: question_err } = useSWR(`/api/questions/${adult ? 'adult' : 'youth'}/demographics`, fetcher)
     const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
     if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)

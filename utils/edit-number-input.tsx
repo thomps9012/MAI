@@ -9,24 +9,27 @@ const EditNumberInput = ({ question, id, defaultValue }: any) => {
     return <div id={id} className='edit_section_question'>
         <h2>{question.question}</h2>
         <span>{question.detail && question.detail}</span>
-        <input
-            defaultValue={defaultValue}
-            className='number-input'
-            type='number'
-            min={0}
-            name={state}
-            id={state}
-            onChange={handleChange}
-        />
-        <div className="unknown-checkbox">
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
             <input
-                id={state}
-                type='checkbox'
+                defaultValue={defaultValue}
+                className='number-input'
+                type='number'
+                min={0}
                 name={state}
-                onClick={handleChange}
-                value='0'
+                id={state}
+                onChange={handleChange}
             />
-            <label>{"Don't know or can't say"}</label>
+            <div className="unknown-checkbox">
+                <input
+                    id={state}
+                    className='checkbox'
+                    type='checkbox'
+                    name={state}
+                    onClick={handleChange}
+                    value='0'
+                />
+                <span>                    {"Don't know or can't say"}</span>
+            </div>
         </div>
     </div>
 }
