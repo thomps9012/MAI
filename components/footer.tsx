@@ -7,7 +7,6 @@ export default function Footer() {
     const dispatch = useDispatch();
     const router = useRouter()
     console.log('user info', user_info)
-    const signIn = () => { }
     const Logout = () => { dispatch(logoutUser('')) }
     if (!user_info.loggedIn) {
         return <footer>
@@ -16,10 +15,8 @@ export default function Footer() {
         </footer>
     } else {
         return <footer>
-            <p>Welcome, {user_info.name}
-                <br />
-                <a onClick={Logout}>Logout</a>
-            </p>
+            <a onClick={() => router.push('/')}>Welcome, {user_info.name}</a>
+            <a onClick={Logout}>Logout</a>
         </footer>
     }
 }
