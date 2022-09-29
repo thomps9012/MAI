@@ -22,22 +22,22 @@ export default function InterviewRecordsPage({ baseline_records, testing_only_re
         {baseline_records?.length > 0 && <section className="interview_overviews">
             <h1 id="baseline">Baseline Interviews</h1>
             <hr />
-            {baseline_records.map((record: any) => <InterviewOverview record={record} type={'baseline'} />)}
+            {baseline_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'baseline'} />)}
         </section>}
         {testing_only_records?.length > 0 && <section className="interview_overviews">
             <h1 id="testing_only">Testing Only Interviews</h1>
             <hr />
-            {testing_only_records.map((record: any) => <InterviewOverview record={record} type={'testing_only'} />)}
+            {testing_only_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'testing_only'} />)}
         </section>}
         {follow_up_records?.length > 0 && <section className="interview_overviews">
             <h1 id="follow_up">Follow Up Interviews</h1>
             <hr />
-            {follow_up_records.map((record: any) => <InterviewOverview record={record} type={'follow_up'} />)}
+            {follow_up_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'follow_up'} />)}
         </section>}
         {exit_records?.length > 0 && <section className="interview_overviews">
             <h1 id="exit">Exit Interviews</h1>
             <hr />
-            {exit_records.map((record: any) => <InterviewOverview record={record} type={'exit'} />)}
+            {exit_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'exit'} />)}
         </section>}
     </main>
 }

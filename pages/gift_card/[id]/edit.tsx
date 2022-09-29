@@ -29,6 +29,10 @@ export default function EditCardPage({ card_record, card_types, card_amounts }: 
                 record_id: record_id
             })
         }).then(response => response.json());
+        const card_cache = await caches.open('gift_cards');
+        const client_cache = await caches.open('client_info');
+        client_cache.put(`gift_card: ${card_record.interview_id}`, res);
+        card_cache.put(card_record._id, res)
         res.acknowledged && router.push('/gift_card/records')
     }
     return <main className="container">

@@ -9,12 +9,6 @@ export const userSlice = createSlice({
         id: '',
         name: ''
     },
-    // initialState: {
-    //     loggedIn: true,
-    //     admin: true,
-    //     id: '1234567',
-    //     name: 'Test Admin'
-    // },
     reducers: {
         loginUser: (state, action) => {
             state.loggedIn = true,
@@ -29,9 +23,24 @@ export const userSlice = createSlice({
                 state.admin = false,
                 state.loggedIn = false,
                 state.editor = false
-        }
+        },
+        setUserID: (state, action) => {
+            state.id = action.payload
+        },
+        setUserLoggedIn: (state, action) => {
+            state.loggedIn = action.payload
+        },
+        setUserAdmin: (state, action) => {
+            state.admin = action.payload
+        },
+        setUserName: (state, action) => {
+            state.name = action.payload
+        },
+        setUserEditor: (state, action) => {
+            state.editor = action.payload
+        },
     }
 });
 
-export const { loginUser, logoutUser } = userSlice.actions;
+export const { loginUser, logoutUser, setUserID, setUserLoggedIn, setUserAdmin, setUserName, setUserEditor } = userSlice.actions;
 export default userSlice.reducer;

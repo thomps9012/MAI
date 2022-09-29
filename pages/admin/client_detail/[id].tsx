@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
+import titleCase from "../../../utils/titleCase";
 
 export default function ClientDetailPage({ baseline_record, testing_only_record, follow_up_record, exit_record, client_PID }: any) {
     const user_data = useSelector((state: any) => state.user)
@@ -10,28 +11,28 @@ export default function ClientDetailPage({ baseline_record, testing_only_record,
         </main>
     }
     return <main className="container">
+        {user_data.editor && <Link href={`/admin/client_detail/edit/${client_PID}`}><a>Edit Client Demographics</a></Link>}
         <h1>{client_PID} Interviews</h1>
         {baseline_record._id != null && <section className="interview_overview">
-            <Link href={`/admin/interview_detail/${baseline_record._id}`}>{baseline_record.type} Interview Detail</Link>
             <h1>{baseline_record.date}</h1>
+            <Link href={`/admin/interview_detail/${baseline_record._id}`}><a>{titleCase(baseline_record.type.split("_").join(" "))} Interview Detail</a></Link>
             <h2>Conducted by {baseline_record.agency}</h2>
         </section>}
         {testing_only_record._id != null && <section className="interview_overview">
-            <Link href={`/admin/interview_detail/${testing_only_record._id}`}>{testing_only_record.type} Interview Detail</Link>
             <h1>{testing_only_record.date}</h1>
+            <Link href={`/admin/interview_detail/${testing_only_record._id}`}><a>{titleCase(testing_only_record.type.split("_").join(" "))} Interview Detail</a></Link>
             <h2>Conducted by {testing_only_record.agency}</h2>
         </section>}
         {follow_up_record._id != null && <section className="interview_overview">
-            <Link href={`/admin/interview_detail/${follow_up_record._id}`}>{follow_up_record.type} Interview Detail</Link>
             <h1>{follow_up_record.date}</h1>
+            <Link href={`/admin/interview_detail/${follow_up_record._id}`}><a>{titleCase(follow_up_record.type.split("_").join(" "))} Interview Detail</a></Link>
             <h2>Conducted by {follow_up_record.agency}</h2>
         </section>}
         {exit_record._id != null && <section className="interview_overview">
-            <Link href={`/admin/interview_detail/${exit_record._id}`}>{exit_record.type} Interview Detail</Link>
             <h1>{exit_record.date}</h1>
+            <Link href={`/admin/interview_detail/${exit_record._id}`}><a>{titleCase(exit_record.type.split("_").join(" "))} Interview Detail</a></Link>
             <h2>Conducted by {exit_record.agency}</h2>
         </section>}
-        {user_data.editor && <Link href={`/admin/client_detail/edit/${client_PID}`}><a>Edit Client Demographics</a></Link>}
     </main>
 }
 

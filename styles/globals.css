@@ -68,6 +68,7 @@ a {
 
 a:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .button-selected {
@@ -100,6 +101,15 @@ select {
     width: 80%;
 }
 
+.nav-select {
+    all: revert;
+    width: min-content;
+    color: #0c4a55;
+    margin-left: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: medium;
+}
 
 .finished-question {
     color: #236e7c;
@@ -114,33 +124,21 @@ select {
 }
 
 .unknown-checkbox {
-    /* display: flex; */
-    /* flex-direction: row; */
-    /* justify-content: center; */
     padding: 10px;
 }
+
 .checkbox {
     margin: 15px;
     padding: 15px;
     height: 30px;
 }
-/* .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 75vh;
-    /* padding: 20; */
-    /* padding: 2rem; */
-    /* margin: 10; */
-    /* margin: 2rem; */
-    /* margin-top: 100px; */
-/* }  */
 
-.interview_header{
+.interview_header {
     margin-bottom: 5vh;
 }
 
-.landing, .container {
+.landing,
+.container {
     display: flex;
     min-height: 75vh;
     flex-direction: column;
@@ -156,21 +154,30 @@ select {
     padding: 20px;
 }
 
-.landing-link:hover, .nav-link:hover {
+.landing-link:hover,
+.nav-link:hover {
     text-decoration: underline;
     cursor: pointer;
 }
 
 .web-nav {
     display: flex;
-    width: 100%;
-    justify-content: space-around;
+    justify-content: flex-start;
     list-style: none;
 }
+
+.mobile-nav {
+    display: none;
+}
+
+
+.nav-link>a {
+    color: #0c4a55;
+}
+
 .nav-link {
     margin: 10px;
     font-weight: bold;
-    color: white;
 }
 
 .page-link {
@@ -198,5 +205,54 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
 
+.mobile-menu, .mobile-nav-hide, .mobile-nav-show{
+    display: none;
+}
+
+@media only screen and (max-width: 982px) {
+    nav {
+        all: revert;
+        width: 100%;
+    }
+
+    .web-nav {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: block;
+        position: absolute;
+        text-align: right;
+        background-color: #071E22;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        color: white;
+        width: 100%;
+        top: 0%;
+    }
+    .mobile-menu > p {
+        padding-right: 10%;
+        font-size: larger;
+    }
+
+    .mobile-nav-show {
+        display: block;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        position: absolute;
+        background-color: #fff;
+        height: 100vh;
+        bottom: -7%;
+        z-index: 1;
+        border-right: 4mm ridge #071E22;
+        transition: all var(--duration);
+    }
+
+    .mobile-nav-hide {
+        display: none;
+    }
 }

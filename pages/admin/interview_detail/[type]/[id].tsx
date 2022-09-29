@@ -6,13 +6,13 @@ import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
 
 export default function InterviewDetailPage({ interview_record }: any) {
+    const dispatch = useDispatch();
     const user_data = useSelector((state: any) => state.user)
     if (!user_data.admin) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1>
         </main>
     }
-    const dispatch = useDispatch();
     dispatch(setInterviewID(interview_record._id))
     dispatch(setInterviewType(interview_record.type))
     dispatch(setInterviewAgency(interview_record.agency))
@@ -21,8 +21,8 @@ export default function InterviewDetailPage({ interview_record }: any) {
     dispatch(setClientName(interview_record.client_name))
     const { type, _id, adult, date, PID, client_name, behaviors, demographics, risk_attitudes, agency } = interview_record
     return <main className="container">
-        <h1>{titleCase(type.split("_").join(" "))} Interview</h1>
         <h2>{date}</h2>
+        <h1>{titleCase(type.split("_").join(" "))} Interview</h1>
         <h3>PID: {PID}</h3>
         <h3>{client_name}</h3>
         <h3> Tested by {agency}</h3>

@@ -30,6 +30,15 @@ export default function SignUp() {
         console.log(user_res)
         if (user_res.acknowledged) {
             const user_id = user_res.insertedId
+            const user_cache = await caches.open('user');
+                user_cache.put('info', await fetch('/api/user/add', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username: userName,
+                        password: firstPW,
+                        full_name: fullName
+                    })
+                }))
             dispatch(loginUser({
                 id: user_id,
                 full_name: fullName,

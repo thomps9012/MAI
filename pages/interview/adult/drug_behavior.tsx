@@ -15,7 +15,7 @@ export default function DrugBehavior() {
     const router = useRouter();
     const { data: questions, error: question_err } = useSWR('/api/questions/drug_behavior', fetcher)
     const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
-    if (question_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
+    if (question_err || answer_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
     useEffect(() => {
         document.getElementById(`question_${current_question}`)?.setAttribute('style', 'display: flex; flex-direction: column;')
@@ -48,6 +48,8 @@ export default function DrugBehavior() {
             headers: { 'interview_section': section, 'interview_type': interview_data.type, 'record_id': interview_data.id },
             body: JSON.stringify(section_info)
         }).then(response => response.json())
+        const interview_cache = await caches.open('interviews');
+        interview_cache.put(interview_data.id, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
         res.acknowledged ? router.push('/interview/review')
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }

@@ -12,7 +12,7 @@ export default function InterviewSelect() {
     const dispatch = useDispatch();
     const { data, error } = useSWR('/api/client/count_records', fetcher)
     const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
-    if (error || testing_agency_err) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
+    if (error || testing_agency_err) { return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main> }
     const [date] = useState(new Intl.DateTimeFormat('en', {
         dateStyle: 'short',
     }).format(Date.now()));
@@ -134,6 +134,8 @@ export default function InterviewSelect() {
         sessionStorage.setItem('client_phone_number', phone_number)
         sessionStorage.setItem('client_name', client_name)
         sessionStorage.setItem('client_adult', JSON.stringify(adult))
+        const PID_exists = await fetch('/api/client/PID_exists')
+        if (PID_exists && type === 'testing_only' || type === 'baseline' && PID_exists) return
         const res = await fetch('/api/client/create', {
             method: 'POST',
             body: JSON.stringify({

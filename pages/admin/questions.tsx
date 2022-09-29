@@ -12,12 +12,13 @@ export default function QuestionsPage() {
     }
 
     const { data, error } = useSWR('/api/questions/all', fetcher)
-    if (error) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
+    if (error) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     const adult_questions = data?.filter((question: any) => question.adult)
     const youth_questions = data?.filter((question: any) => question.adult === false)
     const agnostic_questions = data?.filter((question: any) => question.adult === null)
     const question_sections: Array<string> = Array.from(new Set(data?.map((question: any) => question.section)))
     return <main className="container">
+        <h1>Edit Questions</h1>
         <section className="interview_question_section">
             <h1>Sections</h1>
             {user_data.editor && <h1><Link href="/admin/add/interview_section"><a>Add New Section</a></Link></h1>}

@@ -10,7 +10,7 @@ export default function BasePage({ card_amounts, card_types }: any) {
         </main>
     }
     return <main className="container">
-        <h1>Gift Card</h1>
+        <h1>Edit Gift Card</h1>
         <h2>Amounts</h2>
         <hr />
         {card_amounts.choices?.map((amount: string) => <p>{amount}</p>)}

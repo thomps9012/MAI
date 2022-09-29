@@ -70,7 +70,7 @@ export default function BasePage({ question_id, question_choice }: { question_ch
     const { data: answer_data, error: answer_err } = useSWR('/api/answers/all', fetcher)
     const { data: section_data, error: section_err } = useSWR('/api/questions/all', fetcher)
     const question_sections: Array<string> = Array.from(new Set(section_data?.map((question: any) => question.section)))
-    if (section_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
+    if (section_err || answer_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     return <main className="container">
         <h2>Current Question Language</h2>
         <input defaultValue={question_choice.question} name='question' id='question' />

@@ -16,7 +16,7 @@ export default function ClientEditPage({ baseline_record, testing_only_record, c
     const router = useRouter();
     const { data: testing_agencies, error: testing_agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
     const { data: gender_options, error: gender_option_err } = useSWR('/api/questions/gender_options', fetcher)
-    if (gender_option_err || testing_agency_err) { return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1> }
+    if (gender_option_err || testing_agency_err) { return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main> }
     const [client_info, setClientInfo] = useState({
         interview_id: '',
         client_name: '',

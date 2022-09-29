@@ -16,8 +16,8 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
     const interview_data = useSelector((state: any) => state.interview)
     useEffect(() => {
         amount != -1 && type != '' && card_number != -1 && document.getElementById('page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;')
-    }, [amount, type])
-    const disperseCard = async (type: string, amount: number, card_number: number, date: string, record_id: string) => {
+    }, [amount, type, card_number])
+    const disperseCard = async () => {
         const res = await fetch('/api/cards/disperse', {
             method: 'POST',
             body: JSON.stringify({
@@ -27,10 +27,14 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
                 type: type,
                 received_date: date,
                 interview_type: interview_data.type,
-                card_number: card_number,
-                record_id: record_id
+                card_id: card_record._id,
+                card_number: card_number
             })
         }).then(response => response.json());
+        const card_cache = await caches.open('gift_cards');
+        const client_cache = await caches.open('client_info');
+        client_cache.put(`gift_card: ${card_record.interview_id}`, res);
+        card_cache.put(card_record._id, res)
         res.acknowledged && router.push('/gift_card/records')
     }
     return <main className="container">
@@ -51,13 +55,7 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
             <span>Enter 0 if Tester Distributed</span>
             <br />
             <input name="card_number" placeholder="************" onChange={(e: any) => setCardNumber(parseInt(e.target.value))} />
-            <a className='page_button' id="page_submit" onClick={() => disperseCard(
-                type,
-                amount,
-                card_number,
-                date,
-                card_record.id
-            )}>Disperse Card</a>
+            <a className='page_button' id="page_submit" onClick={disperseCard}>Disperse Card</a>
         </form>
     </main>
 }

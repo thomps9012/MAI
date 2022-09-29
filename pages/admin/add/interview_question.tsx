@@ -14,7 +14,7 @@ export default function BasePage() {
     const router = useRouter();
     const { data: answer_data, error: answer_err } = useSWR('/api/answers/all', fetcher)
     const { data: section_data, error: section_err } = useSWR('/api/questions/all', fetcher)
-    if (section_err || answer_err) return <h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1>
+    if (section_err || answer_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     const [selected_answer, setAnswer] = useState({
         _id: '',
         type: '',
