@@ -270,12 +270,12 @@ function NavBar() {
             }),
             /*#__PURE__*/ (0,jsx_runtime_.jsxs)("ul", {
                 className: `mobile-nav-${show ? 'show' : 'hide'}`,
-                onMouseLeave: ()=>setShow(!show)
+                onMouseLeave: ()=>setShow(false)
                 ,
                 children: [
                     /*#__PURE__*/ jsx_runtime_.jsx("li", {
                         className: "nav-link",
-                        onClick: ()=>setShow(!show)
+                        onClick: ()=>setShow(false)
                         ,
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                             href: "/",
@@ -297,7 +297,7 @@ function NavBar() {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/clients",
@@ -308,7 +308,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/gift_card/records",
@@ -319,7 +319,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/interviews",
@@ -334,7 +334,7 @@ function NavBar() {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/users/manage",
@@ -345,7 +345,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/gift_cards",
@@ -356,7 +356,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/questions",
@@ -367,7 +367,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
-                                onClick: ()=>setShow(!show)
+                                onClick: ()=>setShow(false)
                                 ,
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/answer_choices",

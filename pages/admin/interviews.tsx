@@ -9,37 +9,37 @@ export default function InterviewRecordsPage({ baseline_records, testing_only_re
             <h1>You are Unauthorized to View this Page</h1>
         </main>
     }
-    return <main className="container">
-        <div style={{ display: 'flex', flexDirection: 'column', position: 'sticky', top: '11vh', background: 'white', padding: 20, marginBottom: '10%' }}>
-            <h5>Type</h5>
-            <div style={{ display: 'flex', justifyContent: 'space-around', flexDirection: 'row' }}>
-                {baseline_records?.length > 0 && <a href="#baseline">Baseline</a>}
-                {testing_only_records?.length > 0 && <a href="#testing_only">Testing Only</a>}
-                {follow_up_records?.length > 0 && <a href="#follow_up">Follow Ups</a>}
-                {exit_records?.length > 0 && <a href="#exit">Exit</a>}
-            </div>
+    return <>
+        <div className="interview-nav">
+            <h5>Jump to Interview Type</h5>
+            {baseline_records?.length > 0 && <a href="#baseline">Baseline</a>}
+            {testing_only_records?.length > 0 && <a href="#testing_only">Testing Only</a>}
+            {follow_up_records?.length > 0 && <a href="#follow_up">Follow Ups</a>}
+            {exit_records?.length > 0 && <a href="#exit">Exit</a>}
         </div>
-        {baseline_records?.length > 0 && <section className="interview_overviews">
-            <h1 id="baseline">Baseline Interviews</h1>
-            <hr />
-            {baseline_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'baseline'} />)}
-        </section>}
-        {testing_only_records?.length > 0 && <section className="interview_overviews">
-            <h1 id="testing_only">Testing Only Interviews</h1>
-            <hr />
-            {testing_only_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'testing_only'} />)}
-        </section>}
-        {follow_up_records?.length > 0 && <section className="interview_overviews">
-            <h1 id="follow_up">Follow Up Interviews</h1>
-            <hr />
-            {follow_up_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'follow_up'} />)}
-        </section>}
-        {exit_records?.length > 0 && <section className="interview_overviews">
-            <h1 id="exit">Exit Interviews</h1>
-            <hr />
-            {exit_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'exit'} />)}
-        </section>}
-    </main>
+        <main className="container">
+            {baseline_records?.length > 0 && <section className="interview_overviews">
+                <h1 id="baseline">Baseline Interviews</h1>
+                <hr />
+                {baseline_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'baseline'} />)}
+            </section>}
+            {testing_only_records?.length > 0 && <section className="interview_overviews">
+                <h1 id="testing_only">Testing Only Interviews</h1>
+                <hr />
+                {testing_only_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'testing_only'} />)}
+            </section>}
+            {follow_up_records?.length > 0 && <section className="interview_overviews">
+                <h1 id="follow_up">Follow Up Interviews</h1>
+                <hr />
+                {follow_up_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'follow_up'} />)}
+            </section>}
+            {exit_records?.length > 0 && <section className="interview_overviews">
+                <h1 id="exit">Exit Interviews</h1>
+                <hr />
+                {exit_records.map((record: any) => <InterviewOverview key={record._id} record={record} type={'exit'} />)}
+            </section>}
+        </main>
+    </>
 }
 
 export async function getServerSideProps() {
