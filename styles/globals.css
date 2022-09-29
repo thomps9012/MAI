@@ -80,7 +80,6 @@ a:hover {
     border-radius: .2em;
     width: 80%;
 }
-
 .page_button {
     color: white;
     background-color: #0c4a55;
@@ -193,6 +192,18 @@ nav {
     border-bottom: 2mm ridge #0c4a55;
     width: 100%;
 }
+.interview-nav {
+    all: revert;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    margin-left: 50%;
+    top: 20vh;
+    background: white;
+    padding-right: 10vh;
+    text-align: right;
+    width: 20rem;
+}
 
 footer {
     display: flex;
@@ -216,14 +227,15 @@ form {
         all: revert;
         width: 100%;
     }
-
+    
     .web-nav {
         display: none;
     }
-
+    
     .mobile-menu {
         display: block;
         position: absolute;
+        position: fixed;
         text-align: right;
         background-color: #071E22;
         padding-top: 1rem;
@@ -244,9 +256,10 @@ form {
         flex-direction: column;
         justify-content: space-evenly;
         position: absolute;
+        position: fixed;
         background-color: #fff;
-        height: 100vh;
-        bottom: -7%;
+        height: 87.5vh;
+        bottom: -5%;
         z-index: 1;
         border-right: 4mm ridge #071E22;
         transition: all var(--duration);

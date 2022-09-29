@@ -34,19 +34,19 @@ export default function NavBar() {
             </>}
         </ul>
         <a className="mobile-menu" onClick={() => setShow(!show)}><p>Menu</p></a>
-        <ul className={`mobile-nav-${show ? 'show' : 'hide'}`} onMouseLeave={() => setShow(!show)}>
-            <li className="nav-link" onClick={() => setShow(!show)}><Link href="/"><a>Home</a></Link></li>
+        <ul className={`mobile-nav-${show ? 'show' : 'hide'}`} onMouseLeave={() => setShow(false)}>
+            <li className="nav-link" onClick={() => setShow(false)}><Link href="/"><a>Home</a></Link></li>
             <li className="nav-link"><Link href="/interview"><a>Begin Interview</a></Link></li>
             {user_info.admin && <>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/admin/clients"><a>Review Clients</a></Link></li>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/gift_card/records"><a>Gift Card Records</a></Link></li>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/admin/interviews"><a>Interview Data</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/clients"><a>Review Clients</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/gift_card/records"><a>Gift Card Records</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/interviews"><a>Interview Data</a></Link></li>
             </>}
             {user_info.editor && <>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/admin/users/manage"><a>Manage Users</a></Link></li>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/admin/gift_cards"><a>Edit Gift Card Options</a></Link></li>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/admin/questions"><a>Question Options</a></Link></li>
-                <li className="nav-link" onClick={() => setShow(!show)}><Link href="/admin/answer_choices"><a>Answer Options</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/users/manage"><a>Manage Users</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/gift_cards"><a>Edit Gift Card Options</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/questions"><a>Question Options</a></Link></li>
+                <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/answer_choices"><a>Answer Options</a></Link></li>
             </>}
         </ul>
     </nav>
