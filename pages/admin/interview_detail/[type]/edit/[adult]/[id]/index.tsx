@@ -18,10 +18,10 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
         <h2>{client_name}</h2>
         <h2>Tested by {agency}</h2>
         <h3>Editable Sections</h3>
-        <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/demographics`}><a className='page-link'>Demographics</a></Link>
-        <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/risk_attitudes`}><a className='page-link'>Risk Attitudes</a></Link>
-        <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/sexual_behavior`}><a className='page-link'>Sexual Behaviors</a></Link>
-        <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/drug_behavior`}><a className='page-link'>Drug Behaviors</a></Link>
+        <a className="landing-link"><Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/demographics`}>Demographics</Link></a>
+        <a className="landing-link"><Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/risk_attitudes`}>Risk Attitudes</Link></a>
+        <a className="landing-link"><Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/sexual_behavior`}>Sexual Behaviors</Link></a>
+        <a className="landing-link"><Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}/drug_behavior`}>Drug Behaviors</Link></a>
     </main>
 }
 
