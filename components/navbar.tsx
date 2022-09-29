@@ -36,7 +36,7 @@ export default function NavBar() {
         <a className="mobile-menu" onClick={() => setShow(!show)}><p>Menu</p></a>
         <ul className={`mobile-nav-${show ? 'show' : 'hide'}`} onMouseLeave={() => setShow(false)}>
             <li className="nav-link" onClick={() => setShow(false)}><Link href="/"><a>Home</a></Link></li>
-            <li className="nav-link"><Link href="/interview"><a>Begin Interview</a></Link></li>
+            <li className="nav-link"onClick={() => setShow(false)}><Link href="/interview"><a>Begin Interview</a></Link></li>
             {user_info.admin && <>
                 <li className="nav-link" onClick={() => setShow(false)}><Link href="/admin/clients"><a>Review Clients</a></Link></li>
                 <li className="nav-link" onClick={() => setShow(false)}><Link href="/gift_card/records"><a>Gift Card Records</a></Link></li>
