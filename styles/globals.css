@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;600&family=Cabin:wght@500&family=Fjalla+One&family=Fredoka:wght@400;700&family=IBM+Plex+Sans:wght@100&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Prompt:wght@100&display=swap');
+
 .title {
     font-size: 35px;
     text-align: center;
@@ -10,112 +11,248 @@ body {
     color: #071E22;
 }
 
-
-.demographicInfo,
-.riskInfo,
-.behaviorInfo {
-    padding: 5rem;
-    margin: 1rem;
-    text-align: left;
-    align-items: center;
+.progress_bar {
+    display: flex;
+    justify-content: center;
 }
 
-.interviewSelect,
-.successScreen {
-    padding: 1rem;
-    margin: 1rem;
-    text-align: center;
+.progress_outline {
+    height: 20px;
+    width: 50%;
+    border-radius: .2em;
+    border: 1px solid #071E22;
 }
 
-.interviewInput {
-    margin: .1rem;
-    padding: 1rem;
-    text-align: center;
+.progress_filled {
+    background-color: #071E22;
+    height: 20px;
+}
+
+.interview_select,
+.agency_select,
+.phone_input,
+.pid_input,
+.name_input,
+#page_submit,
+.section_question {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.edit_section_question {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button {
+    color: white;
+    background-color: #071E22;
+    padding: 15px;
+    margin: 15px;
+    font-size: large;
+    border-radius: .2em;
+    width: 80%;
+}
+
+.button:hover,
+.page_button:hover {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.button-selected {
+    color: white;
+    background-color: #236e7c;
+    padding: 15px;
+    margin: 15px;
+    font-size: large;
+    border-radius: .2em;
+    width: 80%;
+}
+
+.page_button {
+    color: white;
+    background-color: #0c4a55;
+    padding: 15px;
+    margin: 15px;
+    font-size: large;
+    border-radius: .2em;
+    width: 80%;
+}
+
+input,
+select {
+    color: #071E22;
+    padding: 15px;
+    margin: 15px;
+    font-size: large;
+    border-radius: .2em;
+    width: 80%;
+}
+
+.nav-select {
+    all: revert;
+    width: min-content;
+    color: #0c4a55;
+    margin-left: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.finished-question {
+    color: #236e7c;
+    margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
 }
 
-.submitBtns>button {
-    border: solid 1px;
-    background-color: #071E22;
-    border-color: #679289;
-    text-align: center;
+.number-input {
+    width: 30%;
 }
 
-.submitBtns>button:hover {
-    background-color: #679289;
+.unknown-checkbox {
+    padding: 10px;
 }
 
-button {
-    all: unset;
-    color: white;
+.checkbox {
+    margin: 15px;
     padding: 15px;
-    font-size: large;
-    border-radius: .2em;
+    height: 30px;
 }
 
-button:disabled {
-    background-color: gray;
+.interview_header {
+    margin-bottom: 5vh;
 }
 
-button:disabled:hover {
-    background-color: gray;
+.landing,
+.container {
+    display: flex;
+    min-height: 75vh;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    margin: 2rem;
+    margin-top: 10vh;
+    margin-bottom: 5vh;
 }
 
-.dataReview {
-    min-height: 100vh;
-    padding: 0 1rem;
+.landing-link {
+    font-size: xx-large;
+    padding: 20px;
+}
+
+.landing-link:hover,
+.nav-link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.web-nav {
+    display: flex;
+    justify-content: flex-start;
+    list-style: none;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+
+.nav-link>a {
+    color: #0c4a55;
+}
+
+.nav-link {
+    margin: 10px;
+    font-weight: bold;
+}
+
+.page-link {
+    margin: 10px;
+    font-size: 1.5em;
+}
+
+nav {
+    position: fixed;
+    background: #fff;
+    top: 0;
+    height: 10vh;
+    border-bottom: 2mm ridge #0c4a55;
+    width: 100%;
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 5vh;
+}
+
+form {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 }
 
-.submitBtns {
-    margin-top: 30px;
+.mobile-menu, .mobile-nav-hide, .mobile-nav-show{
+    display: none;
 }
 
-input {
-    text-align: center;
-}
+@media only screen and (max-width: 982px) {
+    nav {
+        all: revert;
+        width: 100%;
+    }
 
-span {
-    font-style: italic;
-    margin: 5px;
-    padding: 5px;
-}
+    .web-nav {
+        display: none;
+    }
 
-pre {
-    white-space: pre-wrap;
-    overflow-x: auto;
-    margin: 5px;
-    padding: 5px;
-}
+    .mobile-menu {
+        display: block;
+        position: absolute;
+        text-align: right;
+        background-color: #071E22;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        color: white;
+        width: 100%;
+        top: 0%;
+    }
+    .mobile-menu > p {
+        padding-right: 10%;
+        font-size: larger;
+    }
 
-[type="checkbox"] {
-    width: 1.4em;
-    height: 1.4em;
-}
+    .mobile-nav-show {
+        display: block;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        position: absolute;
+        background-color: #fff;
+        height: 100vh;
+        bottom: -7%;
+        z-index: 1;
+        border-right: 4mm ridge #071E22;
+        transition: all var(--duration);
+    }
 
-[type="radio"] {
-    min-width: 2em;
-    min-height: 2em;
-    border-radius: 0;
-}
-
-label {
-    padding: 5px;
-}
-
-[type="text"],
-select {
-    all: unset;
-    text-align: center;
-    font-size: x-large;
-}
-
-[type="number"],
-[type="date"] {
-    text-align: center;
-    font-size: x-large;
+    .mobile-nav-hide {
+        display: none;
+    }
 }
