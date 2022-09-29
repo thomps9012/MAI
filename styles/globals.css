@@ -258,8 +258,8 @@ form {
         position: absolute;
         position: fixed;
         background-color: #fff;
-        height: 88vh;
-        bottom: -5%;
+        height: 87vh;
+        top: 10.7%;
         z-index: 1;
         border-right: 4mm ridge #071E22;
         transition: all var(--duration);
