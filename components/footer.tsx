@@ -9,6 +9,9 @@ export default function Footer() {
     console.log('user info', user_info)
     const Logout = async () => { 
         await caches.delete('user')
+        await caches.delete('interviews')
+        await caches.delete('client_info')
+        await caches.delete('gift_cards')
         dispatch(logoutUser('')) 
     }
     if (!user_info.loggedIn) {
