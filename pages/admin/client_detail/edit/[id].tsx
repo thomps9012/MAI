@@ -83,6 +83,8 @@ export default function ClientEditPage({ baseline_record, testing_only_record, c
                 adult: adult
             })
         }).then(res => res.json())
+        const client_cache = await caches.open('clients')
+        client_cache.put(`interview/${interview_id}/PID/${PID}/type/${type}`, await fetch(`/api/interviews/find?record_id=${interview_id}&interview_type=${type}`))
         response.acknowledged && router.push(`/admin/client_detail/${PID}`)
     }
     return <main className="container">

@@ -19,10 +19,10 @@ export default function DataReview() {
             const res = await fetch(`/api/cards/find?interview_id=${interview_data.id}`).then(response => response.json())
             const interview_cache = await caches.open('interviews');
             const card_cache = await caches.open('gift_cards');
-            const client_cache = await caches.open('client_info')
-            client_cache.put(`${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
-            client_cache.put(`${interview_data.id}/gift_card/${interview_data.id}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
-            interview_cache.put(interview_data.id, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
+            const client_cache = await caches.open('clients')
+            client_cache.put(`interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
+            client_cache.put(`interview/${interview_data.id}/gift_card/${interview_data.id}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
+            interview_cache.put(`${interview_data.id}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
             card_cache.put(`${interview_data.id}/card_id/${res._id}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
             res.ok && sessionStorage.setItem('interview_id', interview_data.id)
             res.ok && sessionStorage.setItem('gift_card_id', res._id)
@@ -38,10 +38,10 @@ export default function DataReview() {
             }).then(response => response.json())
             const interview_cache = await caches.open('interviews');
             const card_cache = await caches.open('gift_cards');
-            const client_cache = await caches.open('client_info')
+            const client_cache = await caches.open('clients')
             client_cache.put(`interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
             client_cache.put(`interview/${interview_data.id}/gift_card/${interview_data.id}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
-            interview_cache.put(interview_data.id, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
+            interview_cache.put(`${interview_data.id}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
             card_cache.put(`interview/${interview_data.id}/card_id/${res.insertedId}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
             const interviewSMTP = await fetch('/api/interviews/complete', {
                 method: 'POST',

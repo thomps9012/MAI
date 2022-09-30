@@ -60,11 +60,14 @@ export default function BasePage() {
                         section: (document.getElementById('section') as HTMLInputElement)?.value,
                         number_input: true
                     })
-
         const response = await fetch('/api/questions/add', {
             method: 'POST',
             body: JSON.stringify(question_data)
         }).then(res => res.json())
+        const question_cache = await caches.open('questions')
+        question_cache.put('/all', await fetch('/api/questions/all'))
+        question_cache.put('/adult/all', await fetch('/api/questions/adult/all'))
+        question_cache.put('/youth/all', await fetch('/api/questions/youth/all'))
         response.acknowledged && router.push('/admin/questions')
     }
     const question_sections: Array<string> = section_data && Array.from(new Set(section_data?.map((question: any) => question.section)))

@@ -65,6 +65,10 @@ export default function BasePage({ question_id, question_choice }: { question_ch
             method: 'POST',
             body: JSON.stringify(question_data)
         }).then(res => res.json())
+        const question_cache = await caches.open('questions')
+        question_cache.put('/all', await fetch('/api/questions/all'))
+        question_cache.put('/adult/all', await fetch('/api/questions/adult/all'))
+        question_cache.put('/youth/all', await fetch('/api/questions/youth/all'))
         response.acknowledged && router.push('/admin/questions')
     }
     const { data: answer_data, error: answer_err } = useSWR('/api/answers/all', fetcher)

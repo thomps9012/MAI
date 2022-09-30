@@ -14,6 +14,10 @@ export default function BasePage({ section_name }: { section_name: string }) {
         const response = await fetch('/api/questions/edit_section', {
             headers: { 'section_name': (document.getElementById('section_name') as HTMLInputElement)?.value }
         }).then(res => res.json())
+        const question_cache = await caches.open('questions')
+        question_cache.put('/all', await fetch('/api/questions/all'))
+        question_cache.put('/adult/all', await fetch('/api/questions/adult/all'))
+        question_cache.put('/youth/all', await fetch('/api/questions/youth/all'))
         response.acknowledged && router.push('/admin/questions')
     }
     return <main className="container">

@@ -30,33 +30,9 @@ export default function EditCardPage({ card_record, card_types, card_amounts }: 
             })
         }).then(response => response.json());
         const card_cache = await caches.open('gift_cards');
-        const client_cache = await caches.open('client_info');
-        client_cache.put(`interview/${card_record.interview_id}/gift_card/${record_id}`, await fetch('/api/cards/disperse', {
-            method: 'POST',
-            body: JSON.stringify({
-                interview_id: card_record.interview_id,
-                PID: card_record.PID,
-                amount: amount,
-                type: type,
-                received_date: date,
-                interview_type: interview_data.type,
-                card_number: card_number,
-                record_id: record_id
-            })
-        }));
-        card_cache.put(card_record._id, await fetch('/api/cards/disperse', {
-            method: 'POST',
-            body: JSON.stringify({
-                interview_id: card_record.interview_id,
-                PID: card_record.PID,
-                amount: amount,
-                type: type,
-                received_date: date,
-                interview_type: interview_data.type,
-                card_number: card_number,
-                record_id: record_id
-            })
-        }))
+        const client_cache = await caches.open('clients');
+        client_cache.put(`interview/${card_record.interview_id}/gift_card/${record_id}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`));
+        card_cache.put(`interview/${interview_data.id}/card_id/${res.insertedId}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`));
         res.acknowledged && router.push('/gift_card/records')
     }
     return <main className="container">

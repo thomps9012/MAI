@@ -25,6 +25,8 @@ export default function BasePage({ answer_id, answer_choice }: { answer_choice: 
                 choices: choice_arr
             })
         }).then(res => res.json())
+        const answer_cache = await caches.open('answers')
+        answer_cache.put('/all', await fetch('/api/answers/all'))
         response.acknowledged && router.push('/admin/answer_choices')
     }
     return <main className="container">

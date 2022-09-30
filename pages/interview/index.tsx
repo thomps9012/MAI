@@ -149,6 +149,10 @@ export default function InterviewSelect() {
             })
         }).then(response => response.json())
         if (res.acknowledged) {
+            const client_cache = await caches.open('clients')
+            const interview_cache = await caches.open('interviews')
+            client_cache.put(`interview/${res.insertedIds[0]}/PID/${PID}/type/${type}`, await fetch(`/api/interviews/find?record_id=${res.insertedIds[0]}&interview_type=${type}`))
+            interview_cache.put(`${res.insertedIds[0]}/type/${type}`, await fetch(`/api/interviews/find?record_id=${res.insertedIds[0]}&interview_type=${type}`))
             sessionStorage.setItem('interview_id', res.insertedIds[0])
             dispatch(setInterviewID(res.insertedIds[0]))
             dispatch(setInterviewType(type))

@@ -21,6 +21,8 @@ export default function BasePage({ agencies }: any) {
             })
         }).then(res => res.json())
         response.acknowledged && router.push('/admin/answer_choices')
+        const answer_cache = await caches.open('answers')
+        answer_cache.put('/all', await fetch('/api/answers/all'))
     }
     return <main className="container">
         <h1>Add New Testing Agency</h1>
