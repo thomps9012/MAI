@@ -268,4 +268,11 @@ form {
     .mobile-nav-hide {
         display: none;
     }
+    .hidden-link {
+        display: none;
+    }
+}
+
+.hidden-link {
+    display: none;
 }
