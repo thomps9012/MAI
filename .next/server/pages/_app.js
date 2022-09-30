@@ -162,6 +162,25 @@ function NavBar() {
         router.push(`/admin/${link}`);
         setActiveLink("");
     };
+    const active_route = router.route;
+    const full_route = router.pathname;
+    (0,external_react_.useEffect)(()=>{
+        console.log(active_route);
+        console.log('full_route', full_route);
+        const links = document.getElementsByClassName('nav-link');
+        const links2 = document.getElementsByClassName('hidden-link');
+        const all_links = [
+            ...links,
+            ...links2
+        ];
+        for(let i = 0; i < all_links.length; i++){
+            const link = all_links[i];
+            console.log(link.id === active_route);
+            link.id === active_route ? link.setAttribute('class', 'hidden-link') : link.setAttribute('class', 'nav-link');
+        }
+    }, [
+        active_route
+    ]);
     return(/*#__PURE__*/ (0,jsx_runtime_.jsxs)("nav", {
         children: [
             /*#__PURE__*/ (0,jsx_runtime_.jsxs)("ul", {
@@ -169,6 +188,7 @@ function NavBar() {
                 children: [
                     /*#__PURE__*/ jsx_runtime_.jsx("li", {
                         className: "nav-link",
+                        id: "/",
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                             href: "/",
                             children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -178,6 +198,7 @@ function NavBar() {
                     }),
                     /*#__PURE__*/ jsx_runtime_.jsx("li", {
                         className: "nav-link",
+                        id: "/interview",
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                             href: "/interview",
                             children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -189,6 +210,7 @@ function NavBar() {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
+                                id: "/admin/clients",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/clients",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -198,6 +220,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
+                                id: "/gift_card/records",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/gift_card/records",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -207,6 +230,7 @@ function NavBar() {
                             }),
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
+                                id: "/admin/interviews",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/interviews",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -220,6 +244,7 @@ function NavBar() {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
+                                id: "users",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/users/manage",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -242,16 +267,19 @@ function NavBar() {
                                     /*#__PURE__*/ jsx_runtime_.jsx("option", {
                                         className: "nav-link",
                                         value: "gift_cards",
+                                        id: "/admin/gift_cardss",
                                         children: "Gift Cards"
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("option", {
                                         className: "nav-link",
                                         value: "questions",
+                                        id: "/admin/questions",
                                         children: "Questions"
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("option", {
                                         className: "nav-link",
                                         value: "answer_choices",
+                                        id: "/admin/answers",
                                         children: "Answers"
                                     })
                                 ]
@@ -277,6 +305,7 @@ function NavBar() {
                         className: "nav-link",
                         onClick: ()=>setShow(false)
                         ,
+                        id: "/",
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                             href: "/",
                             children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -288,6 +317,7 @@ function NavBar() {
                         className: "nav-link",
                         onClick: ()=>setShow(false)
                         ,
+                        id: "/interview",
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                             href: "/interview",
                             children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -301,6 +331,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/admin/clients",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/clients",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -312,6 +343,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/gift_card/records",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/gift_card/records",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -323,6 +355,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/admin/interviews",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/interviews",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -338,6 +371,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/admin/users/manage",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/users/manage",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -349,6 +383,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/admin/gift_cards",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/gift_cards",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -360,6 +395,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/admin/questions",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/questions",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -371,6 +407,7 @@ function NavBar() {
                                 className: "nav-link",
                                 onClick: ()=>setShow(false)
                                 ,
+                                id: "/admin/answer_choices",
                                 children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                                     href: "/admin/answer_choices",
                                     children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
