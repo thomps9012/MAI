@@ -3,13 +3,15 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 export default function BasePage() {
     const user_data = useSelector((state: any) => state.user)
-    const open_caches =async () => {   
+    const open_caches = async () => {   
         await caches.open('user')
         await caches.open('interviews')
-        await caches.open('client_info')
+        await caches.delete('clients')
         await caches.open('gift_cards')
+        await caches.open('answers')
+        await caches.open('questions')
     }
-    useEffect(() => open_caches(), [])
+    useEffect(() => {open_caches()}, [])
     return <main className="landing">
         <Link href='/interview' ><a className="landing-link" onClick={() => sessionStorage.clear()}>Begin New Interview</a></Link>
         {user_data.admin && <>

@@ -10,8 +10,10 @@ export default function Footer() {
     const Logout = async () => { 
         await caches.delete('user')
         await caches.delete('interviews')
-        await caches.delete('client_info')
+        await caches.delete('clients')
         await caches.delete('gift_cards')
+        await caches.delete('answers')
+        await caches.delete('questions')
         dispatch(logoutUser('')) 
     }
     if (!user_info.loggedIn) {
