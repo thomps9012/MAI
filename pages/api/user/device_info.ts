@@ -17,7 +17,7 @@ export default async function handler(req: any, res: any) {
     const { email, full_name, _id } = user_data
     const msg = {
         to: email,
-        from: 'thomps9012@gmail.com',
+        from: process.env.SENDER_EMAIL as string,
         subject: 'MAI Application Sign In',
         html: `
         <br />

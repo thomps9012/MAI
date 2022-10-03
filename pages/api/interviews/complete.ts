@@ -9,7 +9,7 @@ export default async function handler(req: { body: string; }, res: { json: (arg0
     const msg = {
         to: 'sthompson@norainc.org',
         // to: 'khill@norainc.org',
-        from: 'thomps9012@gmail.com',
+        from: process.env.SENDER_EMAIL as string,
         subject: `New ${titleCase(interview_type.split("_").join(" "))} Interview for Client ${PID} on ${interview_date}`,
         html: `${titleCase(interview_type.split("_").join(" "))} Interview was conducted on ${interview_date} by ${agency} 
         <br /> 

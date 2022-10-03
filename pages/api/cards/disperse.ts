@@ -12,7 +12,7 @@ export default async function handler(req: { body: string; }, res: { json: (arg0
     console.log(data)
     const msg = {
         to: 'sthompson@norainc.org',
-        from: 'thomps9012@gmail.com',
+        from: process.env.SENDER_EMAIL as string,
         // to: 'khill@norainc.org',
         subject: `Client ${PID} ${titleCase(interview_type.split("_").join(" "))} Interview Gift Card Received`,
         html: `Client ${PID} has received a gift card for their ${titleCase(interview_type.split("_").join(" "))} Interview on ${received_date}.
