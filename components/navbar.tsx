@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../utils/userReducer";
 
 export default function NavBar() {
     const router = useRouter();
+    const dispatch = useDispatch();
     const [activeLink, setActiveLink] = useState("")
     const [show, setShow] = useState(false);
     const user_info = useSelector((state: any) => state.user);
@@ -16,6 +18,15 @@ export default function NavBar() {
     }
     const active_route = router.route
     const full_route = router.pathname
+    const logout = async () => {
+        await caches.delete('user')
+        await caches.delete('interviews')
+        await caches.delete('clients')
+        await caches.delete('gift_cards')
+        await caches.delete('answers')
+        await caches.delete('questions')
+        dispatch(logoutUser(''))
+    }
     useEffect(() => {
         console.log(active_route)
         console.log('full_route', full_route)
@@ -47,7 +58,11 @@ export default function NavBar() {
                 </select>
             </>}
         </ul>
-        <a className="mobile-menu" onClick={() => setShow(!show)}><p>Menu</p></a>
+        <div className="mobile-menu">
+            <a onClick={() => setShow(!show)}><p>Menu</p></a>
+            {user_info.loggedIn && <a onClick={() => router.push(`/admin/users/${user_info.id}`)}><p>{user_info.name}</p></a>}
+            {user_info.loggedIn && <a onClick={logout}><p>Logout</p></a>}
+        </div>
         <ul className={`mobile-nav-${show ? 'show' : 'hide'}`} onMouseLeave={() => setShow(false)}>
             <li className="nav-link" onClick={() => setShow(false)} id="/"><Link href="/"><a>Home</a></Link></li>
             <li className="nav-link" onClick={() => setShow(false)} id="/interview"><Link href="/interview"><a>Begin Interview</a></Link></li>
@@ -67,3 +82,4 @@ export default function NavBar() {
         </ul>
     </nav>
 }
+
