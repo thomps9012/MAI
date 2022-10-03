@@ -32,9 +32,10 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
             })
         }).then(response => response.json());
         const card_cache = await caches.open('gift_cards');
-        const client_cache = await caches.open('client_info');
-        client_cache.put(`gift_card: ${card_record.interview_id}`, res);
-        card_cache.put(card_record._id, res)
+        const client_cache = await caches.open('clients');
+        client_cache.put(`interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
+        client_cache.put(`interview/${interview_data.id}/gift_card/${interview_data.id}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
+        card_cache.put(`interview/${interview_data.id}/card_id/${res.insertedId}`, await fetch(`/api/cards/find?interview_id=${interview_data.id}`))
         res.acknowledged && router.push('/gift_card/records')
     }
     return <main className="container">

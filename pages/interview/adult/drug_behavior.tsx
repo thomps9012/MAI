@@ -49,7 +49,7 @@ export default function DrugBehavior() {
             body: JSON.stringify(section_info)
         }).then(response => response.json())
         const interview_cache = await caches.open('interviews');
-        interview_cache.put(interview_data.id, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
+        interview_cache.put(`${interview_data.id}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
         res.acknowledged ? router.push('/interview/review')
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }

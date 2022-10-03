@@ -9,6 +9,11 @@ export default function Footer() {
     console.log('user info', user_info)
     const Logout = async () => { 
         await caches.delete('user')
+        await caches.delete('interviews')
+        await caches.delete('clients')
+        await caches.delete('gift_cards')
+        await caches.delete('answers')
+        await caches.delete('questions')
         dispatch(logoutUser('')) 
     }
     if (!user_info.loggedIn) {
@@ -18,7 +23,7 @@ export default function Footer() {
         </footer>
     } else {
         return <footer>
-            <a className="nav-link" onClick={() => router.push('/')}>Welcome, {user_info.name}</a>
+            <a className="nav-link" onClick={() => router.push(`/admin/users/${user_info.id}`)}>Welcome, {user_info.name}</a>
             <a className="nav-link" onClick={Logout}>Logout</a>
         </footer>
     }

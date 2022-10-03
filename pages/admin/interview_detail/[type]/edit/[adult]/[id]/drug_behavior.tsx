@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import Link from "next/link";
 import { useRouter } from "next/router"
 import { useSelector } from "react-redux";
 import useSWR from "swr";
@@ -14,7 +15,7 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
     const user_data = useSelector((state: any) => state.user)
     if (!user_data.editor) {
         return <main className="landing">
-            <h1>You are Unauthorized to View this Page</h1>
+            <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>
     }
     const router = useRouter();
@@ -53,7 +54,9 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
             body: JSON.stringify(section_info)
         }).then(response => response.json())
         const interview_cache = await caches.open('interviews');
-        interview_cache.put(interview_record.id, await fetch(`/api/interviews/find?record_id=${interview_record.id}&interview_type=${interview_record.type}`))
+        const client_cache = await caches.open('clients')
+        client_cache.put(`interview/${interview_record.id}/PID/${interview_record.PID}/type/${interview_record.type}`, await fetch(`/api/interviews/find?record_id=${interview_record.id}&interview_type=${interview_record.type}`))
+        interview_cache.put(`${interview_record.id}/type/${interview_record.type}`, await fetch(`/api/interviews/find?record_id=${interview_record.id}&interview_type=${interview_record.type}`))
         res.acknowledged ? router.push(`/admin/interview_detail/${type}/edit/${adult}/${_id}/success`)
             : (confirm('Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help.') && router.push('/'))
     }

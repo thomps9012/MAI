@@ -99,6 +99,11 @@ function Footer() {
     console.log('user info', user_info);
     const Logout = async ()=>{
         await caches.delete('user');
+        await caches.delete('interviews');
+        await caches.delete('clients');
+        await caches.delete('gift_cards');
+        await caches.delete('answers');
+        await caches.delete('questions');
         dispatch((0,userReducer/* logoutUser */.TX)(''));
     };
     if (!user_info.loggedIn) {
@@ -123,7 +128,7 @@ function Footer() {
             children: [
                 /*#__PURE__*/ (0,jsx_runtime_.jsxs)("a", {
                     className: "nav-link",
-                    onClick: ()=>router.push('/')
+                    onClick: ()=>router.push(`/admin/users/${user_info.id}`)
                     ,
                     children: [
                         "Welcome, ",

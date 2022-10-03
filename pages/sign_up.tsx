@@ -31,7 +31,7 @@ export default function SignUp() {
         if (user_res.acknowledged) {
             const user_id = user_res.insertedId
             const user_cache = await caches.open('user');
-                user_cache.put('info', await fetch('/api/user/add', {
+                user_cache.put('current', await fetch('/api/user/add', {
                     method: 'POST',
                     body: JSON.stringify({
                         username: userName,

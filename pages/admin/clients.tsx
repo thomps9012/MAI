@@ -11,7 +11,7 @@ export default function AllClientsPage({ all_clients }: any) {
     const { data: agency_data, error: agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
     if (!user_data.admin) {
         return <main className="landing">
-            <h1>You are Unauthorized to View this Page</h1>
+            <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>
     }
     if (agency_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>

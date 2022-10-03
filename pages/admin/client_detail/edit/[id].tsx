@@ -10,7 +10,7 @@ export default function ClientEditPage({ baseline_record, testing_only_record, c
     const user_data = useSelector((state: any) => state.user)
     if (!user_data.editor) {
         return <main className="landing">
-            <h1>You are Unauthorized to View this Page</h1>
+            <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>
     }
     const router = useRouter();
@@ -83,6 +83,8 @@ export default function ClientEditPage({ baseline_record, testing_only_record, c
                 adult: adult
             })
         }).then(res => res.json())
+        const client_cache = await caches.open('clients')
+        client_cache.put(`interview/${interview_id}/PID/${PID}/type/${type}`, await fetch(`/api/interviews/find?record_id=${interview_id}&interview_type=${type}`))
         response.acknowledged && router.push(`/admin/client_detail/${PID}`)
     }
     return <main className="container">
