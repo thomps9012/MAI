@@ -31,6 +31,15 @@ export default function SignIn() {
         if (user_res.error) {
             alert(`there was a network error while logging into your account \n\n ${user_res.error}`)
         } else {
+            const user_cache = await caches.open('user');
+            user_cache.put('current', await fetch('/api/user/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: email,
+                    username: userName,
+                    password: firstPW
+                })
+            }))
             dispatch(loginUser({
                 id: user_res._id,
                 full_name: user_res.full_name,
