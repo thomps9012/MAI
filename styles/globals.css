@@ -234,12 +234,15 @@ form {
     
     .mobile-menu {
         display: block;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
         position: absolute;
         position: fixed;
         text-align: right;
         background-color: #071E22;
         padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding-bottom: 1.6rem;
         color: white;
         width: 100%;
         top: 0%;
@@ -261,6 +264,7 @@ form {
         height: 87vh;
         top: 10.7%;
         z-index: 1;
+        padding-right: 1rem;
         border-right: 4mm ridge #071E22;
         transition: all var(--duration);
     }
