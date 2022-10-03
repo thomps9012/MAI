@@ -19,18 +19,20 @@ export default async function handler(req: any, res: any) {
     const msg = {
         to: email,
         from: 'sthompson@norainc.org',
-        subject: 'New MAI Sign In',
+        subject: 'MAI Application Sign In',
         html: `
         <br />
         <br />
-        Sign in to Account for User:        
+        Sign in to Account for:        
         <hr />
         ${full_name}
         <br />
         <br />
         Location:
         <hr />
-        ${address}
+        ${address.split(",")[1]}
+        <br />
+        ${address.split(",")[2]}
         <br />
         <br />
         Device:
@@ -38,9 +40,9 @@ export default async function handler(req: any, res: any) {
         ${device}
         <br />
         <br />
-        If this was not you, reset your password
+        If this was not you,
         <br /> 
-        <a href='https://minority-aids-initiative.vercel.app/admin/users/${_id}'>HERE</a>
+        <a href='https://minority-aids-initiative.vercel.app/admin/users/${_id}'>Reset Password HERE</a>
         <br />
         <br />
         If this was you, please ignore this email

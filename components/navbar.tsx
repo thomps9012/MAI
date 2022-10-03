@@ -22,7 +22,7 @@ export default function NavBar() {
         const links = document.getElementsByClassName('nav-link') as unknown as Array<HTMLElement>
         const links2 = document.getElementsByClassName('hidden-link') as unknown as Array<HTMLElement>
         const all_links = [...links, ...links2]
-        for (let i=0; i< all_links.length; i++){
+        for (let i = 0; i < all_links.length; i++) {
             const link = all_links[i] as HTMLElement
             console.log(link.id === active_route)
             link.id === active_route ? link.setAttribute('class', 'hidden-link') : link.setAttribute('class', 'nav-link')
@@ -51,6 +51,8 @@ export default function NavBar() {
         <ul className={`mobile-nav-${show ? 'show' : 'hide'}`} onMouseLeave={() => setShow(false)}>
             <li className="nav-link" onClick={() => setShow(false)} id="/"><Link href="/"><a>Home</a></Link></li>
             <li className="nav-link" onClick={() => setShow(false)} id="/interview"><Link href="/interview"><a>Begin Interview</a></Link></li>
+            {!user_info.loggedIn && <li className="nav-link" onClick={() => setShow(false)} id="/sign_in"><Link href="/sign_in"><a>Logn</a></Link></li>}
+            {!user_info.loggedIn && <li className="nav-link" onClick={() => setShow(false)} id="/sign_up"><Link href="/sign_up"><a>Sign Up</a></Link></li>}
             {user_info.admin && <>
                 <li className="nav-link" onClick={() => setShow(false)} id="/admin/clients"><Link href="/admin/clients"><a>Review Clients</a></Link></li>
                 <li className="nav-link" onClick={() => setShow(false)} id="/gift_card/records"><Link href="/gift_card/records"><a>Gift Card Records</a></Link></li>
