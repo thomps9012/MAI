@@ -10,55 +10,34 @@ export default function SignIn() {
         const userName = (document.querySelector('.username') as HTMLInputElement).value
         const email = (document.querySelector('.email') as HTMLInputElement).value
         if (email === '' && userName === '') return;
-        if (userName === '') {
-            const user_res = await fetch('/api/user/login', {
-                method: 'POST',
-                body: JSON.stringify({
-                    email: email,
-                    password: firstPW
-                })
-            }).then(res => res.json())
-            console.log(user_res)
-            if (user_res.error) {
-                alert(`there was a network error while logging into your account \n\n ${user_res.error}`)
-            } else {
-                dispatch(loginUser({
-                    id: user_res._id,
-                    full_name: user_res.full_name,
-                    admin: user_res.admin,
-                    editor: user_res.editor
-                }))
-                router.push('/')
-            }
-        }
-        if (email === '') {
-            const user_res = await fetch('/api/user/login', {
-                method: 'POST',
-                body: JSON.stringify({
-                    username: userName,
-                    password: firstPW
-                })
-            }).then(res => res.json())
-            console.log(user_res)
-            if (user_res.error) {
-                alert(`there was a network error while logging into your account \n\n ${user_res.error}`)
-            } else {
-                const user_cache = await caches.open('user');
-                user_cache.put('current', await fetch('/api/user/login', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        username: userName,
-                        password: firstPW
-                    })
-                }))
-                dispatch(loginUser({
-                    id: user_res._id,
-                    full_name: user_res.full_name,
-                    admin: user_res.admin,
-                    editor: user_res.editor
-                }))
-                router.push('/')
-            }
+        let device = 'Unknown Device';
+        if (navigator.userAgent.indexOf('Win') != -1) { device = 'Windows Device' }
+        if (navigator.userAgent.indexOf('Mac') != -1) { device = 'Mac Device' }
+        if (navigator.userAgent.indexOf('Linux') != -1) { device = 'Linux Device' }
+        if (navigator.userAgent.indexOf('Android') != -1) { device = 'Android Device' }
+        if (navigator.userAgent.indexOf('Android') != -1 && navigator.userAgent.indexOf('Linux') != -1) { device = 'Android/Linux Device' }
+        const user_res = await fetch('/api/user/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: email,
+                username: userName,
+                password: firstPW
+            })
+        }).then(res => res.json())
+        await fetch('/api/user/device_info', {
+            headers: { 'device': device, 'user_info': JSON.stringify(user_res) }
+        }).then(res => res.json())
+
+        if (user_res.error) {
+            alert(`there was a network error while logging into your account \n\n ${user_res.error}`)
+        } else {
+            dispatch(loginUser({
+                id: user_res._id,
+                full_name: user_res.full_name,
+                admin: user_res.admin,
+                editor: user_res.editor
+            }))
+            router.push('/')
         }
     }
     return <div className="landing">

@@ -66,6 +66,7 @@
   "/api/questions/youth/risk_attitudes": "pages/api/questions/youth/risk_attitudes.js",
   "/api/questions/youth/sexual_behavior": "pages/api/questions/youth/sexual_behavior.js",
   "/api/user/add": "pages/api/user/add.js",
+  "/api/user/device_info": "pages/api/user/device_info.js",
   "/api/user/edit": "pages/api/user/edit.js",
   "/api/user/email_exists": "pages/api/user/email_exists.js",
   "/api/user/login": "pages/api/user/login.js",

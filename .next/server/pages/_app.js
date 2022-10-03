@@ -128,7 +128,7 @@ function Footer() {
             children: [
                 /*#__PURE__*/ (0,jsx_runtime_.jsxs)("a", {
                     className: "nav-link",
-                    onClick: ()=>router.push('/')
+                    onClick: ()=>router.push(`/admin/users/${user_info.id}`)
                     ,
                     children: [
                         "Welcome, ",

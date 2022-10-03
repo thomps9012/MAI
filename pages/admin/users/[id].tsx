@@ -8,7 +8,7 @@ export default function EditUser({ user }: any) {
     const user_data = useSelector((state: any) => state.user)
     console.log(user)
     const router = useRouter();
-    if (!user_data.editor) {
+    if (!user_data.editor && user_data.id != user._id) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1>
         </main>
@@ -65,26 +65,28 @@ export default function EditUser({ user }: any) {
             <input type="email" name="email" defaultValue={email} onChange={(e: any) => setEmail(e.target.value)} />
             <p>Password</p>
             <input type="password" name="password" placeholder="New Password..." onChange={(e: any) => setPassword(e.target.value)} />
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                <h3>Admin</h3>
-                <input
-                    onChange={() => setAdmin(!admin)}
-                    checked={admin}
-                    type="checkbox"
-                    className="checkbox"
-                    name="admin"
-                />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                <h3>Editor</h3>
-                <input
-                    onChange={() => setEditor(!editor)}
-                    checked={editor}
-                    type="checkbox"
-                    className="checkbox"
-                    name="editor"
-                />
-            </div>
+            {user_data.editor && <>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    <h3>Admin</h3>
+                    <input
+                        onChange={() => setAdmin(!admin)}
+                        checked={admin}
+                        type="checkbox"
+                        className="checkbox"
+                        name="admin"
+                    />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    <h3>Editor</h3>
+                    <input
+                        onChange={() => setEditor(!editor)}
+                        checked={editor}
+                        type="checkbox"
+                        className="checkbox"
+                        name="editor"
+                    />
+                </div>
+            </>}
             <a className="button" onClick={saveEdits}>Save Edits</a>
         </form>
     </main>

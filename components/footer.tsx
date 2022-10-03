@@ -23,7 +23,7 @@ export default function Footer() {
         </footer>
     } else {
         return <footer>
-            <a className="nav-link" onClick={() => router.push('/')}>Welcome, {user_info.name}</a>
+            <a className="nav-link" onClick={() => router.push(`/admin/users/${user_info.id}`)}>Welcome, {user_info.name}</a>
             <a className="nav-link" onClick={Logout}>Logout</a>
         </footer>
     }
