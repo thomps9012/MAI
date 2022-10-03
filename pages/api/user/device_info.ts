@@ -42,7 +42,7 @@ export default async function handler(req: any, res: any) {
         <br />
         If this was not you,
         <br /> 
-        <a href='https://minority-aids-initiative.vercel.app/admin/users/${_id}'>Reset Password HERE</a>
+        <a href='https://minority-aids-initiative.vercel.app/admin/users/${_id}'>Reset Your Password</a>
         <br />
         <br />
         If this was you, please ignore this email
