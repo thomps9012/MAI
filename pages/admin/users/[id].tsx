@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -10,7 +11,7 @@ export default function EditUser({ user }: any) {
     const router = useRouter();
     if (!user_data.editor && user_data.id != user._id) {
         return <main className="landing">
-            <h1>You are Unauthorized to View this Page</h1>
+            <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br /><Link href='/sign_up'>Sign Up</Link>
         </main>
     }
     const [full_name, setFullName] = useState(user.full_name)
