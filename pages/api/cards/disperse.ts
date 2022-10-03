@@ -11,9 +11,9 @@ export default async function handler(req: { body: string; }, res: { json: (arg0
     const { interview_id, PID, amount, type, received_date, interview_type, card_number, card_id } = data;
     console.log(data)
     const msg = {
-        to: 'thomps9012@gmail.com',
+        to: 'sthompson@norainc.org',
+        from: 'thomps9012@gmail.com',
         // to: 'khill@norainc.org',
-        from: 'sthompson@norainc.org',
         subject: `Client ${PID} ${titleCase(interview_type.split("_").join(" "))} Interview Gift Card Received`,
         html: `Client ${PID} has received a gift card for their ${titleCase(interview_type.split("_").join(" "))} Interview on ${received_date}.
             <br /> 

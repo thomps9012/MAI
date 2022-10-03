@@ -14,11 +14,10 @@ export default async function handler(req: any, res: any) {
     }).then(res => res.json())
     const address = location.results[0].formatted_address;
     const user_data = JSON.parse(user_info);
-    console.log(device)
     const { email, full_name, _id } = user_data
     const msg = {
         to: email,
-        from: 'sthompson@norainc.org',
+        from: 'thomps9012@gmail.com',
         subject: 'MAI Application Sign In',
         html: `
         <br />
@@ -53,7 +52,6 @@ export default async function handler(req: any, res: any) {
         The Development Team
         `
     }
-    console.log(msg)
     try {
         await sgMail.send(msg);
     } catch (error) {

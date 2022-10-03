@@ -7,9 +7,9 @@ export default async function handler(req: { body: string; }, res: { json: (arg0
     let data = JSON.parse(req.body);
     const { interview_date, interview_type, agency, client_phone, PID, interview_id, card_id } = data;
     const msg = {
-        to: 'thomps9012@gmail.com',
+        to: 'sthompson@norainc.org',
         // to: 'khill@norainc.org',
-        from: 'sthompson@norainc.org',
+        from: 'thomps9012@gmail.com',
         subject: `New ${titleCase(interview_type.split("_").join(" "))} Interview for Client ${PID} on ${interview_date}`,
         html: `${titleCase(interview_type.split("_").join(" "))} Interview was conducted on ${interview_date} by ${agency} 
         <br /> 
