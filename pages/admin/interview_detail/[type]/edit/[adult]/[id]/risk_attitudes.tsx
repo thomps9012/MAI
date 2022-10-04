@@ -16,14 +16,11 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
     const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
     if (question_err || answer_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
-    console.log(risk_attitudes)
-    console.log(adult)
     const pageSubmit = async (e: any) => {
         e.preventDefault();
         let section = 'risk_attitudes'
         const state = questions.map((question: any) => question.number_input ? [question.state, 0] : question.multiple ? [question.state, []] : [question.state, ''])
         let section_info = Object.fromEntries(state);
-        console.log(state)
         questions.map((question: any) => {
             if (question.multiple) {
                 let options = document.getElementById(question.state)?.children as HTMLCollection;
@@ -37,10 +34,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
             }
             else {
                 section_info[question.state] = (document.getElementById(question.state) as HTMLInputElement).value
-                console.log(question.state)
-                console.log(section_info[question.state])
-                console.log((document.getElementById(question.state) as HTMLInputElement))
-                console.log((document.getElementById(question.state) as HTMLInputElement).value)
             }
         })
         sessionStorage.setItem(section, JSON.stringify(section_info))
@@ -85,7 +78,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
 
 export async function getServerSideProps(ctx: any) {
     const { db } = await connectToDatabase();
-    console.log(ctx.params.id)
     const interview_record = await db.collection(ctx.params.type).findOne({ _id: new ObjectId(ctx.params.id as string) }, { _id: 1, risk_attitudes: 1, type: 1 })
     return {
         props: {

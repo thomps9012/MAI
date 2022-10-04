@@ -12,8 +12,8 @@ export default function Success() {
     return <main className="landing">
         <h1>Client {interview_data.PID} has successfully completed their {titleCase(interview_data.type.split("_").join(" "))} Interview</h1>
         <br />
-        {!user_data.admin && <h1>Thank you for submitting your questionnaire, please show this screen to a testing administrator to receive your Gift Card.</h1>}
-        {user_data.admin && <>
+        {!user_data.user?.admin && <h1>Thank you for submitting your questionnaire, please show this screen to a testing administrator to receive your Gift Card.</h1>}
+        {user_data.user?.admin && <>
             <a className='landing-link' onClick={() => sessionStorage.clear()}><Link href={`/gift_card/${gift_card_id}/disperse`}>Disperse Gift Card</Link></a>
             <a className='landing-link' onClick={() => sessionStorage.clear()}><Link href='/interview'>Enter New Interview</Link></a>
             <a className='landing-link' onClick={() => sessionStorage.clear()}><Link href={`/admin/client_detail/${interview_data.PID}`}><>Review Client {interview_data.PID}</></Link></a>

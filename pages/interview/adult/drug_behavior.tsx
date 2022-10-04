@@ -26,7 +26,6 @@ export default function DrugBehavior() {
         let section = 'drug_behavior'
         const state = questions.map((question: any) => question.number_input ? [question.state, 0] : question.multiple ? [question.state, []] : [question.state, ''])
         let section_info = Object.fromEntries(state);
-        console.log(section_info)
         questions.map((question: any) => {
             if (question.multiple) {
                 let options = document.getElementById(question.state)?.children as HTMLCollection;

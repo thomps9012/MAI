@@ -2,7 +2,6 @@ import StateChecker from "./stateChecker";
 
 const EditNumberInput = ({ question, id, defaultValue }: any) => {
     const { state } = question;
-    console.log('number default value', defaultValue)
     const handleChange = (e: any) => {
         document.getElementById(id)?.setAttribute('class', 'finished-question')
     }

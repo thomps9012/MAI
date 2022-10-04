@@ -13,7 +13,7 @@ import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
 export default function EditInterviewPage({ interview_record, adult }: any) {
     const user_data = useSelector((state: any) => state.user)
-    if (!user_data.editor) {
+    if (!user_data.user?.editor) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>
@@ -23,7 +23,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
     const { drug } = behaviors;
     const { data: questions, error: question_err } = useSWR('/api/questions/drug_behavior', fetcher)
     const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
-    console.log(interview_record)
     if (question_err || answer_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
     const pageSubmit = async (e: any) => {
@@ -31,7 +30,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
         let section = 'drug_behavior'
         const state = questions.map((question: any) => question.number_input ? [question.state, 0] : question.multiple ? [question.state, []] : [question.state, ''])
         let section_info = Object.fromEntries(state);
-        console.log(section_info)
         questions.map((question: any) => {
             if (question.multiple) {
                 let options = document.getElementById(question.state)?.children as HTMLCollection;
@@ -89,7 +87,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
 
 export async function getServerSideProps(ctx: any) {
     const { db } = await connectToDatabase();
-    console.log(ctx.params.id)
     const interview_record = await db.collection(ctx.params.type).findOne({ _id: new ObjectId(ctx.params.id as string) }, { _id: 1, "behaviors.drug": 1, type: 1 })
     return {
         props: {

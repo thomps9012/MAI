@@ -3,13 +3,11 @@ import { useEffect, useState } from "react";
 const EditButtonSelect = ({ question, id, defaultValue }: any) => {
     const { state, answer_choices } = question;
     const [question_state, setQuestionState] = useState(defaultValue)
-    console.log(state + 'btn select default value', defaultValue)
     useEffect(() => {
         document.getElementById(id + "_" + defaultValue)?.setAttribute('class', 'button-selected')
     }, [defaultValue])
     const handleChange = (e: any) => {
         const answer = e.target.id.split('_')[2]
-        console.log(answer)
         setQuestionState(answer)
         const other_elements = document.getElementById(e.target.id)?.parentElement?.childNodes
         for (const item in other_elements) {

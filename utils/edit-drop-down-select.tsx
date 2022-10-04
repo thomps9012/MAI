@@ -2,7 +2,6 @@ import StateChecker from "./stateChecker";
 
 const EditDropDownSelect = ({ question, id, defaultValue }: any) => {
     const { state, answer_choices } = question;
-    console.log('drop down default value', defaultValue)
     const handleChange = (e: any) => {
         document.getElementById(id)?.setAttribute('class', 'finished-question')
     }

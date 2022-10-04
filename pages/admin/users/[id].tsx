@@ -7,9 +7,8 @@ import { connectToDatabase } from "../../../utils/mongodb";
 
 export default function EditUser({ user }: any) {
     const user_data = useSelector((state: any) => state.user)
-    console.log(user)
     const router = useRouter();
-    if (!user_data.editor && user_data.id != user._id) {
+    if (!user_data.user?.editor && user_data.user?.id != user._id) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br /><Link href='/sign_up'>Sign Up</Link>
         </main>
@@ -51,7 +50,6 @@ export default function EditUser({ user }: any) {
                     editor: editor
                 })
             }).then(response => response.json())
-            console.log(res)
             res.acknowledged && router.push('/admin/users/manage')
         }
     }
@@ -95,10 +93,8 @@ export default function EditUser({ user }: any) {
 
 export async function getServerSideProps(ctx: any) {
     const user_id = ctx.query.id;
-    console.log(user_id)
     const { db } = await connectToDatabase();
     const user_info = await db.collection('users').findOne({ _id: new ObjectId(user_id) })
-    console.log(user_info)
     return {
         props: {
             user: JSON.parse(JSON.stringify(user_info))

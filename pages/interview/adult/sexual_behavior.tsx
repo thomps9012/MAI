@@ -17,7 +17,6 @@ export default function SexualBehavior() {
     const { data: answers, error: answer_err } = useSWR('/api/answers/all', fetcher)
     if (question_err || answer_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
     questions?.map((question: any) => question.answer_choices = answers?.find((answer: any) => answer._id === question.answers)?.choices)
-    console.log(questions)
     useEffect(() => {
         document.getElementById(`question_${current_question}`)?.setAttribute('style', 'display: flex; flex-direction: column;')
         current_question > questions?.length - 1 && document.querySelector('#page_submit')?.setAttribute('style', 'display: flex; flex-direction: column;');
@@ -27,7 +26,6 @@ export default function SexualBehavior() {
         let section = 'sexual_behavior'
         const state = questions.map((question: any) => question.number_input ? [question.state, 0] : question.multiple ? [question.state, []] : [question.state, ''])
         let section_info = Object.fromEntries(state);
-        console.log(section_info)
         questions.map((question: any) => {
             if (question.multiple) {
                 let options = document.getElementById(question.state)?.children as HTMLCollection;

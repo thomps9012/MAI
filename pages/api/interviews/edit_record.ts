@@ -8,6 +8,5 @@ export default async function handler(req: any, res: any) {
     const recordInfo = JSON.parse(req.body);
     // change to a set
     const result = await db.collection(header).findOneAndReplace({ _id: new ObjectId(recordID) }, { ...recordInfo })
-    console.log(result)
     res.json(result);
 }

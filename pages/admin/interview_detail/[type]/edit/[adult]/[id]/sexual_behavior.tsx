@@ -13,7 +13,7 @@ import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
 export default function EditInterviewPage({ interview_record, adult }: any) {
     const user_data = useSelector((state: any) => state.user)
-    if (!user_data.editor) {
+    if (!user_data.user?.editor) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>
@@ -30,7 +30,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
         let section = 'sexual_behavior'
         const state = questions.map((question: any) => question.number_input ? [question.state, 0] : question.multiple ? [question.state, []] : [question.state, ''])
         let section_info = Object.fromEntries(state);
-        console.log(section_info)
         questions.map((question: any) => {
             if (question.multiple) {
                 let options = document.getElementById(question.state)?.children as HTMLCollection;
@@ -90,7 +89,6 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
 
 export async function getServerSideProps(ctx: any) {
     const { db } = await connectToDatabase();
-    console.log(ctx.params.id)
     const interview_record = await db.collection(ctx.params.type).findOne({ _id: new ObjectId(ctx.params.id as string) }, { _id: 1, "behaviors.sexual": 1 })
     return {
         props: {

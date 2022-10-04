@@ -6,7 +6,6 @@ export default function Footer() {
     const user_info = useSelector((state: any) => state.user)
     const dispatch = useDispatch();
     const router = useRouter()
-    console.log('user info', user_info)
     const Logout = async () => { 
         await caches.delete('user')
         await caches.delete('interviews')
@@ -14,16 +13,16 @@ export default function Footer() {
         await caches.delete('gift_cards')
         await caches.delete('answers')
         await caches.delete('questions')
-        dispatch(logoutUser('')) 
+        dispatch(logoutUser()) 
     }
-    if (!user_info.loggedIn) {
+    if (!user_info.logged_in) {
         return <footer>
             <a className="nav-link" onClick={() => router.push('/sign_in')}>Sign In</a>
             <a className="nav-link" onClick={() => router.push('/sign_up')}>Sign Up</a>
         </footer>
     } else {
         return <footer>
-            <a className="nav-link" onClick={() => router.push(`/admin/users/${user_info.id}`)}>Welcome, {user_info.name}</a>
+            <a className="nav-link" onClick={() => router.push(`/admin/users/${user_info.user?._id}`)}>Welcome, {user_info.user?.full_name}</a>
             <a className="nav-link" onClick={Logout}>Logout</a>
         </footer>
     }

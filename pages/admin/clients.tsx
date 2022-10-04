@@ -9,9 +9,9 @@ export default function AllClientsPage({ all_clients }: any) {
     const user_data = useSelector((state: any) => state.user)
     const [client_records, setClientRecords] = useState(all_clients);
     const { data: agency_data, error: agency_err } = useSWR('/api/answers/testing_agencies', fetcher)
-    if (!user_data.admin) {
+    if (!user_data.user?.admin) {
         return <main className="landing">
-            <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
+            <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br /><Link href='/sign_up'>Sign Up</Link>
         </main>
     }
     if (agency_err) return <main className="landing"><h1>Trouble Connecting to the Database... <br /> Check Your Internet or Cellular Connection</h1></main>
@@ -21,7 +21,7 @@ export default function AllClientsPage({ all_clients }: any) {
         selected_agency === "" ?
             setClientRecords(all_clients.filter((record: any) => record.PID.includes(PID_input)))
             :
-            setClientRecords(all_clients.filter((record: any) => record.PID.includes(selected_agency) && record.PID.split(selected_agency)[1].includes(PID_input)))
+            setClientRecords(all_clients.filter((record: any) => record.agency === selected_agency && record.PID.includes(PID_input)))
     }
     return <main className="container">
         <h3>Filters</h3>
@@ -30,7 +30,7 @@ export default function AllClientsPage({ all_clients }: any) {
                 <h3>Agency</h3>
                 <select name='agency' id='agency' onChange={filterByPID} defaultValue="">
                     <option value="">All Agencies</option>
-                    {agency_data?.choices.map((agency: string, i: number) => <option key={i} value={agency === 'AIDS Task Force' ? 'ATF' : agency === 'Care Alliance' ? 'CA' : agency}>{agency}</option>)}
+                    {agency_data?.choices.map((agency: string, i: number) => <option key={i} value={agency}>{agency}</option>)}
                 </select>
             </div>
             <div style={{ flexDirection: 'column' }}>
