@@ -5,7 +5,7 @@ exports.id = 2888;
 exports.ids = [2888];
 exports.modules = {
 
-/***/ 2444:
+/***/ 6579:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 // ESM COMPAT FLAG
@@ -96,7 +96,6 @@ function Footer() {
     );
     const dispatch = (0,external_react_redux_.useDispatch)();
     const router = (0,router_.useRouter)();
-    console.log('user info', user_info);
     const Logout = async ()=>{
         await caches.delete('user');
         await caches.delete('interviews');
@@ -104,9 +103,9 @@ function Footer() {
         await caches.delete('gift_cards');
         await caches.delete('answers');
         await caches.delete('questions');
-        dispatch((0,userReducer/* logoutUser */.TX)(''));
+        dispatch((0,userReducer/* logoutUser */.TX)());
     };
-    if (!user_info.loggedIn) {
+    if (!user_info.logged_in) {
         return(/*#__PURE__*/ (0,jsx_runtime_.jsxs)("footer", {
             children: [
                 /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -124,15 +123,18 @@ function Footer() {
             ]
         }));
     } else {
+        var ref1;
         return(/*#__PURE__*/ (0,jsx_runtime_.jsxs)("footer", {
             children: [
                 /*#__PURE__*/ (0,jsx_runtime_.jsxs)("a", {
                     className: "nav-link",
-                    onClick: ()=>router.push(`/admin/users/${user_info.id}`)
-                    ,
+                    onClick: ()=>{
+                        var ref;
+                        return router.push(`/admin/users/${(ref = user_info.user) === null || ref === void 0 ? void 0 : ref._id}`);
+                    },
                     children: [
                         "Welcome, ",
-                        user_info.name
+                        (ref1 = user_info.user) === null || ref1 === void 0 ? void 0 : ref1.full_name
                     ]
                 }),
                 /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -157,6 +159,7 @@ var external_react_ = __webpack_require__(6689);
 
 
 function NavBar() {
+    var ref6, ref1, ref2, ref3, ref4, ref5;
     const router = (0,router_.useRouter)();
     const dispatch = (0,external_react_redux_.useDispatch)();
     const { 0: activeLink , 1: setActiveLink  } = (0,external_react_.useState)("");
@@ -170,7 +173,6 @@ function NavBar() {
         setActiveLink("");
     };
     const active_route = router.route;
-    const full_route = router.pathname;
     const logout = async ()=>{
         await caches.delete('user');
         await caches.delete('interviews');
@@ -178,11 +180,12 @@ function NavBar() {
         await caches.delete('gift_cards');
         await caches.delete('answers');
         await caches.delete('questions');
-        dispatch((0,userReducer/* logoutUser */.TX)(''));
+        dispatch((0,userReducer/* logoutUser */.TX)());
     };
     (0,external_react_.useEffect)(()=>{
-        console.log(active_route);
-        console.log('full_route', full_route);
+        console.log('user_info', user_info.user);
+        console.log(user_info.logged_in, ': logged_in');
+        console.log('navbar');
         const links = document.getElementsByClassName('nav-link');
         const links2 = document.getElementsByClassName('hidden-link');
         const all_links = [
@@ -222,7 +225,27 @@ function NavBar() {
                             })
                         })
                     }),
-                    user_info.admin && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    !user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                        className: "nav-link",
+                        id: "/sign_in",
+                        children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
+                            href: "/sign_in",
+                            children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                                children: "Login"
+                            })
+                        })
+                    }),
+                    !user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                        className: "nav-link",
+                        id: "/sign_up",
+                        children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
+                            href: "/sign_up",
+                            children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                                children: "Sign Up"
+                            })
+                        })
+                    }),
+                    ((ref6 = user_info.user) === null || ref6 === void 0 ? void 0 : ref6.admin) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
@@ -256,7 +279,7 @@ function NavBar() {
                             })
                         ]
                     }),
-                    user_info.editor && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    ((ref1 = user_info.user) === null || ref1 === void 0 ? void 0 : ref1.editor) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
@@ -301,6 +324,16 @@ function NavBar() {
                                 ]
                             })
                         ]
+                    }),
+                    user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                        className: "nav-link",
+                        id: "/admin/users/[id]",
+                        children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
+                            href: `/admin/users/${(ref2 = user_info.user) === null || ref2 === void 0 ? void 0 : ref2.id}`,
+                            children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                                children: "Profile"
+                            })
+                        })
                     })
                 ]
             }),
@@ -314,14 +347,16 @@ function NavBar() {
                             children: "Menu"
                         })
                     }),
-                    user_info.loggedIn && /*#__PURE__*/ jsx_runtime_.jsx("a", {
-                        onClick: ()=>router.push(`/admin/users/${user_info.id}`)
-                        ,
+                    user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                        onClick: ()=>{
+                            var ref;
+                            return router.push(`/admin/users/${(ref = user_info.user) === null || ref === void 0 ? void 0 : ref.id}`);
+                        },
                         children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                            children: user_info.name
+                            children: (ref3 = user_info.user) === null || ref3 === void 0 ? void 0 : ref3.full_name
                         })
                     }),
-                    user_info.loggedIn && /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                    user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("a", {
                         onClick: logout,
                         children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
                             children: "Logout"
@@ -358,7 +393,7 @@ function NavBar() {
                             })
                         })
                     }),
-                    !user_info.loggedIn && /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                    !user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
                         className: "nav-link",
                         onClick: ()=>setShow(false)
                         ,
@@ -366,11 +401,11 @@ function NavBar() {
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
                             href: "/sign_in",
                             children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
-                                children: "Logn"
+                                children: "Login"
                             })
                         })
                     }),
-                    !user_info.loggedIn && /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                    !user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
                         className: "nav-link",
                         onClick: ()=>setShow(false)
                         ,
@@ -382,7 +417,7 @@ function NavBar() {
                             })
                         })
                     }),
-                    user_info.admin && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    ((ref4 = user_info.user) === null || ref4 === void 0 ? void 0 : ref4.admin) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
@@ -422,7 +457,7 @@ function NavBar() {
                             })
                         ]
                     }),
-                    user_info.editor && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    ((ref5 = user_info.user) === null || ref5 === void 0 ? void 0 : ref5.editor) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
@@ -496,53 +531,56 @@ function Layout({ children  }) {
     }));
 };
 
-;// CONCATENATED MODULE: ./utils/cached-user.tsx
-
-
-
-
-function CachedUser() {
-    const dispatch = (0,external_react_redux_.useDispatch)();
-    (0,external_react_.useEffect)(()=>{
-        const cached_user = async ()=>{
-            return await (await caches.open('user')).match('/info').then((res)=>{
-                return res === null || res === void 0 ? void 0 : res.json();
-            });
-        };
-        cached_user().then((res)=>{
-            if (res === null || res === void 0 ? void 0 : res._id) {
-                dispatch((0,userReducer/* setUserLoggedIn */.Wx)(true));
-                dispatch((0,userReducer/* setUserID */.uC)(res._id));
-                dispatch((0,userReducer/* setUserName */.b4)(res.full_name));
-                dispatch((0,userReducer/* setUserAdmin */.zn)(res.admin));
-                dispatch((0,userReducer/* setUserEditor */.OU)(res.editor));
-            }
-        });
-    }, []);
-    return(/*#__PURE__*/ jsx_runtime_.jsx(jsx_runtime_.Fragment, {}));
-};
-
 ;// CONCATENATED MODULE: ./pages/_app.tsx
 
 
 
 
 
-
 function MAI({ Component , pageProps  }) {
-    return(/*#__PURE__*/ (0,jsx_runtime_.jsxs)(external_react_redux_.Provider, {
+    return(/*#__PURE__*/ jsx_runtime_.jsx(external_react_redux_.Provider, {
         store: store,
-        children: [
-            /*#__PURE__*/ jsx_runtime_.jsx(CachedUser, {}),
-            /*#__PURE__*/ jsx_runtime_.jsx(Layout, {
-                children: /*#__PURE__*/ jsx_runtime_.jsx(Component, {
-                    ...pageProps
-                })
+        children: /*#__PURE__*/ jsx_runtime_.jsx(Layout, {
+            children: /*#__PURE__*/ jsx_runtime_.jsx(Component, {
+                ...pageProps
             })
-        ]
+        })
     }));
 }
 /* harmony default export */ const _app = (MAI);
+
+
+/***/ }),
+
+/***/ 9196:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "pH": () => (/* binding */ loginUser),
+/* harmony export */   "TX": () => (/* binding */ logoutUser),
+/* harmony export */   "ZP": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* unused harmony export userSlice */
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5184);
+/* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__);
+
+const userSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
+    name: 'user',
+    initialState: {
+        user: null,
+        logged_in: false
+    },
+    reducers: {
+        loginUser: (state, action)=>{
+            state.user = action.payload, state.logged_in = true;
+        },
+        logoutUser: (state)=>{
+            state.user = null, state.logged_in = false;
+        }
+    }
+});
+const { loginUser , logoutUser  } = userSlice.actions;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (userSlice.reducer);
 
 
 /***/ }),
@@ -687,7 +725,7 @@ module.exports = require("react/jsx-runtime");
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [7730,1664,3034,9196], () => (__webpack_exec__(2444)));
+var __webpack_exports__ = __webpack_require__.X(0, [7730,1664,3034], () => (__webpack_exec__(6579)));
 module.exports = __webpack_exports__;
 
 })();

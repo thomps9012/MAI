@@ -18,7 +18,6 @@ export default async function handler(req: any, res: any) {
                 password: hashedPW
             }
         })
-        console.log(result)
         res.json(result);
     } else {
         const { id, username, full_name, email, admin, editor } = data;
@@ -31,7 +30,6 @@ export default async function handler(req: any, res: any) {
                 editor: editor
             }
         })
-        console.log(result)
         res.json(result);
     }
 }

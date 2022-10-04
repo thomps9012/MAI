@@ -6,7 +6,7 @@ import titleCase from "../../../../utils/titleCase";
 
 export default function BasePage({ answer_id, agencies }: { agencies: any, answer_id: string }) {
     const user_data = useSelector((state: any) => state.user)
-    if (!user_data.editor) {
+    if (!user_data.user?.editor) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>

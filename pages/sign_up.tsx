@@ -27,7 +27,6 @@ export default function SignUp() {
                 full_name: fullName
             })
         }).then(res => res.json())
-        console.log(user_res)
         if (user_res.acknowledged) {
             const user_id = user_res.insertedId
             const user_cache = await caches.open('user');

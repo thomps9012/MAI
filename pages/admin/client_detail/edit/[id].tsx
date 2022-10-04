@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 export default function ClientEditPage({ baseline_record, testing_only_record, client_PID }: any) {
     const user_data = useSelector((state: any) => state.user)
-    if (!user_data.editor) {
+    if (!user_data.user?.editor) {
         return <main className="landing">
             <h1>You are Unauthorized to View this Page</h1><br />or<br /> <h1>Not Signed in</h1><hr /><Link href='/sign_in'>Login</Link><br/><Link href='/sign_up'>Sign Up</Link>
         </main>
@@ -56,7 +56,6 @@ export default function ClientEditPage({ baseline_record, testing_only_record, c
     const { interview_id, client_name, date_of_birth, agency, adult, phone_number, type, PID, gender } = client_info;
     const updatePID = (e: Event) => {
         const value = e.target
-        console.log(value)
     }
     const handleChange = (e: any) => {
 

@@ -30,17 +30,17 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
                 card_number: card_number
             })
         }).then(response => response.json());
-        res.acknowledged && await fetch('/api/cards/notify_admin', {
-            method: 'POST',
-            body: JSON.stringify({
-                PID: card_record.PID,
-                card_id: card_record._id,
-                type: type,
-                amount: amount,
-                interview_id: card_record.interview_id,
-                interview_type: interview_data.type,
-            })
-        })
+        // res.acknowledged && await fetch('/api/cards/notify_admin', {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         PID: card_record.PID,
+        //         card_id: card_record._id,
+        //         type: type,
+        //         amount: amount,
+        //         interview_id: card_record.interview_id,
+        //         interview_type: interview_data.type,
+        //     })
+        // })
         const card_cache = await caches.open('gift_cards');
         const client_cache = await caches.open('clients');
         client_cache.put(`interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
@@ -73,7 +73,6 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
 
 export async function getServerSideProps(ctx: any) {
     const { db } = await connectToDatabase();
-    console.log(ctx.params.id)
     const card_record = await db.collection('cards').findOne({ _id: new ObjectId(ctx.params.id as string) })
     const card_types = await db.collection('answers').findOne({ type: 'CARD_TYPES' });
     const card_amounts = await db.collection('answers').findOne({ type: 'CARD_AMOUNTS' });

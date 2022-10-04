@@ -5,7 +5,6 @@ function StateChecker(pageState: any) {
             unansweredArray.push(item)
         }
     }
-    console.log(unansweredArray)
     if (unansweredArray.length != 0) {
         document.querySelector('button')?.setAttribute('disabled', 'true')
     } else {

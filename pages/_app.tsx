@@ -7,7 +7,7 @@ import CachedUser from '../utils/cached-user';
 function MAI({ Component, pageProps }: any) {
 
     return <Provider store={store}>
-        <CachedUser />
+        {/* <CachedUser /> */}
         <Layout>
             <Component {...pageProps} />
         </Layout>

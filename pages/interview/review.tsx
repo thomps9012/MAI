@@ -69,7 +69,7 @@ export default function DataReview() {
             <h3>PID: {PID}</h3>
             <h3>{client_name}</h3>
             <h3> Tested by {agency}</h3>
-            {user_data.editor && <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}><a className="page-link">Edit Interview</a></Link>}
+            {user_data.user?.editor && <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}><a className="page-link">Edit Interview</a></Link>}
             <h4>Demographics</h4>
             <hr />
             <pre>{JSON.stringify(demographics, null, '\t')}</pre>

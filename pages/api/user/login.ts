@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 export default async function handler(req: any, res: any) {
     const { db } = await connectToDatabase();
     const data = JSON.parse(req.body);
-    console.log(data)
     if (data.email != null && data.email != undefined && data.email != '') {
         const { email, password } = data;
         const result = await db.collection('users').findOne({ email: email })
