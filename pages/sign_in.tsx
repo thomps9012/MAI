@@ -24,10 +24,13 @@ export default function SignIn() {
                 password: firstPW
             })
         }).then(res => res.json())
-        await fetch('/api/user/device_info', {
+        const device_info = await fetch('/api/user/device_info', {
             headers: { 'device': device, 'user_info': JSON.stringify(user_res) }
         }).then(res => res.json())
-
+        device_info && await fetch('/api/user/email_smtp', {
+            method: 'POST',
+            body: JSON.stringify(device_info)
+        })
         if (user_res.error) {
             alert(`there was a network error while logging into your account \n\n ${user_res.error}`)
         } else {

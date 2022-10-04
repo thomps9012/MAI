@@ -22,7 +22,6 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
             method: 'POST',
             body: JSON.stringify({
                 interview_id: card_record.interview_id,
-                PID: card_record.PID,
                 amount: amount,
                 type: type,
                 received_date: date,
@@ -31,6 +30,17 @@ export default function DisperseCardPage({ card_record, card_types, card_amounts
                 card_number: card_number
             })
         }).then(response => response.json());
+        res.acknowledged && await fetch('/api/cards/notify_admin', {
+            method: 'POST',
+            body: JSON.stringify({
+                PID: card_record.PID,
+                card_id: card_record._id,
+                type: type,
+                amount: amount,
+                interview_id: card_record.interview_id,
+                interview_type: interview_data.type,
+            })
+        })
         const card_cache = await caches.open('gift_cards');
         const client_cache = await caches.open('clients');
         client_cache.put(`interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`, await fetch(`/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`))
