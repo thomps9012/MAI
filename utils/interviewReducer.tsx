@@ -2,22 +2,13 @@ import { createSlice } from '@reduxjs/toolkit'
 
 export const interviewSlice = createSlice({
     name: 'interview',
-    // initialState: {
-    //     id: '',
-    //     type: '',
-    //     agency: '',
-    //     date: '',
-    //     PID: '',
-    //     client_name: ''
-    // },
-    // development state
     initialState: {
-        id: '632b08b71bd8d02df88c7eb7',
-        type: 'baseline',
-        agency: 'NORA',
-        date: '9/21/22',
-        PID: 'NORA165',
-        client_name: 'Test Client 4'
+        id: '',
+        type: '',
+        agency: '',
+        date: '',
+        PID: '',
+        client_name: ''
     },
     reducers: {
         setInterviewID: (state, action) => {
