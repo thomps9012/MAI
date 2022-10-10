@@ -24,7 +24,7 @@ Application is live @ https://minority-aids-initiative.vercel.app/
 
 ## Front-End
 1. [NextJs](https://nextjs.org/)
- - Lightweight front end layer that handles static page generation, server side rendering of data / props, and integrates easily with the Vercel Deployment platform
+ - Lightweight frontend layer that handles static page generation, server side rendering of data / props, and integrates easily with the Vercel Deployment platform
 2. [TypeScript](https://www.typescriptlang.org/)
  - Generally used to create type safe applications, to ensure that backend database models meet the data reflected on the front end.
  - In the case of this application it's use is limited due to the flexibility afforded administrative users with respect to changing question, answer, and user data
@@ -46,7 +46,7 @@ Application is live @ https://minority-aids-initiative.vercel.app/
 1. [MongoDB](https://www.mongodb.com/)
  - A document based database that stores user, client, and interview data in the cloud via an ATLAS cloud instance
  - Data is split into collections which can be updated dynamically based on user inputs from the front end
-3. [Bcrypt](https://www.npmjs.com/package/bcrypt)
+2. [bcrypt](https://www.npmjs.com/package/bcrypt)
  - Hashing algorithm used to obfuscate user password information to protect account integrity
  - Benefit of not having to decrypt the password when checking against a hashed password (stored in the database), instead checking the respective hashs for equality
  - Can be expanded to hash other sensitive information based on user requirements (i.e. email, SSN, DoB, etc.)
