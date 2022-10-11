@@ -97,12 +97,12 @@ function Footer() {
     const dispatch = (0,external_react_redux_.useDispatch)();
     const router = (0,router_.useRouter)();
     const Logout = async ()=>{
-        await caches.delete('user');
-        await caches.delete('interviews');
-        await caches.delete('clients');
-        await caches.delete('gift_cards');
-        await caches.delete('answers');
-        await caches.delete('questions');
+        await caches.delete("user");
+        await caches.delete("interviews");
+        await caches.delete("clients");
+        await caches.delete("gift_cards");
+        await caches.delete("answers");
+        await caches.delete("questions");
         dispatch((0,userReducer/* logoutUser */.TX)());
     };
     if (!user_info.logged_in) {
@@ -110,13 +110,13 @@ function Footer() {
             children: [
                 /*#__PURE__*/ jsx_runtime_.jsx("a", {
                     className: "nav-link",
-                    onClick: ()=>router.push('/sign_in')
+                    onClick: ()=>router.push("/sign_in")
                     ,
                     children: "Sign In"
                 }),
                 /*#__PURE__*/ jsx_runtime_.jsx("a", {
                     className: "nav-link",
-                    onClick: ()=>router.push('/sign_up')
+                    onClick: ()=>router.push("/sign_up")
                     ,
                     children: "Sign Up"
                 })
@@ -168,34 +168,30 @@ function NavBar() {
     );
     const setEditNav = (e)=>{
         const link = e.target.value;
-        link === '' && router.push('/');
+        link === "" && router.push("/");
         router.push(`/admin/${link}`);
         setActiveLink("");
     };
     const active_route = router.route;
     const logout = async ()=>{
-        await caches.delete('user');
-        await caches.delete('interviews');
-        await caches.delete('clients');
-        await caches.delete('gift_cards');
-        await caches.delete('answers');
-        await caches.delete('questions');
+        await caches.delete("user");
+        await caches.delete("interviews");
+        await caches.delete("clients");
+        await caches.delete("gift_cards");
+        await caches.delete("answers");
+        await caches.delete("questions");
         dispatch((0,userReducer/* logoutUser */.TX)());
     };
     (0,external_react_.useEffect)(()=>{
-        console.log('user_info', user_info.user);
-        console.log(user_info.logged_in, ': logged_in');
-        console.log('navbar');
-        const links = document.getElementsByClassName('nav-link');
-        const links2 = document.getElementsByClassName('hidden-link');
+        const links = document.getElementsByClassName("nav-link");
+        const links2 = document.getElementsByClassName("hidden-link");
         const all_links = [
             ...links,
             ...links2
         ];
         for(let i = 0; i < all_links.length; i++){
             const link = all_links[i];
-            console.log(link.id === active_route);
-            link.id === active_route ? link.setAttribute('class', 'hidden-link') : link.setAttribute('class', 'nav-link');
+            link.id === active_route ? link.setAttribute("class", "hidden-link") : link.setAttribute("class", "nav-link");
         }
     }, [
         active_route
@@ -365,7 +361,7 @@ function NavBar() {
                 ]
             }),
             /*#__PURE__*/ (0,jsx_runtime_.jsxs)("ul", {
-                className: `mobile-nav-${show ? 'show' : 'hide'}`,
+                className: `mobile-nav-${show ? "show" : "hide"}`,
                 onMouseLeave: ()=>setShow(false)
                 ,
                 children: [
@@ -565,7 +561,7 @@ function MAI({ Component , pageProps  }) {
 /* harmony import */ var _reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__);
 
 const userSlice = (0,_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__.createSlice)({
-    name: 'user',
+    name: "user",
     initialState: {
         user: null,
         logged_in: false

@@ -1,20 +1,23 @@
-import nodemailer from 'nodemailer';
-import titleCase from '../../../utils/titleCase';
+import nodemailer from "nodemailer";
+import titleCase from "../../../utils/titleCase";
 export default async function handler(req: any, res: any) {
-    const { PID, type, interview_type, amount, card_id, interview_id } = JSON.parse(req.body)
+  const { PID, type, interview_type, amount, card_id, interview_id } =
+    JSON.parse(req.body);
 
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.SENDER_EMAIL,
-            pass: process.env.GMAIL_PW
-        }
-    })
-    let msg = await transporter.sendMail({
-        from: process.env.SENDER_EMAIL,
-        to: process.env.ADMIN_EMAIL,
-        subject: `${PID} ${titleCase(interview_type.split("_").join(" "))} Gift Card Dispersed`,
-        html: `
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.SENDER_EMAIL,
+      pass: process.env.GMAIL_PW,
+    },
+  });
+  let msg = await transporter.sendMail({
+    from: process.env.SENDER_EMAIL,
+    to: process.env.ADMIN_EMAIL,
+    subject: `${PID} ${titleCase(
+      interview_type.split("_").join(" ")
+    )} Gift Card Dispersed`,
+    html: `
         <br />
         Client ${PID}
         <br />
@@ -33,7 +36,10 @@ export default async function handler(req: any, res: any) {
         Sincerely,
         <br />
         Development Team
-        `})
-    msg.accepted.length > 0 && res.json({ status: 200, res: 'Message Succesfully Sent' });
-    msg.accepted.length === 0 && res.json({ status: 400, res: 'Message Not Sent' });
+        `,
+  });
+  msg.accepted.length > 0 &&
+    res.json({ status: 200, res: "Message Succesfully Sent" });
+  msg.accepted.length === 0 &&
+    res.json({ status: 400, res: "Message Not Sent" });
 }

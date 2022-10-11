@@ -1,6 +1,6 @@
-export {}
+export {};
 describe("Web Nav", () => {
-    beforeEach(() => {
-        cy.visit('/');
-    });
+  beforeEach(() => {
+    cy.visit("/");
+  });
 });

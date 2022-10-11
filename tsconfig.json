@@ -6,14 +6,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "ES5",
-      "ES6",
-      "ES7",
-      "ES2021",
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ES5", "ES6", "ES7", "ES2021", "ESNext", "DOM"],
     "allowJs": true,
     "noEmit": true,
     "incremental": true,
@@ -28,9 +21,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "util/mongodb.js"
-, "public/question_cache.js", "cypress/cypress.config.ts", "cypress/e2e/cypress.config.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "util/mongodb.js",
+    "public/question_cache.js",
+    "cypress/cypress.config.ts",
+    "cypress/e2e/cypress.config.js"
+  ],
+  "exclude": ["node_modules"]
 }

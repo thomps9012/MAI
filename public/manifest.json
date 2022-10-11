@@ -1,16 +1,18 @@
 {
-    "name": "National Minority Aids Initiative",
-    "short_name": "MAI",
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
-    "orientation": "portrait",
-    "display": "fullscreen",
-    "scope": "/",
-    "start_url": "/",
-    "icons": [{
-        "src": "/nora_favicon.png",
-        "sizes": "270x270",
-        "type": "image/png"
-    }],
-    "splash_pages": null
+  "name": "National Minority Aids Initiative",
+  "short_name": "MAI",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "display": "fullscreen",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/nora_favicon.png",
+      "sizes": "270x270",
+      "type": "image/png"
+    }
+  ],
+  "splash_pages": null
 }
