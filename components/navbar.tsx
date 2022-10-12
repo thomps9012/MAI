@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../utils/userReducer";
+import cookieCutter from "cookie-cutter";
 
 export default function NavBar() {
   const router = useRouter();
@@ -18,6 +19,9 @@ export default function NavBar() {
   };
   const active_route = router.route;
   const logout = async () => {
+    cookieCutter.set("user_id");
+    cookieCutter.set("user_editor");
+    cookieCutter.set("user_admin");
     await caches.delete("user");
     await caches.delete("interviews");
     await caches.delete("clients");

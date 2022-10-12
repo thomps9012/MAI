@@ -15,7 +15,9 @@ body {
   display: flex;
   justify-content: center;
 }
-
+.hidden {
+  display: none;
+}
 .progress_outline {
   height: 20px;
   width: 50%;

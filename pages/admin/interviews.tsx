@@ -17,9 +17,7 @@ export default function InterviewRecordsPage({
   const [testing_only, setTestingOnly] = useState(testing_only_records);
   const [follow_ups, setFollowUps] = useState(follow_up_records);
   const [exits, setExits] = useState(exit_records);
-  const [searchPID, setPID] = useState("");
-  const [search, setAgency] = useState("");
-  const [searchTypes, setInterviewTypes] = useState("");
+  const [selected_type, setSelectedType] = useState("all");
   const { data: agency_data, error: agency_err } = useSWR(
     "/api/answers/testing_agencies",
     fetcher
@@ -47,72 +45,102 @@ export default function InterviewRecordsPage({
       </main>
     );
   }
-  const filter_by_agency = (agency: string) => {
-    setBaselines(
-      baseline_records.filter((record: any) => record.agency === agency)
-    );
-    setTestingOnly(
-      testing_only_records.filter((record: any) => record.agency === agency)
-    );
-    setFollowUps(
-      follow_up_records.filter((record: any) => record.agency === agency)
-    );
-    setExits(exit_records.filter((record: any) => record.agency === agency));
+  const getPIDInput = () => {
+    const PID_input = (document.getElementById("pid") as HTMLInputElement)
+      ?.value;
+    return PID_input;
   };
-  const filter_by_PID = (PID: string) => {
-    setBaselines(baselines.filter((record: any) => record.PID.includes(PID)));
-    setTestingOnly(
-      testing_only.filter((record: any) => record.PID.includes(PID))
-    );
-    setFollowUps(follow_ups.filter((record: any) => record.PID.includes(PID)));
-    setExits(exits.filter((record: any) => record.PID.includes(PID)));
-  };
-  const filter_by_type = (selected_types: string[]) => {
-    console.log(selected_types);
-    !selected_types.includes("baseline") && setBaselines([]);
-    !selected_types.includes("testing_only") && setTestingOnly([]);
-    !selected_types.includes("follow_up") && setFollowUps([]);
-    !selected_types.includes("exit") && setExits([]);
-  };
-  const reset_filters = () => {
-    setBaselines(baseline_records);
-    setTestingOnly(testing_only_records);
-    setFollowUps(follow_up_records);
-    setExits(exit_records);
-    (document.getElementById("agency") as HTMLSelectElement).setAttribute(
-      "selected",
-      ""
-    );
-    (document.getElementById("pid") as HTMLInputElement).setAttribute(
-      "value",
-      ""
-    );
-    (
-      document.getElementById("interview_type") as HTMLSelectElement
-    ).setAttribute("value", "all");
-  };
-  const filter_records = async (e: any) => {
-    setBaselines(baseline_records);
-    setTestingOnly(testing_only_records);
-    setFollowUps(follow_up_records);
-    setExits(exit_records);
+  const getAgencyInput = () => {
     const selected_agency = (
       document.getElementById("agency") as HTMLSelectElement
     )?.value;
-    selected_agency != "" && filter_by_agency(selected_agency);
-    const PID_input = (document.getElementById("pid") as HTMLInputElement)
-      ?.value;
-    PID_input != "" && filter_by_PID(PID_input);
-    const selected = document.getElementsByClassName("interview_type");
-    let selected_types: string[] = [];
-    for (const item in selected) {
-      const inputEl = selected[item] as HTMLOptionElement;
-      if (inputEl.selected && inputEl.value === "all") {
-        selected_types = ["baseline", "testing_only", "follow_up", "exit"];
-      }
-      if (inputEl.selected) selected_types.push(inputEl.value);
+    return selected_agency;
+  };
+  const filter_by_PID = (PID: string) => {
+    setBaselines(
+      baseline_records.filter((record: any) => record.PID.includes(PID))
+    );
+    setTestingOnly(
+      testing_only_records.filter((record: any) => record.PID.includes(PID))
+    );
+    setFollowUps(
+      follow_up_records.filter((record: any) => record.PID.includes(PID))
+    );
+    setExits(exit_records.filter((record: any) => record.PID.includes(PID)));
+  };
+  const filter_by_agency = (agency: string, PID_input: string) => {
+    setBaselines(
+      baseline_records.filter(
+        (record: any) =>
+          record.agency === agency && record.PID.includes(PID_input)
+      )
+    );
+    setTestingOnly(
+      testing_only_records.filter(
+        (record: any) =>
+          record.agency === agency && record.PID.includes(PID_input)
+      )
+    );
+    setFollowUps(
+      follow_up_records.filter(
+        (record: any) =>
+          record.agency === agency && record.PID.includes(PID_input)
+      )
+    );
+    setExits(
+      exit_records.filter(
+        (record: any) =>
+          record.agency === agency && record.PID.includes(PID_input)
+      )
+    );
+  };
+  const display_all = (elements: any) => {
+    console.log(elements);
+    for (let i = 0; i < elements.length; i++) {
+      const element_id = elements[i].id;
+      document
+        .getElementById(element_id)
+        ?.setAttribute("class", "interview_overviews");
     }
-    selected_types.length != 0 && filter_by_type(selected_types);
+  };
+  const display_one = (elements: any, selected: string) => {
+    for (let i = 0; i < elements.length; i++) {
+      const element_id = elements[i].id;
+      if (element_id === selected) {
+        document
+          .getElementById(element_id)
+          ?.setAttribute("class", "interview_overviews");
+      } else {
+        document.getElementById(element_id)?.setAttribute("class", "hidden");
+      }
+    }
+  };
+  const get_elements = () => {
+    const elements = document.getElementsByClassName(
+      "interview_overviews"
+    ) as unknown as Array<HTMLElement>;
+    const hidden_elements = document.getElementsByClassName(
+      "hidden"
+    ) as unknown as Array<HTMLElement>;
+    const all_interview_elements = [...elements, ...hidden_elements];
+    return all_interview_elements;
+  };
+  const filter_by_type = (selected_type: string) => {
+    const elements = get_elements();
+    if (selected_type === "all") {
+      display_all(elements);
+    } else {
+      display_one(elements, selected_type);
+    }
+    setSelectedType(selected_type);
+  };
+  const filter_records = () => {
+    if (selected_type != "all") {
+      filter_by_type(selected_type);
+    }
+    const PID = getPIDInput();
+    const agency = getAgencyInput();
+    agency === "" ? filter_by_PID(PID) : filter_by_agency(agency, PID);
   };
   return (
     <main className="container">
@@ -125,6 +153,53 @@ export default function InterviewRecordsPage({
           flexWrap: "wrap",
         }}
       >
+        <div style={{ flexDirection: "column", display: "flex" }}>
+          <h3>Interview Type</h3>
+          <a
+            className="button"
+            style={{ width: "auto" }}
+            id="all_results"
+            onClick={() => filter_by_type("all")}
+          >
+            All Interviews
+          </a>
+          <div
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+          >
+            <a
+              className="button"
+              onClick={() => filter_by_type("all")}
+              id="baseline_results"
+              style={{ width: "auto" }}
+            >
+              Baseline
+            </a>
+            <a
+              className="button"
+              onClick={() => filter_by_type("testing-only")}
+              id="testing-only_results"
+              style={{ width: "auto" }}
+            >
+              Testing Only
+            </a>
+            <a
+              className="button"
+              onClick={() => filter_by_type("follow-up")}
+              id="follow-up_results"
+              style={{ width: "auto" }}
+            >
+              Follow Up
+            </a>
+            <a
+              className="button"
+              onClick={() => filter_by_type("exit")}
+              id="exit_results"
+              style={{ width: "auto" }}
+            >
+              Exit
+            </a>
+          </div>
+        </div>
         <div style={{ flexDirection: "column" }}>
           <h3>Agency</h3>
           <select
@@ -145,87 +220,47 @@ export default function InterviewRecordsPage({
           <h3>PID</h3>
           <input name="pid" id="pid" type="number" onChange={filter_records} />
         </div>
-        <div style={{ flexDirection: "column" }}>
-          <h3>Type</h3>
-          <select
-            aria-label="interview_type"
-            title="interview_type"
-            className="type_select"
-            multiple
-            name="interview_type"
-            id="interview_type"
-            onChange={filter_records}
-            defaultValue="all"
-          >
-            <option value="all" className="interview_type">
-              All
-            </option>
-            <option value="baseline" className="interview_type">
-              Baseline
-            </option>
-            <option value="testing_only" className="interview_type">
-              Testing Only
-            </option>
-            <option value="follow_up" className="interview_type">
-              Follow Up
-            </option>
-            <option value="exit" className="interview_type">
-              Exit
-            </option>
-          </select>
-        </div>
-        <a className="button" onClick={reset_filters}>
-          Reset Filters
-        </a>
       </div>
-      {baselines?.length > 0 && (
-        <section className="interview_overviews">
-          <h1 id="baseline">Baseline Interviews</h1>
-          <hr />
-          {baselines.map((record: any) => (
-            <InterviewOverview
-              key={record._id}
-              record={record}
-              type={"baseline"}
-            />
-          ))}
-        </section>
-      )}
-      {testing_only?.length > 0 && (
-        <section className="interview_overviews">
-          <h1 id="testing_only">Testing Only Interviews</h1>
-          <hr />
-          {testing_only.map((record: any) => (
-            <InterviewOverview
-              key={record._id}
-              record={record}
-              type={"testing_only"}
-            />
-          ))}
-        </section>
-      )}
-      {follow_ups?.length > 0 && (
-        <section className="interview_overviews">
-          <h1 id="follow_up">Follow Up Interviews</h1>
-          <hr />
-          {follow_ups.map((record: any) => (
-            <InterviewOverview
-              key={record._id}
-              record={record}
-              type={"follow_up"}
-            />
-          ))}
-        </section>
-      )}
-      {exits?.length > 0 && (
-        <section className="interview_overviews">
-          <h1 id="exit">Exit Interviews</h1>
-          <hr />
-          {exits.map((record: any) => (
-            <InterviewOverview key={record._id} record={record} type={"exit"} />
-          ))}
-        </section>
-      )}
+      <section className="interview_overviews" id="baseline">
+        <h1 id="baseline">Baseline Interviews</h1>
+        <hr />
+        {baselines.map((record: any) => (
+          <InterviewOverview
+            key={record._id}
+            record={record}
+            type={"baseline"}
+          />
+        ))}
+      </section>
+      <section className="interview_overviews" id="testing-only">
+        <h1 id="testing_only">Testing Only Interviews</h1>
+        <hr />
+        {testing_only.map((record: any) => (
+          <InterviewOverview
+            key={record._id}
+            record={record}
+            type={"testing_only"}
+          />
+        ))}
+      </section>
+      <section className="interview_overviews" id="follow-up">
+        <h1 id="follow-up">Follow Up Interviews</h1>
+        <hr />
+        {follow_ups.map((record: any) => (
+          <InterviewOverview
+            key={record._id}
+            record={record}
+            type={"follow_up"}
+          />
+        ))}
+      </section>
+      <section className="interview_overviews" id="exit">
+        <h1 id="exit">Exit Interviews</h1>
+        <hr />
+        {exits.map((record: any) => (
+          <InterviewOverview key={record._id} record={record} type={"exit"} />
+        ))}
+      </section>
     </main>
   );
 }
