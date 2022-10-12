@@ -6,6 +6,7 @@ import InterviewOverview from "../../components/interviewOverview";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 import Cookies from "cookies";
+import GraphDisplay from "../../components/graphDisplay";
 export default function InterviewRecordsPage({
   baseline_records,
   testing_only_records,
@@ -56,7 +57,7 @@ export default function InterviewRecordsPage({
     )?.value;
     return selected_agency;
   };
-  const filter_by_PID = (PID: string) => {
+  const filter_by_PID = async (PID: string) => {
     setBaselines(
       baseline_records.filter((record: any) => record.PID.includes(PID))
     );
@@ -68,7 +69,7 @@ export default function InterviewRecordsPage({
     );
     setExits(exit_records.filter((record: any) => record.PID.includes(PID)));
   };
-  const filter_by_agency = (agency: string, PID_input: string) => {
+  const filter_by_agency = async (agency: string, PID_input: string) => {
     setBaselines(
       baseline_records.filter(
         (record: any) =>
@@ -95,7 +96,6 @@ export default function InterviewRecordsPage({
     );
   };
   const display_all = (elements: any) => {
-    console.log(elements);
     for (let i = 0; i < elements.length; i++) {
       const element_id = elements[i].id;
       document
@@ -127,6 +127,7 @@ export default function InterviewRecordsPage({
   };
   const filter_by_type = (selected_type: string) => {
     const elements = get_elements();
+    filter_records();
     if (selected_type === "all") {
       display_all(elements);
     } else {
@@ -134,17 +135,47 @@ export default function InterviewRecordsPage({
     }
     setSelectedType(selected_type);
   };
-  const filter_records = () => {
-    if (selected_type != "all") {
-      filter_by_type(selected_type);
-    }
+  const filter_records = async () => {
     const PID = getPIDInput();
     const agency = getAgencyInput();
-    agency === "" ? filter_by_PID(PID) : filter_by_agency(agency, PID);
+    agency === "" ? await filter_by_PID(PID) : await filter_by_agency(agency, PID);
+  };
+  const reset_filters = () => {
+    const elements = get_elements();
+    (document.getElementById("pid") as HTMLInputElement).setAttribute(
+      "value",
+      ""
+    );
+    (document.getElementById("agency") as HTMLInputElement).setAttribute(
+      "value",
+      ""
+    );
+    display_all(elements);
+    setBaselines(baseline_records);
+    setTestingOnly(testing_only_records);
+    setFollowUps(follow_up_records);
+    setExits(exit_records);
+    setSelectedType("all");
   };
   return (
     <main className="container">
-      <h3>Filters</h3>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          flexWrap: "wrap",
+        }}
+      >
+        <h2>Filters</h2>
+        <a
+          className="button"
+          style={{ width: "fit-content" }}
+          onClick={reset_filters}
+        >
+          Clear Filters
+        </a>
+      </div>
       <div
         style={{
           display: "flex",
@@ -168,7 +199,7 @@ export default function InterviewRecordsPage({
           >
             <a
               className="button"
-              onClick={() => filter_by_type("all")}
+              onClick={() => filter_by_type("baseline")}
               id="baseline_results"
               style={{ width: "auto" }}
             >
@@ -221,6 +252,13 @@ export default function InterviewRecordsPage({
           <input name="pid" id="pid" type="number" onChange={filter_records} />
         </div>
       </div>
+      <GraphDisplay
+        baselines={baselines}
+        testing_only={testing_only}
+        follow_ups={follow_ups}
+        exits={exits}
+        type={selected_type}
+      />
       <section className="interview_overviews" id="baseline">
         <h1 id="baseline">Baseline Interviews</h1>
         <hr />
