@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -40,8 +41,17 @@ export default function CardDetailPage({ card_record }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_admin = cookies.get("user_admin");
+  if (!user_admin) {
+    return {
+      props: {
+        card_record: {},
+      },
+    };
+  }
   const card_record = await db
     .collection("cards")
     .findOne({ _id: new ObjectId(ctx.params.id as string) });

@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ export default function DisperseCardPage({
       dateStyle: "short",
     }).format(Date.now())
   );
+  const user_data = useSelector((state: any) => state.user);
   const [amount, setAmount] = useState(-1);
   const [type, setType] = useState("");
   const [card_number, setCardNumber] = useState(-1);
@@ -30,6 +32,7 @@ export default function DisperseCardPage({
   }, [amount, type, card_number]);
   const disperseCard = async () => {
     const res = await fetch("/api/cards/disperse", {
+      headers: { admin: user_data.user.admin },
       method: "POST",
       body: JSON.stringify({
         interview_id: card_record.interview_id,
@@ -70,6 +73,13 @@ export default function DisperseCardPage({
     );
     res.acknowledged && router.push("/gift_card/records");
   };
+  if (!user_data.user.admin) {
+    return (
+      <main className="container">
+        <h1>You are Unauthorized to View this Page</h1>
+      </main>
+    );
+  }
   return (
     <main className="container">
       <h1>
@@ -124,8 +134,19 @@ export default function DisperseCardPage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_admin = cookies.get("user_admin");
+  if (!user_admin) {
+    return {
+      props: {
+        card_amounts: {},
+        card_record: {},
+        card_types: {},
+      },
+    };
+  }
   const card_record = await db
     .collection("cards")
     .findOne({ _id: new ObjectId(ctx.params.id as string) });

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../utils/userReducer";
-
+import cookieCutter from "cookie-cutter";
 export default function SignIn() {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -63,6 +63,15 @@ export default function SignIn() {
           }),
         })
       );
+      cookieCutter.set("user_admin", user_res.admin, {
+        path: "/",
+      });
+      cookieCutter.set("user_editor", user_res.editor, {
+        path: "/",
+      });
+      cookieCutter.set("user_id", user_res._id, {
+        path: "/",
+      });
       dispatch(
         loginUser({
           id: user_res._id,

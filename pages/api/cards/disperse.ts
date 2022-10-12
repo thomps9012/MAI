@@ -2,9 +2,13 @@ import { connectToDatabase } from "../../../utils/mongodb";
 import { ObjectId } from "mongodb";
 
 export default async function handler(
-  req: { body: string },
+  req: { body: string; headers: any },
   res: { json: (arg0: any) => void }
 ) {
+  let admin = JSON.parse(req.headers.admin as string);
+  if (!admin) {
+    res.json({ res: "Unauthorized", status: 401 });
+  }
   const { db } = await connectToDatabase();
   let data = JSON.parse(req.body);
   const {

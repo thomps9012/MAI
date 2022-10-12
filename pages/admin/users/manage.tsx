@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
@@ -38,7 +39,16 @@ export default function ManageUsers({ users }: any) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }: any) {
+  const cookies = new Cookies(req, res);
+  const admin_status = cookies.get("user_admin");
+  if (!admin_status) {
+    return {
+      props: {
+        users: [],
+      },
+    };
+  }
   const { db } = await connectToDatabase();
   const users = await db.collection("users").find({}).toArray();
   return {

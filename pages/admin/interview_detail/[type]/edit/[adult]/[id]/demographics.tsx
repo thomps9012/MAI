@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -75,6 +76,7 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
         interview_section: section,
         interview_type: type,
         record_id: _id,
+        editor: user_data.user.editor,
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
@@ -181,8 +183,18 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        interview_record: {},
+        adult: false,
+      },
+    };
+  }
   const interview_record = await db
     .collection(ctx.params.type)
     .findOne(

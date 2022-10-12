@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -141,8 +142,18 @@ export default function EditUser({ user }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ ctx, req, res }: any) {
+  const cookies = new Cookies(req, res);
+  const admin_status = cookies.get("user_admin");
+  const cookie_user_id = cookies.get("user_id");
   const user_id = ctx.query.id;
+  if (!admin_status && user_id != cookie_user_id) {
+    return {
+      props: {
+        user: {},
+      },
+    };
+  }
   const { db } = await connectToDatabase();
   const user_info = await db
     .collection("users")

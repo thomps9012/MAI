@@ -6,6 +6,7 @@ import titleCase from "../../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import Cookies from "cookies";
 export default function BasePage({
   question_id,
   question_choice,
@@ -88,7 +89,7 @@ export default function BasePage({
         });
 
     const response = await fetch("/api/questions/edit", {
-      headers: { question_id: question_id },
+      headers: { question_id: question_id, editor: user_data.user.editor },
       method: "POST",
       body: JSON.stringify(question_data),
     }).then((res) => res.json());
@@ -264,8 +265,18 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        question_choice: "",
+        question_id: "",
+      },
+    };
+  }
   const question_choice = await db
     .collection("questions")
     .findOne({ _id: ctx.params.id });

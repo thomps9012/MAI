@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -10,7 +11,7 @@ export default function BasePage({ card_amounts }: any) {
   const [new_amount, setNewAmount] = useState(0);
   const addNew = async () => {
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: card_amounts._id },
+      headers: { answer_id: card_amounts._id, editor: user_data.user.editor },
       body: JSON.stringify({
         type: "CARD_AMOUNTS",
         choices: [...card_amounts.choices, new_amount],
@@ -49,8 +50,17 @@ export default function BasePage({ card_amounts }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        card_amounts: {},
+      },
+    };
+  }
   const card_amounts = await db
     .collection("answers")
     .findOne({ type: "CARD_AMOUNTS" }, { _id: 1, choices: 1 });

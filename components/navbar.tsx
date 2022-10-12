@@ -57,14 +57,14 @@ export default function NavBar() {
         {!user_info.logged_in && (
           <li className="nav-link" id="/sign_in">
             <Link href="/sign_in">
-              <a>Login</a>
+              <a>Admin Login</a>
             </Link>
           </li>
         )}
         {!user_info.logged_in && (
           <li className="nav-link" id="/sign_up">
             <Link href="/sign_up">
-              <a>Sign Up</a>
+              <a>Admin Sign Up</a>
             </Link>
           </li>
         )}
@@ -133,6 +133,11 @@ export default function NavBar() {
             </Link>
           </li>
         )}
+        {user_info.logged_in && (
+          <li className="nav-link">
+            <a onClick={logout}>Logout</a>
+          </li>
+        )}
       </ul>
       <div className="mobile-menu">
         <a onClick={() => setShow(!show)}>
@@ -166,14 +171,14 @@ export default function NavBar() {
         {!user_info.logged_in && (
           <li className="nav-link" onClick={() => setShow(false)} id="/sign_in">
             <Link href="/sign_in">
-              <a>Login</a>
+              <a>Admin Login</a>
             </Link>
           </li>
         )}
         {!user_info.logged_in && (
           <li className="nav-link" onClick={() => setShow(false)} id="/sign_up">
             <Link href="/sign_up">
-              <a>Sign Up</a>
+              <a>Admin Sign Up</a>
             </Link>
           </li>
         )}

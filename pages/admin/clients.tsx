@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -101,7 +102,16 @@ export default function AllClientsPage({ all_clients }: any) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }: any) {
+  const cookies = new Cookies(req, res);
+  const admin_status = cookies.get("user_admin");
+  if (!admin_status) {
+    return {
+      props: {
+        all_clients: [],
+      },
+    };
+  }
   const { db } = await connectToDatabase();
   const baseline_clients = await db
     .collection("baseline")

@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../../utils/mongodb";
@@ -40,8 +41,18 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        card_types: {},
+        answer_id: "",
+      },
+    };
+  }
   const card_types = await db
     .collection("answers")
     .findOne({ _id: ctx.params.id });

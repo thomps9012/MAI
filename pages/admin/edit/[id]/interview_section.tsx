@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -12,6 +13,7 @@ export default function BasePage({ section_name }: { section_name: string }) {
         section_name: (
           document.getElementById("section_name") as HTMLInputElement
         )?.value,
+        editor: user_data.user.editor,
       },
     }).then((res) => res.json());
     const question_cache = await caches.open("questions");
@@ -50,7 +52,16 @@ export default function BasePage({ section_name }: { section_name: string }) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        section_name: "",
+      },
+    };
+  }
   return {
     props: {
       section_name: ctx.params.id ? ctx.params.id : "",

@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -53,8 +54,18 @@ export default function EditInterviewPage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        interview_record: {},
+        gift_card: {},
+      },
+    };
+  }
   const interview_record = await db
     .collection(ctx.params.type)
     .findOne(

@@ -15,6 +15,7 @@ export default function BasePage() {
       choice != "" && choice_arr.push(choice);
     }
     const response = await fetch("/api/answers/all/add", {
+      headers: { editor: user_data.user.editor },
       body: JSON.stringify({
         type: answer_type.toUpperCase().split(" ").join("_"),
         choices: choice_arr,

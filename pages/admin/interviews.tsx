@@ -5,7 +5,7 @@ import useSWR from "swr";
 import InterviewOverview from "../../components/interviewOverview";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
-
+import Cookies from "cookies";
 export default function InterviewRecordsPage({
   baseline_records,
   testing_only_records,
@@ -230,7 +230,19 @@ export default function InterviewRecordsPage({
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }: any) {
+  const cookies = new Cookies(req, res);
+  const admin_status = cookies.get("user_admin");
+  if (!admin_status) {
+    return {
+      props: {
+        baseline_records: [],
+        testing_only_records: [],
+        follow_up_records: [],
+        exit_records: [],
+      },
+    };
+  }
   const { db } = await connectToDatabase();
   const baseline_records = await db
     .collection("baseline")

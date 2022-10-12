@@ -74,6 +74,7 @@ export default function SexualBehavior() {
         interview_section: section,
         interview_type: interview_data.type,
         record_id: interview_data.id,
+        editor: "true",
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());

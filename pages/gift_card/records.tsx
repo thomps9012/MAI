@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
@@ -129,8 +130,17 @@ export default function CardRecordsPage({ card_records }: any) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_admin = cookies.get("user_admin");
+  if (!user_admin) {
+    return {
+      props: {
+        card_records: [],
+      },
+    };
+  }
   const card_records = await db
     .collection("cards")
     .find({}, { _id: 1, PID: 1, date: 1, received_date: 1 })

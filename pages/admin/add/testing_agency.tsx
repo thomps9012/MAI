@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -11,7 +12,7 @@ export default function BasePage({ agencies }: any) {
   const [new_agency, setNewAgency] = useState("");
   const addNew = async () => {
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: agencies._id },
+      headers: { answer_id: agencies._id, editor: user_data.user.editor },
       body: JSON.stringify({
         type: "TESTING_AGENCIES",
         choices: [
@@ -53,8 +54,17 @@ export default function BasePage({ agencies }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        agencies: {},
+      },
+    };
+  }
   const agencies = await db
     .collection("answers")
     .findOne({ type: "TESTING_AGENCIES" }, { _id: 1, choices: 1 });

@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -25,7 +26,7 @@ export default function BasePage({
       agency_arr.push(name);
     }
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: answer_id },
+      headers: { answer_id: answer_id, editor: user_data.user.editor },
       body: JSON.stringify({
         type: "TESTING_AGENCIES",
         choices: agency_arr,
@@ -67,8 +68,18 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        agencies: {},
+        answer_id: "",
+      },
+    };
+  }
   const agencies = await db
     .collection("answers")
     .findOne({ _id: ctx.params.id });

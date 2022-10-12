@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -49,8 +50,17 @@ export default function BasePage({ card_types }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        card_types: {},
+      },
+    };
+  }
   const card_types = await db
     .collection("answers")
     .findOne({ type: "CARD_TYPES" }, { _id: 1, choices: 1 });

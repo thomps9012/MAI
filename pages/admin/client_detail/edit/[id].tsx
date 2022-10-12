@@ -5,6 +5,7 @@ import useSWR from "swr";
 import fetcher from "../../../../utils/fetcher";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import Cookies from "cookies";
 
 export default function ClientEditPage({
   baseline_record,
@@ -99,7 +100,7 @@ export default function ClientEditPage({
     if (duplicate_PID) return;
     if (!validPhoneNumber) return;
     const response = await fetch(
-      `/api/client/edit_demographics?record_id=${interview_id}&interview_type=${type}`,
+      `/api/client/edit_demographics?record_id=${interview_id}&interview_type=${type}?editor=${user_data.user.editor}`,
       {
         body: JSON.stringify({
           date_of_birth: date_of_birth,
@@ -199,8 +200,19 @@ export default function ClientEditPage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        baseline_record: {},
+        testing_only_record: {},
+        client_PID: "",
+      },
+    };
+  }
   const baseline_record = await db.collection("baseline").findOne(
     { PID: ctx.params.id },
     {

@@ -1,5 +1,4 @@
 import DefaultHeader from "./defaultHeader";
-import Footer from "./footer";
 import NavBar from "./navbar";
 
 export default function Layout({ children }: any) {
@@ -8,7 +7,6 @@ export default function Layout({ children }: any) {
       <DefaultHeader />
       <NavBar />
       {children}
-      <Footer />
     </>
   );
 }

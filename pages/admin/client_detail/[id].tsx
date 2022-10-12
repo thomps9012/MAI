@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
@@ -85,8 +86,21 @@ export default function ClientDetailPage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_admin = cookies.get("user_admin");
+  if (!user_admin) {
+    return {
+      props: {
+        baseline_record: {},
+        testing_only_record: {},
+        follow_up_record: {},
+        exit_record: {},
+        client_PID: "",
+      },
+    };
+  }
   const baseline_record = await db
     .collection("baseline")
     .findOne({ PID: ctx.params.id }, { _id: 1, date: 1, type: 1, agency: 1 });

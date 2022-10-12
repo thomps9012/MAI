@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -75,8 +76,17 @@ export default function InterviewDetailPage({ interview_record }: any) {
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const admin_status = cookies.get("user_admin");
+  if (!admin_status) {
+    return {
+      props: {
+        users: [],
+      },
+    };
+  }
   const interview_record = await db
     .collection(ctx.params.type)
     .findOne({ _id: new ObjectId(ctx.params.id as string) });

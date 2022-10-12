@@ -1,3 +1,4 @@
+import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -21,7 +22,7 @@ export default function BasePage({
       choice != "" && choice_arr.push(choice);
     }
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: answer_id },
+      headers: { answer_id: answer_id, editor: user_data.user.editor },
       body: JSON.stringify({
         type: answer_choice.type,
         choices: choice_arr,
@@ -66,8 +67,18 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
+  const cookies = new Cookies(req, res);
+  const user_editor = cookies.get("user_editor");
+  if (!user_editor) {
+    return {
+      props: {
+        answer_choice: "",
+        answer_id: "",
+      },
+    };
+  }
   const answer_choice = await db
     .collection("answers")
     .findOne({ _id: ctx.params.id });

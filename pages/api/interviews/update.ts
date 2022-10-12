@@ -4,6 +4,10 @@ import { connectToDatabase } from "../../../utils/mongodb";
 export default async function handler(req: any, res: any) {
   const { db } = await connectToDatabase();
   req.headers;
+  let editor = JSON.parse(req.headers.editor);
+  if (!editor) {
+    res.json({ res: "Unauthorized", status: 401 });
+  }
   let collection = req.headers.interview_type;
   let section = req.headers.interview_section;
   let record_id = req.headers.record_id;

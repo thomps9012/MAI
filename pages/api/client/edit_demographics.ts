@@ -6,6 +6,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  let editor = JSON.parse(req.headers.editor as string);
+  if (!editor) {
+    res.json({ res: "Unauthorized", status: 401 });
+  }
   let params = req.query;
   const { db } = await connectToDatabase();
   const data = JSON.parse(req.body);
