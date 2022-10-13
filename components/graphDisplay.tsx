@@ -21,6 +21,9 @@ export default function GraphDisplay({
     ...testing_only,
     ...exits,
   ]);
+  useEffect(() => {
+    setData([...baselines, ...follow_ups, ...testing_only, ...exits]);
+  }, [baselines, follow_ups, testing_only, exits]);
   const [ages, setAges] = useState([
     { label: "Under 18", count: 0 },
     { label: "18 - 25", count: 0 },
