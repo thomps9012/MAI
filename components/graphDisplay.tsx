@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import titleCase from "../utils/titleCase";
+import BarChart from "./barChart";
 
 export default function GraphDisplay({
   baselines,
@@ -20,38 +21,58 @@ export default function GraphDisplay({
     ...testing_only,
     ...exits,
   ]);
-//   {
-// 15-
-// 15-18
-// 20-25
-// 25-30
-// 30-35
-// 35-40
-// 40-50
-// 50+
-// }
-  const [ages, setAges] = useState([]);
-  const [genders, setGenders] = useState({
-    male_count: 0,
-    female_count: 0,
-    other_count: 0,
-  });
-  const [latinx, setLatinX] = useState({
-    yes_count: 0,
-    no_count: 0,
-  });
-  const [healthcare_knowledge, setHealthCare] = useState({
-    yes_count: 0,
-    no_count: 0,
-  });
-  const [vh_informed, setVH] = useState({
-    yes_count: 0,
-    no_count: 0,
-  });
-  const [hiv_informed, setHIV] = useState({
-    yes_count: 0,
-    no_count: 0,
-  });
+  const [ages, setAges] = useState([
+    { label: "Under 18", count: 0 },
+    { label: "18 - 25", count: 0 },
+    { label: "25 -35", count: 0 },
+    { label: "35 - 50", count: 0 },
+    { label: "50 Plus", count: 0 },
+  ]);
+  const [genders, setGenders] = useState([
+    { label: "Male", count: 0 },
+    { label: "Female", count: 0 },
+    { label: "Other", count: 0 },
+  ]);
+  const [latinx, setLatinX] = useState([
+    {
+      label: "Yes",
+      count: 0,
+    },
+    {
+      label: "No",
+      count: 0,
+    },
+  ]);
+  const [healthcare_knowledge, setHealthCare] = useState([
+    {
+      label: "Yes",
+      count: 0,
+    },
+    {
+      label: "No",
+      count: 0,
+    },
+  ]);
+  const [vh_informed, setVH] = useState([
+    {
+      label: "Yes",
+      count: 0,
+    },
+    {
+      label: "No",
+      count: 0,
+    },
+  ]);
+  const [hiv_informed, setHIV] = useState([
+    {
+      label: "Yes",
+      count: 0,
+    },
+    {
+      label: "No",
+      count: 0,
+    },
+  ]);
   const format_data = (type: string) => {
     switch (type) {
       case "all":
@@ -69,53 +90,35 @@ export default function GraphDisplay({
     }
   };
   const age_breakdown = (data: any) => {
-    return data.map(
-      (record: any) =>
+    let under_18 = 0;
+    let eighteen_25 = 0;
+    let twentyfive_35 = 0;
+    let thirtyfive_50 = 0;
+    let fifty_plus = 0;
+    for (let i = 0; i < data.length; i++) {
+      const age =
         new Date().getFullYear() -
-        record.demographics.date_of_birth?.slice(0, 4)
-    );
+        parseInt(data[i].demographics.date_of_birth.slice(0, 4));
+      if (age < 18) {
+        under_18++;
+      } else if (18 < age && age < 25) {
+        eighteen_25++;
+      } else if (25 < age && age < 35) {
+        twentyfive_35++;
+      } else if (35 < age && age < 50) {
+        thirtyfive_50++;
+      } else if (50 < age) {
+        fifty_plus++;
+      }
+    }
+    return [
+      { label: "Under 18", count: under_18 },
+      { label: "18 - 25", count: eighteen_25 },
+      { label: "25 -35", count: twentyfive_35 },
+      { label: "35 - 50", count: thirtyfive_50 },
+      { label: "50 Plus", count: fifty_plus },
+    ];
   };
-//   let under15 = 0;
-//   let fifteen_18 = 0;
-//   let eighteen_25 = 0;
-//   let twentyfive_30 = 0;
-//   let thirty_35 = 0;
-//   let thirtyfive_40 = 0;
-//   let forty_50 = 0;
-//   let fifty_plus = 0;
-//   const age = data.foreach(
-//     (record: any) =>
-//       new Date().getFullYear() -
-//       record.demographics.date_of_birth?.slice(0, 4)
-//   );
-//   if (age != NaN) {
-//     switch (age) {
-//       case age < 15:
-//         under15++;
-//         break;
-//       case 15 < age && age < 18:
-//         fifteen_18++;
-//         break;
-//       case 18 < age && age < 25:
-//         eighteen_25++;
-//         break;
-//       case 25 < age && age < 30:
-//         twentyfive_30++;
-//         break;
-//       case 30 < age && age < 35:
-//         thirty_35++;
-//         break;
-//       case 35 < age && age < 40:
-//         thirtyfive_40++;
-//         break;
-//       case 40 < age && age < 50:
-//         forty_50++;
-//         break;
-//       case 50 < age:
-//         fifty_plus++;
-//         break;
-//     }
-//   }
   const gender_breakdown = (data: any) => {
     const male_count = data.filter(
       (record: any) => record.demographics.gender === "Male"
@@ -124,41 +127,59 @@ export default function GraphDisplay({
       (record: any) => record.demographics.gender === "Female"
     ).length;
     const other_count = data.length - male_count - female_count;
-    return {
-      male_count: male_count,
-      female_count: female_count,
-      other_count: other_count,
-    };
+    return [
+      { label: "Male", count: male_count },
+      { label: "Female", count: female_count },
+      { label: "Other", count: other_count },
+    ];
   };
   const latinX_breakdown = (data: any) => {
     const yes_count = data.filter(
       (record: any) => record.demographics.latinx === "Yes"
     ).length;
     const no_count = data.length - yes_count;
-    return {
-      yes_count: yes_count,
-      no_count: no_count,
-    };
+    return [
+      {
+        label: "Yes",
+        count: yes_count,
+      },
+      {
+        label: "No",
+        count: no_count,
+      },
+    ];
   };
   const vh_breakdown = (data: any) => {
     const yes_count = data.filter(
       (record: any) => record.demographics.informed_of_VH_status === "Yes"
     ).length;
     const no_count = data.length - yes_count;
-    return {
-      yes_count: yes_count,
-      no_count: no_count,
-    };
+    return [
+      {
+        label: "Yes",
+        count: yes_count,
+      },
+      {
+        label: "No",
+        count: no_count,
+      },
+    ];
   };
   const hiv_breakdown = (data: any) => {
     const yes_count = data.filter(
       (record: any) => record.demographics.informed_of_HIV_status === "Yes"
     ).length;
     const no_count = data.length - yes_count;
-    return {
-      yes_count: yes_count,
-      no_count: no_count,
-    };
+    return [
+      {
+        label: "Yes",
+        count: yes_count,
+      },
+      {
+        label: "No",
+        count: no_count,
+      },
+    ];
   };
   const healthcare_breakdown = (data: any) => {
     const yes_count = data.filter(
@@ -166,10 +187,16 @@ export default function GraphDisplay({
         record.demographics.knowledge_of_healthcare_facility === "Yes"
     ).length;
     const no_count = data.length - yes_count;
-    return {
-      yes_count: yes_count,
-      no_count: no_count,
-    };
+    return [
+      {
+        label: "Yes",
+        count: yes_count,
+      },
+      {
+        label: "No",
+        count: no_count,
+      },
+    ];
   };
   useEffect(() => {
     setData(format_data(type));
@@ -182,32 +209,284 @@ export default function GraphDisplay({
     setLatinX(latinX_breakdown(data));
     setHealthCare(healthcare_breakdown(data));
   }, [data]);
-  console.table(data);
+  const get_graphs = () => {
+    const visible = document.getElementsByClassName(
+      "bar-chart"
+    ) as unknown as Array<HTMLElement>;
+    const hidden = document.getElementsByClassName(
+      "hidden-chart"
+    ) as unknown as Array<HTMLElement>;
+    return [...visible, ...hidden];
+  };
+  const get_checkbox_parents = () => {
+    const visible = document.getElementsByClassName(
+      "display-one-graph-option"
+    ) as unknown as Array<HTMLElement>;
+    const hidden = document.getElementsByClassName(
+      "hidden-display-option"
+    ) as unknown as Array<HTMLElement>;
+    return [...hidden, ...visible];
+  };
+  const get_check_boxes = () => {
+    const visible = document.getElementsByClassName(
+      "bar-chart-checkbox"
+    ) as unknown as Array<HTMLElement>;
+    const hidden = document.getElementsByClassName(
+      "hidden-checkbox"
+    ) as unknown as Array<HTMLElement>;
+    return [...visible, ...hidden];
+  };
+  const hide_graphs = () => {
+    const elements = get_graphs();
+    for (let i = 0; i < elements.length; i++) {
+      elements[i]?.setAttribute("class", "hidden-chart");
+    }
+    const check_box_parents = get_checkbox_parents();
+    for (let i = 0; i < check_box_parents.length; i++) {
+      check_box_parents[i].setAttribute("class", "hidden-display-option");
+    }
+  };
+  const hide_enabled = () => {
+    const check_boxes = get_check_boxes();
+    for (let i = 0; i < check_boxes.length; i++) {
+      const id_arr = check_boxes[i].id.split("-");
+      const arr_len = id_arr.length;
+      const last_element = id_arr[arr_len - 1];
+      if (last_element === "show")
+        check_boxes[i].setAttribute("class", "hidden-checkbox");
+    }
+  };
+  useEffect(() => {
+    hide_enabled();
+  }, []);
+  const show_graphs = () => {
+    const elements = get_graphs();
+    for (let i = 0; i < elements.length; i++) {
+      elements[i]?.setAttribute("class", "bar-chart");
+    }
+    const check_box_parents = get_checkbox_parents();
+    for (let i = 0; i < check_box_parents.length; i++) {
+      check_box_parents[i].setAttribute("class", "display-one-graph-option");
+    }
+    hide_enabled();
+  };
+  const show_one_graph = (id: string) => {
+    const elements = get_graphs();
+    for (let i = 0; i < elements.length; i++) {
+      const element_id = elements[i].id;
+      if (element_id === id) {
+        document.getElementById(element_id)?.setAttribute("class", "bar-chart");
+      }
+    }
+    const check_boxes = get_check_boxes();
+    for (let i = 0; i < check_boxes.length; i++) {
+      const element_id = check_boxes[i].id;
+      if (element_id === id + "-show") {
+        document
+          .getElementById(element_id)
+          ?.setAttribute("class", "hidden-checkbox");
+      }
+      if (element_id === id + "-hide") {
+        document
+          .getElementById(element_id)
+          ?.setAttribute("class", "bar-chart-checkbox");
+      }
+    }
+  };
+  const hide_one_graph = (id: string) => {
+    const elements = get_graphs();
+    for (let i = 0; i < elements.length; i++) {
+      const element_id = elements[i].id;
+      if (element_id === id) {
+        document
+          .getElementById(element_id)
+          ?.setAttribute("class", "hidden-chart");
+      }
+    }
+    const check_boxes = get_check_boxes();
+    for (let i = 0; i < check_boxes.length; i++) {
+      const element_id = check_boxes[i].id;
+      if (element_id === id + "-show") {
+        document
+          .getElementById(element_id)
+          ?.setAttribute("class", "bar-chart-checkbox");
+      }
+      if (element_id === id + "-hide") {
+        document
+          .getElementById(element_id)
+          ?.setAttribute("class", "hidden-checkbox");
+      }
+    }
+  };
   return (
-    <section className="graph_display">
-      {data.length}
-      <br />
-      {titleCase(type.split("-").join(" ")) + " Interviews"}
-      <h1>Gender</h1>
-      <p>Male: {genders.male_count}</p>
-      <p>Female: {genders.female_count}</p>
-      <p>Other: {genders.other_count}</p>
-      <h1>Informed of HIV Status</h1>
-      <p>Yes: {hiv_informed.yes_count}</p>
-      <p>No: {hiv_informed.no_count}</p>
-      <h1>Informed of VH Status</h1>
-      <p>Yes: {vh_informed.yes_count}</p>
-      <p>No: {vh_informed.no_count}</p>
-      <h1>Knowledge of Healthcare Facility</h1>
-      <p>Yes: {healthcare_knowledge.yes_count}</p>
-      <p>No: {healthcare_knowledge.no_count}</p>
-      <h1>Age Breakdown</h1>
-      {ages.map((age: string, i: number) => (
-        <p key={JSON.stringify(i)}>{age}</p>
-      ))}
-      <h1>LatinX</h1>
-      <p>Yes: {latinx.yes_count}</p>
-      <p>No: {latinx.no_count}</p>
+    <section className="graph-display">
+      <article style={{ textAlign: "center" }}>
+        <h2>
+          {data.length}{" "}
+          {titleCase(
+            type.split("-").join(" ") === "all"
+              ? "Total"
+              : type.split("-").join(" ")
+          ) + " Interviews"}
+        </h2>
+        <h1>Graphs</h1>
+        <br />
+        <a className="button" onClick={hide_graphs}>
+          Hide All
+        </a>
+        <a className="button" onClick={show_graphs}>
+          Show All
+        </a>
+        <br />
+        <br />
+        <div
+          style={{
+            display: "flex",
+            margin: 20,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-around",
+          }}
+        >
+          <p className="display-one-graph-option">
+            Age
+            <a
+              className="bar-chart-checkbox"
+              id="age-breakdown-show"
+              onClick={() => show_one_graph("age-breakdown")}
+            >
+              ✅
+            </a>
+            <a
+              className="bar-chart-checkbox"
+              id="age-breakdown-hide"
+              onClick={() => hide_one_graph("age-breakdown")}
+            >
+              ❌
+            </a>
+          </p>
+          <p className="display-one-graph-option">
+            HIV Informed
+            <a
+              className="bar-chart-checkbox"
+              id="hiv-informed-breakdown-show"
+              onClick={() => show_one_graph("hiv-informed-breakdown")}
+            >
+              ✅
+            </a>
+            <a
+              className="bar-chart-checkbox"
+              id="hiv-informed-breakdown-hide"
+              onClick={() => hide_one_graph("hiv-informed-breakdown")}
+            >
+              ❌
+            </a>
+          </p>
+          <p className="display-one-graph-option">
+            Viral Hep Informed
+            <a
+              className="bar-chart-checkbox"
+              id="vh-informed-breakdown-show"
+              onClick={() => show_one_graph("vh-informed-breakdown")}
+            >
+              ✅
+            </a>
+            <a
+              className="bar-chart-checkbox"
+              id="vh-informed-breakdown-hide"
+              onClick={() => hide_one_graph("vh-informed-breakdown")}
+            >
+              ❌
+            </a>
+          </p>
+          <p className="display-one-graph-option">
+            Gender
+            <a
+              className="bar-chart-checkbox"
+              id="gender-breakdown-show"
+              onClick={() => show_one_graph("gender-breakdown")}
+            >
+              ✅
+            </a>
+            <a
+              className="bar-chart-checkbox"
+              id="gender-breakdown-hide"
+              onClick={() => hide_one_graph("gender-breakdown")}
+            >
+              ❌
+            </a>
+          </p>
+          <p className="display-one-graph-option">
+            LatinX
+            <a
+              className="bar-chart-checkbox"
+              id="latinx-breakdown-show"
+              onClick={() => show_one_graph("latinx-breakdown")}
+            >
+              ✅
+            </a>
+            <a
+              className="bar-chart-checkbox"
+              id="latinx-breakdown-hide"
+              onClick={() => hide_one_graph("latinx-breakdown")}
+            >
+              ❌
+            </a>
+          </p>
+          <p className="display-one-graph-option">
+            Nearby Healthcare
+            <a
+              className="bar-chart-checkbox"
+              id="healthcare-knowledge-breakdown-show"
+              onClick={() => show_one_graph("healthcare-knowledge-breakdown")}
+            >
+              ✅
+            </a>
+            <a
+              className="bar-chart-checkbox"
+              id="healthcare-knowledge-breakdown-hide"
+              onClick={() => hide_one_graph("healthcare-knowledge-breakdown")}
+            >
+              ❌
+            </a>
+          </p>
+        </div>
+      </article>
+      <section
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          flexGrow: 3,
+        }}
+      >
+        <BarChart data_set={ages} title="Age Breakdown" id="age-breakdown" />
+        <BarChart
+          data_set={hiv_informed}
+          title="Informed of HIV Status"
+          id="hiv-informed-breakdown"
+        />
+        <BarChart
+          data_set={vh_informed}
+          title="Informed of Viral Hepatitis Status"
+          id="vh-informed-breakdown"
+        />
+        <BarChart
+          data_set={genders}
+          title="Gender Identification"
+          id="gender-breakdown"
+        />
+        <BarChart
+          data_set={latinx}
+          title="Identifies as LatinX"
+          id="latinx-breakdown"
+        />
+        <BarChart
+          data_set={healthcare_knowledge}
+          title="Knowledge of a Nearby Healthcare Center"
+          id="healthcare-knowledge-breakdown"
+        />
+      </section>
     </section>
   );
 }

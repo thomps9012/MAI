@@ -25,6 +25,6 @@
     "public/question_cache.js",
     "cypress/cypress.config.ts",
     "cypress/e2e/cypress.config.js"
-  ],
+, "components/barChart.tsxx"  ],
   "exclude": ["node_modules"]
 }

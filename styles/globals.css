@@ -15,7 +15,7 @@ body {
   display: flex;
   justify-content: center;
 }
-.hidden {
+.hidden, .hidden-chart {
   display: none;
 }
 .progress_outline {
@@ -224,7 +224,11 @@ form {
 .mobile-nav-show {
   display: none;
 }
-
+@media only screen and (max-width: 750px) {
+  .graph-display {
+    display: none;
+  }
+}
 @media only screen and (max-width: 982px) {
   nav {
     all: revert;
@@ -281,5 +285,41 @@ form {
 }
 
 .hidden-link {
+  display: none;
+}
+
+.bar-chart {
+  min-width: 624px;
+}
+
+.jump-btn {
+  position: absolute;
+  position: fixed;
+  top: 7rem;
+  right: 2rem;
+  z-index: 1;
+  background-color: #236e7c;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+  font-size: large;
+  font-weight: 800;
+  border-radius: 0.2em;
+}
+
+.display-one-graph-option {
+  margin: 10px;
+  font-weight: bold;
+}
+.display-one-graph-option > a {
+  padding: 7px;
+  font-size: large;
+  background-color: #071e22;
+  color: white;
+  margin: 7px;
+  border-radius: 15%;
+}
+
+.hidden-checkbox, .hidden-display-option{
   display: none;
 }

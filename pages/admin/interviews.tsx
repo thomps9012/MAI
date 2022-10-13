@@ -2,11 +2,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import useSWR from "swr";
-import InterviewOverview from "../../components/interviewOverview";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 import Cookies from "cookies";
 import GraphDisplay from "../../components/graphDisplay";
+import InterviewOverviews from "../../components/interviewOverview";
 export default function InterviewRecordsPage({
   baseline_records,
   testing_only_records,
@@ -138,7 +138,9 @@ export default function InterviewRecordsPage({
   const filter_records = async () => {
     const PID = getPIDInput();
     const agency = getAgencyInput();
-    agency === "" ? await filter_by_PID(PID) : await filter_by_agency(agency, PID);
+    agency === ""
+      ? await filter_by_PID(PID)
+      : await filter_by_agency(agency, PID);
   };
   const reset_filters = () => {
     const elements = get_elements();
@@ -173,7 +175,7 @@ export default function InterviewRecordsPage({
           style={{ width: "fit-content" }}
           onClick={reset_filters}
         >
-          Clear Filters
+          Clear
         </a>
       </div>
       <div
@@ -260,44 +262,24 @@ export default function InterviewRecordsPage({
         type={selected_type}
       />
       <section className="interview_overviews" id="baseline">
-        <h1 id="baseline">Baseline Interviews</h1>
+        <h1 id="baseline">Baseline Records</h1>
         <hr />
-        {baselines.map((record: any) => (
-          <InterviewOverview
-            key={record._id}
-            record={record}
-            type={"baseline"}
-          />
-        ))}
+        <InterviewOverviews data={baselines} type={"baseline"} />
       </section>
       <section className="interview_overviews" id="testing-only">
-        <h1 id="testing_only">Testing Only Interviews</h1>
+        <h1 id="testing_only">Testing Only Records</h1>
         <hr />
-        {testing_only.map((record: any) => (
-          <InterviewOverview
-            key={record._id}
-            record={record}
-            type={"testing_only"}
-          />
-        ))}
+        <InterviewOverviews data={testing_only} type={"testing_only"} />
       </section>
       <section className="interview_overviews" id="follow-up">
-        <h1 id="follow-up">Follow Up Interviews</h1>
+        <h1 id="follow-up">Follow Up Records</h1>
         <hr />
-        {follow_ups.map((record: any) => (
-          <InterviewOverview
-            key={record._id}
-            record={record}
-            type={"follow_up"}
-          />
-        ))}
+        <InterviewOverviews data={follow_ups} type={"follow_up"} />
       </section>
       <section className="interview_overviews" id="exit">
-        <h1 id="exit">Exit Interviews</h1>
+        <h1 id="exit">Exit Records</h1>
         <hr />
-        {exits.map((record: any) => (
-          <InterviewOverview key={record._id} record={record} type={"exit"} />
-        ))}
+        <InterviewOverviews data={exits} type={"exit"} />
       </section>
     </main>
   );
