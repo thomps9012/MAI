@@ -38,7 +38,7 @@ export default function AnswersPage() {
         </Link>
       </h1>
       {data?.map((answer: any) => (
-        <div className="answer_choice_section" key={answer._id}>
+        <div className="answer_choice_section" key={answer?._id}>
           <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
           <h3>Choices</h3>
           {answer.choices.map((choice: string) => (

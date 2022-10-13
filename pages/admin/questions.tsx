@@ -74,7 +74,7 @@ export default function QuestionsPage() {
           </h1>
         )}
         {adult_questions?.map((question: any, i: number) => (
-          <div className="interview_question_detail" key={question._id}>
+          <div className="interview_question_detail" key={question?._id}>
             {user_data.editor && (
               <p>
                 {titleCase(question.section.split("_").join(" "))} -{" "}

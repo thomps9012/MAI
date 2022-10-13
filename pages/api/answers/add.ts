@@ -9,8 +9,9 @@ export default async function handler(
   let editor = JSON.parse(req.headers.editor as string);
   if (!editor) {
     res.json({ res: "Unauthorized", status: 401 });
+  } else {
+    let data = JSON.parse(req.body);
+    const response = await db.collection("answers").insert({ ...data });
+    res.json(response);
   }
-  let data = JSON.parse(req.body);
-  const response = await db.collection("answers").insert({ ...data });
-  res.json(response);
 }

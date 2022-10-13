@@ -45,7 +45,7 @@ export default function NavBar() {
         : link.setAttribute("class", "nav-link");
     }
   }, [active_route]);
-  const userID = user_info.user.id
+  const userID = user_info?.user?._id
   return (
     <nav>
       <ul className="web-nav">
@@ -149,7 +149,7 @@ export default function NavBar() {
           <p>Menu</p>
         </a>
         {user_info.logged_in && (
-          <a onClick={() => router.push(`/admin/users/${user_info.user?.id}`)}>
+          <a onClick={() => router.push(`/admin/users/${user_info.user?._id}`)}>
             <p>{user_info.user?.full_name}</p>
           </a>
         )}

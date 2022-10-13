@@ -27,7 +27,7 @@ export default function BasePage() {
   const [question_details, setQuestionDetails] = useState("");
   const handleAnswerChange = (e: any) => {
     const answer_id = e.target.value;
-    setAnswer(answer_data?.filter((answer: any) => answer._id === answer_id));
+    setAnswer(answer_data?.filter((answer: any) => answer?._id === answer_id));
   };
   const saveEdits = async () => {
     let question_data;
