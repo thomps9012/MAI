@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 
-export default function EditUser({ user }: any) {
+export default function EditUser({ user, editor_status }: any) {
   const user_data = useSelector((state: any) => state.user);
   const router = useRouter();
 
@@ -52,7 +52,7 @@ export default function EditUser({ user }: any) {
       res.acknowledged && router.push("/admin/users/manage");
     }
   };
-  if (!user_data.user?.editor && user_data.user?.id != user._id) {
+  if (!editor_status && user_data.user?.id != user._id) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -144,9 +144,10 @@ export default function EditUser({ user }: any) {
 
 export async function getServerSideProps({ ctx, req, res }: any) {
   const cookies = new Cookies(req, res);
-  const admin_status = cookies.get("user_admin");
+  const admin_status = cookies.get("user_editor");
   const cookie_user_id = cookies.get("user_id");
-  const user_id = ctx.query.id;
+  const user_id = req.url.split("/")[3];
+  console.log(admin_status)
   if (!admin_status && user_id != cookie_user_id) {
     return {
       props: {
@@ -161,6 +162,7 @@ export async function getServerSideProps({ ctx, req, res }: any) {
   return {
     props: {
       user: JSON.parse(JSON.stringify(user_info)),
+      editor_status: admin_status
     },
   };
 }

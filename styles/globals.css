@@ -15,7 +15,8 @@ body {
   display: flex;
   justify-content: center;
 }
-.hidden, .hidden-chart {
+.hidden,
+.hidden-chart {
   display: none;
 }
 .progress_outline {
@@ -105,10 +106,10 @@ select {
 .nav-select {
   all: revert;
   width: min-content;
-  color: #0c4a55;
+  background-color: #071e22;
+  color: #fff;
   margin-left: 10px;
   padding: 10px;
-  font-weight: bold;
   font-size: medium;
 }
 
@@ -172,12 +173,11 @@ select {
 }
 
 .nav-link > a {
-  color: #0c4a55;
+  color: #fff;
 }
 
 .nav-link {
   margin: 10px;
-  font-weight: bold;
 }
 
 .page-link {
@@ -187,10 +187,10 @@ select {
 
 nav {
   position: fixed;
-  background: #fff;
+  background: #071e22;
+  color: white;
   top: 0;
   height: 10vh;
-  border-bottom: 2mm ridge #0c4a55;
   width: 100%;
 }
 .interview-nav {
@@ -221,7 +221,10 @@ form {
 
 .mobile-menu,
 .mobile-nav-hide,
-.mobile-nav-show {
+.mobile-nav-show,
+.hidden-link,
+.hidden-checkbox,
+.hidden-display-option {
   display: none;
 }
 @media only screen and (max-width: 750px) {
@@ -284,9 +287,6 @@ form {
   }
 }
 
-.hidden-link {
-  display: none;
-}
 
 .bar-chart {
   min-width: 624px;
@@ -320,6 +320,10 @@ form {
   border-radius: 15%;
 }
 
-.hidden-checkbox, .hidden-display-option{
-  display: none;
+.load-more-results {
+  font-weight: bold;
+  color: #071e22;
+  padding: 7px;
+  margin: 5px;
+  border-radius: 5%;
 }

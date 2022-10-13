@@ -45,6 +45,7 @@ export default function NavBar() {
         : link.setAttribute("class", "nav-link");
     }
   }, [active_route]);
+  const userID = user_info.user.id
   return (
     <nav>
       <ul className="web-nav">
@@ -104,7 +105,7 @@ export default function NavBar() {
               onChange={setEditNav}
             >
               <option className="nav-link" value="" disabled hidden>
-                Edit...
+                Edit
               </option>
               <option
                 className="nav-link"
@@ -132,7 +133,7 @@ export default function NavBar() {
         )}
         {user_info.logged_in && (
           <li className="nav-link" id="/admin/users/[id]">
-            <Link href={`/admin/users/${user_info.user?.id}`}>
+            <Link href={`/admin/users/${userID}`}>
               <a>Profile</a>
             </Link>
           </li>

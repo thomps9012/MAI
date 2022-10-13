@@ -1,6 +1,5 @@
 import Link from "next/link";
 import titleCase from "../utils/titleCase";
-import { Waypoint } from "react-waypoint";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 const limit = 3;
@@ -30,9 +29,16 @@ export default function InterviewOverviews({
       dataLength={elements.length}
       hasMore={hasMore}
       next={load_more}
-      loader={<p>Loading ...</p>}
+      loader={
+        <a className="load-more-results" onClick={load_more}>
+          Show More {titleCase(type.split("_").join(" "))}s
+        </a>
+      }
+      endMessage={
+        <p>No More {titleCase(type.split("_").join(" "))} Records</p>
+      }
     >
-      <div className={type + "-interview-records"}>
+      <div className={type + "-interview-records"} style={{overflow: 'auto'}}>
         {elements.map((element: any) => {
           const { _id, PID, date, agency, client_name, adult } = element;
           return (
@@ -53,6 +59,7 @@ export default function InterviewOverviews({
             </article>
           );
         })}
+        <br />
       </div>
     </InfiniteScroll>
   );
