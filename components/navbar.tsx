@@ -10,11 +10,7 @@ export default function NavBar() {
   const dispatch = useDispatch();
   const [activeLink, setActiveLink] = useState("");
   const [show, setShow] = useState(false);
-  const [userID, setUserID] = useState("")
   const user_info = useSelector((state: any) => state.user);
-  useEffect(() => {
-    setUserID(user_info.user._id)
-  }, [user_info])
   const setEditNav = (e: any) => {
     const link = e.target.value;
     link === "" && router.push("/");
@@ -136,7 +132,7 @@ export default function NavBar() {
         )}
         {user_info.logged_in && (
           <li className="nav-link" id="/admin/users/[id]">
-            <Link href={`/admin/users/${userID}`}>
+            <Link href={`/admin/users/${user_info.user?._id}`}>
               <a>Profile</a>
             </Link>
           </li>
@@ -152,7 +148,7 @@ export default function NavBar() {
           <p>Menu</p>
         </a>
         {user_info.logged_in && (
-          <a onClick={() => router.push(`/admin/users/${userID}`)}>
+          <a onClick={() => router.push(`/admin/users/${user_info.user?._id}`)}>
             <p>{user_info.user?.full_name}</p>
           </a>
         )}
