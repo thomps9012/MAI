@@ -8,7 +8,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import type { ChartData, ChartOptions } from "chart.js";
 
 ChartJS.register(
   CategoryScale,

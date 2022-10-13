@@ -102,19 +102,13 @@ var external_cookie_cutter_default = /*#__PURE__*/__webpack_require__.n(external
 
 
 function NavBar() {
-    var ref, ref1, ref2, ref3, ref4;
+    var ref6, ref1, ref2, ref3, ref4, ref5;
     const router = (0,router_.useRouter)();
     const dispatch = (0,external_react_redux_.useDispatch)();
     const { 0: activeLink , 1: setActiveLink  } = (0,external_react_.useState)("");
     const { 0: show , 1: setShow  } = (0,external_react_.useState)(false);
-    const { 0: userID , 1: setUserID  } = (0,external_react_.useState)("");
     const user_info = (0,external_react_redux_.useSelector)((state)=>state.user
     );
-    (0,external_react_.useEffect)(()=>{
-        setUserID(user_info.user._id);
-    }, [
-        user_info
-    ]);
     const setEditNav = (e)=>{
         const link = e.target.value;
         link === "" && router.push("/");
@@ -193,7 +187,7 @@ function NavBar() {
                             })
                         })
                     }),
-                    ((ref = user_info.user) === null || ref === void 0 ? void 0 : ref.admin) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    ((ref6 = user_info.user) === null || ref6 === void 0 ? void 0 : ref6.admin) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
@@ -277,7 +271,7 @@ function NavBar() {
                         className: "nav-link",
                         id: "/admin/users/[id]",
                         children: /*#__PURE__*/ jsx_runtime_.jsx(next_link["default"], {
-                            href: `/admin/users/${userID}`,
+                            href: `/admin/users/${(ref2 = user_info.user) === null || ref2 === void 0 ? void 0 : ref2._id}`,
                             children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
                                 children: "Profile"
                             })
@@ -303,10 +297,12 @@ function NavBar() {
                         })
                     }),
                     user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("a", {
-                        onClick: ()=>router.push(`/admin/users/${userID}`)
-                        ,
+                        onClick: ()=>{
+                            var ref;
+                            return router.push(`/admin/users/${(ref = user_info.user) === null || ref === void 0 ? void 0 : ref._id}`);
+                        },
                         children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                            children: (ref2 = user_info.user) === null || ref2 === void 0 ? void 0 : ref2.full_name
+                            children: (ref3 = user_info.user) === null || ref3 === void 0 ? void 0 : ref3.full_name
                         })
                     }),
                     user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("a", {
@@ -370,7 +366,7 @@ function NavBar() {
                             })
                         })
                     }),
-                    ((ref3 = user_info.user) === null || ref3 === void 0 ? void 0 : ref3.admin) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    ((ref4 = user_info.user) === null || ref4 === void 0 ? void 0 : ref4.admin) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",
@@ -410,7 +406,7 @@ function NavBar() {
                             })
                         ]
                     }),
-                    ((ref4 = user_info.user) === null || ref4 === void 0 ? void 0 : ref4.editor) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                    ((ref5 = user_info.user) === null || ref5 === void 0 ? void 0 : ref5.editor) && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
                         children: [
                             /*#__PURE__*/ jsx_runtime_.jsx("li", {
                                 className: "nav-link",

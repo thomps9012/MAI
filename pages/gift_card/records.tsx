@@ -2,10 +2,11 @@ import Cookies from "cookies";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
+import CardGraphs from "../../components/cardGraphDisplay";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 
-export default function CardRecordsPage({ card_records }: any) {
+export default function CardRecordsPage({ card_records, card_amounts, card_types }: any) {
   const [gift_card_records, setGiftCards] = useState(card_records);
   const { data: agency_data, error: agency_err } = useSWR(
     "/api/answers/testing_agencies",
@@ -111,6 +112,11 @@ export default function CardRecordsPage({ card_records }: any) {
           </select>
         </div>
       </div>
+      <CardGraphs
+        gift_card_records={gift_card_records}
+        card_amounts={card_amounts}
+        card_types={card_types}
+        />
       {gift_card_records.map((record: any) => (
         <div className="gift_card_card" key={record._id}>
           <h1>{record.PID}</h1>
@@ -138,6 +144,8 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     return {
       props: {
         card_records: [],
+        card_amounts: {},
+        card_types: {}
       },
     };
   }
@@ -145,11 +153,19 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .collection("cards")
     .find({}, { _id: 1, PID: 1, date: 1, received_date: 1 })
     .toArray();
+    const card_types = await db
+    .collection("answers")
+    .findOne({ type: "CARD_TYPES" });
+  const card_amounts = await db
+    .collection("answers")
+    .findOne({ type: "CARD_AMOUNTS" });
   return {
     props: {
       card_records: card_records
         ? JSON.parse(JSON.stringify(card_records))
         : [],
+        card_types: JSON.parse(JSON.stringify(card_types)),
+        card_amounts: JSON.parse(JSON.stringify(card_amounts)),
     },
   };
 }

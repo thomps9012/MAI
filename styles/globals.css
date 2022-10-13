@@ -288,8 +288,14 @@ form {
 }
 
 
-.bar-chart {
+.bar-chart, .radar-chart {
   min-width: 624px;
+}
+
+.radar-chart{
+  display: flex;
+  justify-content: center;
+  padding: 10%;
 }
 
 .jump-btn {
