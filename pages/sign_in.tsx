@@ -91,7 +91,6 @@ export default function SignIn() {
           type="text"
           name="text"
           className="username"
-          value="test_user_7"
           placeholder="Enter Username"
         />
         <input
@@ -102,7 +101,6 @@ export default function SignIn() {
         />
         <input
           type="text"
-          value="password123!"
           name="password"
           className="pw"
           placeholder="Enter Password"
