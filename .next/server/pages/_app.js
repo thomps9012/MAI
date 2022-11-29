@@ -296,20 +296,24 @@ function NavBar() {
                             children: "Menu"
                         })
                     }),
-                    user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("a", {
-                        onClick: ()=>{
-                            var ref;
-                            return router.push(`/admin/users/${(ref = user_info.user) === null || ref === void 0 ? void 0 : ref._id}`);
-                        },
-                        children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                            children: (ref3 = user_info.user) === null || ref3 === void 0 ? void 0 : ref3.full_name
-                        })
-                    }),
-                    user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("a", {
-                        onClick: logout,
-                        children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                            children: "Logout"
-                        })
+                    user_info.logged_in && /*#__PURE__*/ (0,jsx_runtime_.jsxs)(jsx_runtime_.Fragment, {
+                        children: [
+                            /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                                onClick: ()=>{
+                                    var ref;
+                                    return router.push(`/admin/users/${(ref = user_info.user) === null || ref === void 0 ? void 0 : ref._id}`);
+                                },
+                                children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
+                                    children: (ref3 = user_info.user) === null || ref3 === void 0 ? void 0 : ref3.full_name
+                                })
+                            }),
+                            /*#__PURE__*/ jsx_runtime_.jsx("a", {
+                                onClick: logout,
+                                children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
+                                    children: "Logout"
+                                })
+                            })
+                        ]
                     })
                 ]
             }),
@@ -319,7 +323,7 @@ function NavBar() {
                 ,
                 children: [
                     /*#__PURE__*/ jsx_runtime_.jsx("li", {
-                        className: "nav-link",
+                        className: "",
                         onClick: ()=>setShow(false)
                         ,
                         id: "/",
@@ -331,7 +335,7 @@ function NavBar() {
                         })
                     }),
                     /*#__PURE__*/ jsx_runtime_.jsx("li", {
-                        className: "nav-link",
+                        className: "",
                         onClick: ()=>setShow(false)
                         ,
                         id: "/interview",
@@ -343,7 +347,7 @@ function NavBar() {
                         })
                     }),
                     !user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
-                        className: "nav-link",
+                        className: "",
                         onClick: ()=>setShow(false)
                         ,
                         id: "/sign_in",
@@ -355,7 +359,7 @@ function NavBar() {
                         })
                     }),
                     !user_info.logged_in && /*#__PURE__*/ jsx_runtime_.jsx("li", {
-                        className: "nav-link",
+                        className: "",
                         onClick: ()=>setShow(false)
                         ,
                         id: "/sign_up",

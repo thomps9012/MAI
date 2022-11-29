@@ -200,8 +200,13 @@ export default function InterviewSelect() {
       document
         .querySelector("#page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
+      document
+        .getElementById("valid-phone-number")
+        ?.setAttribute("class", "input-validation");
     } else {
-      alert("Must enter a valid phone number \n\n i.e. \n 555-555-5555");
+      document
+        .getElementById("valid-phone-number")
+        ?.setAttribute("class", "display-input-validation");
     }
   };
   const Submit = async (
@@ -347,7 +352,7 @@ export default function InterviewSelect() {
         <h2>Enter PID</h2>
         <input
           type="text"
-          placeholder="PID"
+          placeholder="NORA123"
           onChange={(e: any) => setPID(e.target.value)}
           onBlur={() => retrieveClientName(PID)}
         />
@@ -368,6 +373,9 @@ export default function InterviewSelect() {
           onChange={(e: any) => setPhone(e.target.value)}
           onBlur={validPhoneNumber}
         />
+        <label className="input-validation" id="valid-phone-number">
+          Valid phone number must be entered
+        </label>
       </div>
       <a
         className="page_button"

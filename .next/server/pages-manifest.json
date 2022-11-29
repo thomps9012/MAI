@@ -89,7 +89,7 @@
   "/interview/youth/drug_behavior": "pages/interview/youth/drug_behavior.html",
   "/interview/youth/risk_attitudes": "pages/interview/youth/risk_attitudes.html",
   "/interview/youth/sexual_behavior": "pages/interview/youth/sexual_behavior.html",
-  "/sign_in": "pages/sign_in.html",
+  "/sign_in": "pages/sign_in.js",
   "/sign_up": "pages/sign_up.html",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",

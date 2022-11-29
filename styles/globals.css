@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;600&family=Cabin:wght@500&family=Fjalla+One&family=Fredoka:wght@400;700&family=IBM+Plex+Sans:wght@100&family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Prompt:wght@100&display=swap");
-
+:root {
+  --duration: 1.5s;
+}
 .title {
   font-size: 35px;
   text-align: center;
@@ -255,7 +257,8 @@ form {
     padding-bottom: 1.6rem;
     color: white;
     width: 100%;
-    top: 0%;
+    top: 0;
+    left: 0;
   }
   .mobile-menu > p {
     padding-right: 10%;
@@ -270,15 +273,17 @@ form {
     justify-content: space-evenly;
     position: absolute;
     position: fixed;
-    background-color: #fff;
-    height: 87vh;
-    top: 4.87rem;
+    background-color: #071e22;
+    color: #fff;
+    height: 100vh;
+    top: 0;
+    left: 0;
     z-index: 1;
-    padding-right: 1rem;
-    border-right: 4mm ridge #071e22;
-    transition: all var(--duration);
+    padding-right: 5rem;
   }
-
+  .mobile-nav-show a {
+    color: #fff;
+  }
   .mobile-nav-hide {
     display: none;
   }
@@ -287,12 +292,12 @@ form {
   }
 }
 
-
-.bar-chart, .radar-chart {
+.bar-chart,
+.radar-chart {
   min-width: 624px;
 }
 
-.radar-chart{
+.radar-chart {
   display: flex;
   justify-content: center;
   padding: 10%;
@@ -332,4 +337,16 @@ form {
   padding: 7px;
   margin: 5px;
   border-radius: 5%;
+}
+label {
+  margin: 7px;
+  padding: 7px;
+}
+.input-validation {
+  display: none;
+}
+.display-input-validation {
+  display: block;
+  font-weight: bold;
+  color: red;
 }

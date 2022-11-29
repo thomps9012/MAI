@@ -148,39 +148,41 @@ export default function NavBar() {
           <p>Menu</p>
         </a>
         {user_info.logged_in && (
-          <a onClick={() => router.push(`/admin/users/${user_info.user?._id}`)}>
-            <p>{user_info.user?.full_name}</p>
-          </a>
-        )}
-        {user_info.logged_in && (
-          <a onClick={logout}>
-            <p>Logout</p>
-          </a>
+          <>
+            <a
+              onClick={() => router.push(`/admin/users/${user_info.user?._id}`)}
+            >
+              <p>{user_info.user?.full_name}</p>
+            </a>
+            <a onClick={logout}>
+              <p>Logout</p>
+            </a>
+          </>
         )}
       </div>
       <ul
         className={`mobile-nav-${show ? "show" : "hide"}`}
         onMouseLeave={() => setShow(false)}
       >
-        <li className="nav-link" onClick={() => setShow(false)} id="/">
+        <li className="" onClick={() => setShow(false)} id="/">
           <Link href="/">
             <a>Home</a>
           </Link>
         </li>
-        <li className="nav-link" onClick={() => setShow(false)} id="/interview">
+        <li className="" onClick={() => setShow(false)} id="/interview">
           <Link href="/interview">
             <a>Begin Interview</a>
           </Link>
         </li>
         {!user_info.logged_in && (
-          <li className="nav-link" onClick={() => setShow(false)} id="/sign_in">
+          <li className="" onClick={() => setShow(false)} id="/sign_in">
             <Link href="/sign_in">
               <a>Admin Login</a>
             </Link>
           </li>
         )}
         {!user_info.logged_in && (
-          <li className="nav-link" onClick={() => setShow(false)} id="/sign_up">
+          <li className="" onClick={() => setShow(false)} id="/sign_up">
             <Link href="/sign_up">
               <a>Admin Sign Up</a>
             </Link>
