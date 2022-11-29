@@ -200,6 +200,8 @@ export default function InterviewSelect() {
       document
         .querySelector("#page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
+    } else {
+      alert("Must enter a valid phone number \n\n i.e. \n 555-555-5555");
     }
   };
   const Submit = async (
@@ -236,7 +238,10 @@ export default function InterviewSelect() {
     sessionStorage.setItem("client_phone_number", phone_number);
     sessionStorage.setItem("client_name", client_name);
     sessionStorage.setItem("client_adult", JSON.stringify(adult));
-    const PID_exists = await fetch("/api/client/PID_exists");
+    const PID_exists = await fetch("/api/client/PID_exists").then((res) =>
+      res.json()
+    );
+    console.log(PID_exists);
     if (
       (PID_exists && type === "testing_only") ||
       (type === "baseline" && PID_exists)
