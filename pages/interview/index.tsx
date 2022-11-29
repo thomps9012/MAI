@@ -240,8 +240,9 @@ export default function InterviewSelect() {
     if (
       (PID_exists && type === "testing_only") ||
       (type === "baseline" && PID_exists)
-    )
+    ) {
       return;
+    }
     const res = await fetch("/api/client/create", {
       method: "POST",
       body: JSON.stringify({
