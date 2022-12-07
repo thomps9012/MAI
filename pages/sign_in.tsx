@@ -1,20 +1,19 @@
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../utils/userReducer";
-import cookieCutter from "cookie-cutter";
-import Cookies from "cookies";
+import { getCookie, setCookie } from "cookies-next";
 export async function getServerSideProps({ req, res }: any) {
-  const cookies = new Cookies(req, res);
-  const login_attempts = cookies.get("login_attempts");
-  if (login_attempts === undefined) {
-    cookies.set("login_attempts", "1");
-  }
+  const login_attempts = getCookie("login_attempts", { req, res }) as string;
   return {
-    props: { login_attempts: "login_attempts" },
+    props: { login_attempts: login_attempts ? parseInt(login_attempts) : 0 },
   };
 }
-export default function SignIn() {
-  const dispatch = useDispatch();
+export default function SignIn({ login_attempts }: { login_attempts: any }) {
+  if (login_attempts > 10) {
+    return (
+      <main>
+        <h1>Access Denied Due to an Inordinate Amount of Login Attempts</h1>
+      </main>
+    );
+  }
   const router = useRouter();
   const valid_password = () => {
     const pw = (document.querySelector(".pw") as HTMLInputElement).value;
@@ -25,24 +24,28 @@ export default function SignIn() {
       document
         .getElementById("valid-password")
         ?.setAttribute("class", "display-input-validation");
+      return false;
     } else {
       document
         .getElementById("valid-password")
         ?.setAttribute("class", "input-validation");
+      return true;
     }
   };
   const validate_user_id = () => {
     const userName = (document.querySelector(".username") as HTMLInputElement)
       .value;
     const email = (document.querySelector(".email") as HTMLInputElement).value;
-    if (userName === ""  && email === "") {
+    if (userName === "" && email === "") {
       document
         .getElementById("valid-user-id")
         ?.setAttribute("class", "display-input-validation");
+      return false;
     } else {
       document
         .getElementById("valid-user-id")
         ?.setAttribute("class", "input-validation");
+      return true;
     }
   };
   const signIn = async () => {
@@ -50,9 +53,9 @@ export default function SignIn() {
     const userName = (document.querySelector(".username") as HTMLInputElement)
       .value;
     const email = (document.querySelector(".email") as HTMLInputElement).value;
-    valid_password();
-    validate_user_id();
-    if (email === "" && userName === "") return;
+    if (!valid_password() || !validate_user_id()) {
+      return;
+    }
     let device = "Unknown Device";
     if (navigator.userAgent.indexOf("Win") != -1) {
       device = "Windows Device";
@@ -72,59 +75,43 @@ export default function SignIn() {
     ) {
       device = "Android/Linux Device";
     }
+    console.log(login_attempts);
     const user_res = await fetch("/api/user/login", {
       method: "POST",
       body: JSON.stringify({
-        email: email,
+        login_attempts,
+        email,
         username: userName,
         password: firstPW,
       }),
     }).then((res) => res.json());
+    if (user_res.error) {
+      alert(user_res.error);
+      router.reload();
+      // if (login_attempts === NaN) {
+      //   setCookie("login_attempts", 1);
+      //   router.reload();
+      //   return;
+      // }
+      // setCookie("login_attempts", login_attempts++);
+      // router.reload();
+      return;
+    }
     const device_info = await fetch("/api/user/device_info", {
       headers: { device: device, user_info: JSON.stringify(user_res) },
     }).then((res) => res.json());
-
     device_info &&
       (await fetch("/api/user/email_smtp", {
         method: "POST",
         body: JSON.stringify(device_info),
       }));
-    if (user_res.error) {
-      alert(
-        `there was an error while logging into your account \n\n ${user_res.error}`
-      );
-    } else {
-      const user_cache = await caches.open("user");
-      user_cache.put(
-        "current",
-        await fetch("/api/user/login", {
-          method: "POST",
-          body: JSON.stringify({
-            email: email,
-            username: userName,
-            password: firstPW,
-          }),
-        })
-      );
-      cookieCutter.set("user_admin", user_res.admin, {
-        path: "/",
-      });
-      cookieCutter.set("user_editor", user_res.editor, {
-        path: "/",
-      });
-      cookieCutter.set("user_id", user_res._id, {
-        path: "/",
-      });
-      dispatch(
-        loginUser({
-          id: user_res._id,
-          full_name: user_res.full_name,
-          admin: user_res.admin,
-          editor: user_res.editor,
-        })
-      );
-      router.push("/");
-    }
+    const { admin, editor, _id, full_name } = user_res;
+    setCookie("user_admin", admin);
+    setCookie("user_editor", editor);
+    setCookie("user_id", _id);
+    setCookie("user_full_name", full_name);
+    setCookie("logged_in", true);
+    router.push("/");
   };
   return (
     <div className="landing">
@@ -136,7 +123,7 @@ export default function SignIn() {
           name="username"
           className="username"
           placeholder="username_example_01"
-          onBlur={validate_user_id}
+          onChange={validate_user_id}
         />
         <label className="input-label">Email Address</label>
         <input
@@ -144,7 +131,7 @@ export default function SignIn() {
           name="email"
           className="email"
           placeholder="example@email.com"
-          onBlur={validate_user_id}
+          onChange={validate_user_id}
         />
         <label className="input-validation" id="valid-user-id">
           Email or Username is Required
@@ -155,7 +142,7 @@ export default function SignIn() {
           name="password"
           className="pw"
           placeholder="*********"
-          onBlur={valid_password}
+          onChange={valid_password}
         />
         <label className="input-validation" id="valid-password">
           Valid password must be entered

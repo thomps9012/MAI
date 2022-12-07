@@ -1,9 +1,7 @@
+import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../utils/userReducer";
 
 export default function SignUp() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const passwordCheck = () => {
     const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
@@ -12,10 +10,12 @@ export default function SignUp() {
       document
         .getElementById("valid-pw2")
         ?.setAttribute("class", "display-input-validation");
+      return false;
     } else {
       document
         .getElementById("valid-pw2")
         ?.setAttribute("class", "input-validation");
+      return true;
     }
   };
   const valid_password = () => {
@@ -27,10 +27,12 @@ export default function SignUp() {
       document
         .getElementById("valid-password")
         ?.setAttribute("class", "display-input-validation");
+      return false;
     } else {
       document
         .getElementById("valid-password")
         ?.setAttribute("class", "input-validation");
+      return true;
     }
   };
   const validate_field = (e: any) => {
@@ -65,9 +67,7 @@ export default function SignUp() {
   };
   const createUser = async (e: any) => {
     e.preventDefault();
-    console.log("hit");
     const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
-    const secondPW = (document.querySelector(".pw2") as HTMLInputElement).value;
     const userName = (document.querySelector(".username") as HTMLInputElement)
       .value;
     const emailAddress = (document.querySelector(".email") as HTMLInputElement)
@@ -80,36 +80,24 @@ export default function SignUp() {
         email: emailAddress,
         password: firstPW,
         full_name: fullName,
-      })
+      }) ||
+      !valid_password() ||
+      !passwordCheck()
     ) {
-      valid_password();
-      passwordCheck();
       return;
     }
-    const validation = firstPW.match(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/g
-    );
-    if (validation === null) {
-      document
-        .getElementById("valid-password")
-        ?.setAttribute("class", "display-input-validation");
+    const user_exists = await fetch("/api/user/exists", {
+      method: "POST",
+      body: JSON.stringify({
+        email: emailAddress,
+        username: userName,
+      }),
+    }).then((res) => res.json());
+    console.log(user_exists);
+    if (user_exists) {
+      alert("username or email is already taken");
       return;
-    } else {
-      document
-        .getElementById("valid-password")
-        ?.setAttribute("class", "input-validation");
     }
-    if (firstPW != secondPW) {
-      document
-        .getElementById("valid-pw2")
-        ?.setAttribute("class", "display-input-validation");
-      return;
-    } else {
-      document
-        .getElementById("valid-pw2")
-        ?.setAttribute("class", "input-validation");
-    }
-
     const user_res = await fetch("/api/user/add", {
       method: "POST",
       body: JSON.stringify({
@@ -119,20 +107,19 @@ export default function SignUp() {
         full_name: fullName,
       }),
     }).then((res) => res.json());
+    console.log(user_res);
     if (user_res.acknowledged) {
       const user_id = user_res.insertedId;
-      dispatch(
-        loginUser({
-          id: user_id,
-          full_name: fullName,
-          admin: false,
-          editor: false,
-        })
-      );
+      setCookie("user_id", user_id);
+      setCookie("logged_in", true);
+      setCookie("username", userName);
+      setCookie("full_name", fullName);
+      setCookie("user_editor", false);
+      setCookie("user_admin", false);
       router.push("/");
     } else {
       alert(
-        `there was a network error while logging into your account \n\n ${user_res.error}`
+        `there was a network error while setting up your account \n\n ${user_res.error}`
       );
     }
   };
@@ -146,7 +133,7 @@ export default function SignUp() {
           name="user-inputrname"
           className="username"
           placeholder="username_example_01"
-          onBlur={validate_field}
+          onChange={validate_field}
         />
         <label className="input-validation" id="valid-username">
           Username is Required
@@ -157,7 +144,7 @@ export default function SignUp() {
           name="user-inputil"
           className="email"
           placeholder="example@email.com"
-          onBlur={validate_field}
+          onChange={validate_field}
         />
         <label className="input-validation" id="valid-email">
           Email is Required
@@ -168,7 +155,7 @@ export default function SignUp() {
           name="user-inputl_name"
           className="full_name"
           placeholder="First Name Last Name"
-          onBlur={validate_field}
+          onChange={validate_field}
         />
         <label className="input-validation" id="valid-full_name">
           Full Name is Required
@@ -179,7 +166,8 @@ export default function SignUp() {
           name="user-inputsword"
           className="pw1"
           placeholder="*********"
-          onBlur={valid_password}
+          onChange={valid_password}
+          onInput={passwordCheck}
         />
         <label className="input-validation" id="valid-password">
           Password must be eight characters long, contain an uppercase,
@@ -190,7 +178,7 @@ export default function SignUp() {
           type="text"
           name="user-input"
           className="pw2"
-          onBlur={passwordCheck}
+          onChange={passwordCheck}
           placeholder="*********"
         />
         <label className="input-validation" id="valid-pw2">

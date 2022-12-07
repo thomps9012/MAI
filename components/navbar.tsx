@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../utils/userReducer";
-import cookieCutter from "cookie-cutter";
-
+import { deleteCookie, getCookie } from "cookies-next";
 export default function NavBar() {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [activeLink, setActiveLink] = useState("");
   const [show, setShow] = useState(false);
-  const user_info = useSelector((state: any) => state.user);
+  const logged_in = getCookie("logged_in");
+  const user_id = getCookie("user_id");
+  const user_full_name = getCookie("full_name");
+  const editor = getCookie("user_editor");
+  const admin = getCookie("user_admin");
   const setEditNav = (e: any) => {
     const link = e.target.value;
     link === "" && router.push("/");
@@ -19,16 +19,12 @@ export default function NavBar() {
   };
   const active_route = router.route;
   const logout = async () => {
-    cookieCutter.set("user_id");
-    cookieCutter.set("user_editor");
-    cookieCutter.set("user_admin");
-    await caches.delete("user");
-    await caches.delete("interviews");
-    await caches.delete("clients");
-    await caches.delete("gift_cards");
-    await caches.delete("answers");
-    await caches.delete("questions");
-    dispatch(logoutUser());
+    deleteCookie("user_id");
+    deleteCookie("logged_in");
+    deleteCookie("username");
+    deleteCookie("full_name");
+    deleteCookie("login_attempts");
+    router.reload();
   };
   useEffect(() => {
     const links = document.getElementsByClassName(
@@ -58,21 +54,21 @@ export default function NavBar() {
             <a>Begin Interview</a>
           </Link>
         </li>
-        {!user_info.logged_in && (
+        {!logged_in && (
           <li className="nav-link" id="/sign_in">
             <Link href="/sign_in">
               <a>Admin Login</a>
             </Link>
           </li>
         )}
-        {!user_info.logged_in && (
+        {!logged_in && (
           <li className="nav-link" id="/sign_up">
             <Link href="/sign_up">
               <a>Admin Sign Up</a>
             </Link>
           </li>
         )}
-        {user_info.user?.admin && (
+        {admin && (
           <>
             <li className="nav-link" id="/admin/clients">
               <Link href="/admin/clients">
@@ -91,7 +87,7 @@ export default function NavBar() {
             </li>
           </>
         )}
-        {user_info.user?.editor && (
+        {editor && (
           <>
             <li className="nav-link" id="users">
               <Link href="/admin/users/manage">
@@ -130,14 +126,14 @@ export default function NavBar() {
             </select>
           </>
         )}
-        {user_info.logged_in && (
+        {logged_in && (
           <li className="nav-link" id="/admin/users/[id]">
-            <Link href={`/admin/users/${user_info.user?._id}`}>
+            <Link href={`/admin/users/${user_id}`}>
               <a>Profile</a>
             </Link>
           </li>
         )}
-        {user_info.logged_in && (
+        {logged_in && (
           <li className="nav-link">
             <a onClick={logout}>Logout</a>
           </li>
@@ -147,12 +143,10 @@ export default function NavBar() {
         <a onClick={() => setShow(!show)}>
           <p>Menu</p>
         </a>
-        {user_info.logged_in && (
+        {logged_in && (
           <>
-            <a
-              onClick={() => router.push(`/admin/users/${user_info.user?._id}`)}
-            >
-              <p>{user_info.user?.full_name}</p>
+            <a onClick={() => router.push(`/admin/users/${user_id}`)}>
+              <p>{user_full_name}</p>
             </a>
             <a onClick={logout}>
               <p>Logout</p>
@@ -174,21 +168,21 @@ export default function NavBar() {
             <a>Begin Interview</a>
           </Link>
         </li>
-        {!user_info.logged_in && (
+        {!logged_in && (
           <li className="" onClick={() => setShow(false)} id="/sign_in">
             <Link href="/sign_in">
               <a>Admin Login</a>
             </Link>
           </li>
         )}
-        {!user_info.logged_in && (
+        {!logged_in && (
           <li className="" onClick={() => setShow(false)} id="/sign_up">
             <Link href="/sign_up">
               <a>Admin Sign Up</a>
             </Link>
           </li>
         )}
-        {user_info.user?.admin && (
+        {admin && (
           <>
             <li
               className="nav-link"
@@ -219,7 +213,7 @@ export default function NavBar() {
             </li>
           </>
         )}
-        {user_info.user?.editor && (
+        {editor && (
           <>
             <li
               className="nav-link"

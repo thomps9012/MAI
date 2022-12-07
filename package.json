@@ -17,6 +17,7 @@
     "chart.js": "^3.9.1",
     "cookie-cutter": "^0.2.0",
     "cookies": "^0.8.0",
+    "cookies-next": "^2.1.1",
     "cypress": "^10.9.0",
     "eslint-plugin-next": "^0.0.0",
     "eslint-plugin-prettier": "^4.2.1",
