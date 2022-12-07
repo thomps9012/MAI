@@ -19,7 +19,7 @@ export default function SignUp() {
     }
   };
   const valid_password = () => {
-    const pw = (document.querySelector(".pw1") as HTMLInputElement).value
+    const pw = (document.querySelector(".pw1") as HTMLInputElement).value;
     const validation = pw.match(
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/g
     );
@@ -45,26 +45,26 @@ export default function SignUp() {
         ?.setAttribute("class", "input-validation");
     }
   };
-  const validate_all_fields = () => {
-    let invalid_inputs = 0;
-    const inputs = document.querySelectorAll("input");
-    for (const i in inputs) {
-      const input_value = inputs[i].value;
-      const input_name = inputs[i].name;
-      if (input_value === "" || input_value === undefined) {
-        document
-          .getElementById("valid-" + input_name)
-          ?.setAttribute("class", "display-input-validation");
-        invalid_inputs++;
-      } else {
-        document
-          .getElementById("valid-" + input_name)
-          ?.setAttribute("class", "input-validation");
-      }
+  interface UserInput {
+    username: string;
+    email: string;
+    password: string;
+    full_name: string;
+  }
+  const validate_all_fields = (user_object: UserInput) => {
+    const { username, email, password, full_name } = user_object;
+    if (
+      username === "" ||
+      email === "" ||
+      password === "" ||
+      full_name === ""
+    ) {
+      return false;
     }
-    return invalid_inputs === 0;
+    return true;
   };
-  const createUser = async () => {
+  const createUser = async (e: any) => {
+    e.preventDefault();
     const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
     const secondPW = (document.querySelector(".pw2") as HTMLInputElement).value;
     const userName = (document.querySelector(".username") as HTMLInputElement)
@@ -73,7 +73,14 @@ export default function SignUp() {
       .value;
     const fullName = (document.querySelector(".full_name") as HTMLInputElement)
       .value;
-    if (!validate_all_fields()) {
+    if (
+      !validate_all_fields({
+        username: userName,
+        email: emailAddress,
+        password: firstPW,
+        full_name: fullName,
+      })
+    ) {
       valid_password();
       passwordCheck();
       return;
@@ -112,27 +119,6 @@ export default function SignUp() {
       }),
     }).then((res) => res.json());
     if (user_res.acknowledged) {
-      const user_id = user_res.insertedId;
-      const user_cache = await caches.open("user");
-      user_cache.put(
-        "current",
-        await fetch("/api/user/add", {
-          method: "POST",
-          body: JSON.stringify({
-            username: userName,
-            password: firstPW,
-            full_name: fullName,
-          }),
-        })
-      );
-      dispatch(
-        loginUser({
-          id: user_id,
-          full_name: fullName,
-          admin: false,
-          editor: false,
-        })
-      );
       router.push("/");
     } else {
       alert(
@@ -147,7 +133,7 @@ export default function SignUp() {
         <label className="input-label">Username</label>
         <input
           type="username"
-          name="username"
+          name="user-inputrname"
           className="username"
           placeholder="username_example_01"
           onBlur={validate_field}
@@ -158,7 +144,7 @@ export default function SignUp() {
         <label className="input-label">Email Address</label>
         <input
           type="email"
-          name="email"
+          name="user-inputil"
           className="email"
           placeholder="example@email.com"
           onBlur={validate_field}
@@ -169,7 +155,7 @@ export default function SignUp() {
         <label className="input-label">Full Name</label>
         <input
           type="text"
-          name="full_name"
+          name="user-inputl_name"
           className="full_name"
           placeholder="First Name Last Name"
           onBlur={validate_field}
@@ -180,7 +166,7 @@ export default function SignUp() {
         <label className="input-label">Password</label>
         <input
           type="text"
-          name="password"
+          name="user-inputsword"
           className="pw1"
           placeholder="*********"
           onBlur={valid_password}
@@ -192,7 +178,7 @@ export default function SignUp() {
         <label className="input-label">Confirm Password</label>
         <input
           type="text"
-          name="pw2"
+          name="user-input"
           className="pw2"
           onBlur={passwordCheck}
           placeholder="*********"
