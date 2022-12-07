@@ -1,8 +1,10 @@
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function SignUp() {
   const router = useRouter();
+  const [user_exists, setUserExists] = useState(false);
   const passwordCheck = () => {
     const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
     const secondPW = (document.querySelector(".pw2") as HTMLInputElement).value;
@@ -36,14 +38,14 @@ export default function SignUp() {
     }
   };
   const validate_field = (e: any) => {
-    const input_value = e.target.value;
-    if (input_value === "" || input_value === undefined) {
+    const {value, id} = e.target;
+    if (value === "" || value === undefined) {
       document
-        .getElementById("valid-" + e.target.name)
+        .getElementById("valid-" + id)
         ?.setAttribute("class", "display-input-validation");
     } else {
       document
-        .getElementById("valid-" + e.target.name)
+        .getElementById("valid-" + id)
         ?.setAttribute("class", "input-validation");
     }
   };
@@ -55,6 +57,20 @@ export default function SignUp() {
   }
   const validate_all_fields = (user_object: UserInput) => {
     const { username, email, password, full_name } = user_object;
+    const fields = document.getElementsByName("user-input");
+    for (let i = 0; i < fields.length; i++) {
+      let field = fields[i] as HTMLInputElement;
+      const { value, id } = field;
+      if (value === "" || value === undefined || !value) {
+        document
+          .getElementById(`valid-${id}`)
+          ?.setAttribute("class", "display-input-validation");
+      } else {
+        document
+          .getElementById(`valid-${id}`)
+          ?.setAttribute("class", "input-validation");
+      }
+    }
     if (
       username === "" ||
       email === "" ||
@@ -64,6 +80,21 @@ export default function SignUp() {
       return false;
     }
     return true;
+  };
+  const check_username_email = async () => {
+    const userName = (document.querySelector(".username") as HTMLInputElement)
+      .value;
+    const emailAddress = (document.querySelector(".email") as HTMLInputElement)
+      .value;
+    const user_exists = await fetch("/api/user/exists", {
+      method: "POST",
+      body: JSON.stringify({
+        email: emailAddress,
+        username: userName,
+      }),
+    }).then((res) => res.json());
+    console.log(user_exists);
+    setUserExists(user_exists);
   };
   const createUser = async (e: any) => {
     e.preventDefault();
@@ -86,13 +117,6 @@ export default function SignUp() {
     ) {
       return;
     }
-    const user_exists = await fetch("/api/user/exists", {
-      method: "POST",
-      body: JSON.stringify({
-        email: emailAddress,
-        username: userName,
-      }),
-    }).then((res) => res.json());
     console.log(user_exists);
     if (user_exists) {
       alert("username or email is already taken");
@@ -130,9 +154,11 @@ export default function SignUp() {
         <label className="input-label">Username</label>
         <input
           type="username"
-          name="user-inputrname"
+          name="user-input"
           className="username"
+          id="username"
           placeholder="username_example_01"
+          onInput={check_username_email}
           onChange={validate_field}
         />
         <label className="input-validation" id="valid-username">
@@ -141,10 +167,12 @@ export default function SignUp() {
         <label className="input-label">Email Address</label>
         <input
           type="email"
-          name="user-inputil"
+          name="user-input"
           className="email"
+          id="email"
           placeholder="example@email.com"
           onChange={validate_field}
+          onInput={check_username_email}
         />
         <label className="input-validation" id="valid-email">
           Email is Required
@@ -152,7 +180,8 @@ export default function SignUp() {
         <label className="input-label">Full Name</label>
         <input
           type="text"
-          name="user-inputl_name"
+          name="user-input"
+          id="full_name"
           className="full_name"
           placeholder="First Name Last Name"
           onChange={validate_field}
@@ -163,8 +192,9 @@ export default function SignUp() {
         <label className="input-label">Password</label>
         <input
           type="text"
-          name="user-inputsword"
+          name="user-input"
           className="pw1"
+          id="password"
           placeholder="*********"
           onChange={valid_password}
           onInput={passwordCheck}
@@ -178,6 +208,7 @@ export default function SignUp() {
           type="text"
           name="user-input"
           className="pw2"
+          id="pw2"
           onChange={passwordCheck}
           placeholder="*********"
         />
