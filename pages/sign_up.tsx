@@ -65,6 +65,7 @@ export default function SignUp() {
   };
   const createUser = async (e: any) => {
     e.preventDefault();
+    console.log("hit");
     const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
     const secondPW = (document.querySelector(".pw2") as HTMLInputElement).value;
     const userName = (document.querySelector(".username") as HTMLInputElement)
@@ -119,6 +120,15 @@ export default function SignUp() {
       }),
     }).then((res) => res.json());
     if (user_res.acknowledged) {
+      const user_id = user_res.insertedId;
+      dispatch(
+        loginUser({
+          id: user_id,
+          full_name: fullName,
+          admin: false,
+          editor: false,
+        })
+      );
       router.push("/");
     } else {
       alert(
