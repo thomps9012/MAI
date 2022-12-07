@@ -1,11 +1,24 @@
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import titleCase from "../../utils/titleCase";
-export default function QuestionsPage() {
-  const user_data = useSelector((state: any) => state.user);
-
+export async function getServerSideProps({ req, res }: any) {
+  const admin_status = req.cookies.user_admin;
+  const editor_status = req.cookies.user_editor;
+  return {
+    props: {
+      user_admin: admin_status,
+      user_editor: editor_status,
+    },
+  };
+}
+export default function QuestionsPage({
+  user_admin,
+  user_editor,
+}: {
+  user_admin: boolean;
+  user_editor: boolean;
+}) {
   const { data, error } = useSWR("/api/questions/all", fetcher);
   if (error)
     return (
@@ -26,7 +39,7 @@ export default function QuestionsPage() {
   const question_sections: Array<string> = Array.from(
     new Set(data?.map((question: any) => question.section))
   );
-  if (!user_data.user?.admin) {
+  if (!user_admin) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -45,7 +58,7 @@ export default function QuestionsPage() {
       <h1>Edit Questions</h1>
       <section className="interview_question_section">
         <h1>Sections</h1>
-        {user_data.editor && (
+        {user_editor && (
           <h1>
             <Link href="/admin/add/interview_section">
               <a>Add New Section</a>
@@ -55,7 +68,7 @@ export default function QuestionsPage() {
         {question_sections?.map((section: string) => (
           <div className="interview_section_detail" key={section}>
             <p>{titleCase(section.split("_").join(" "))}</p>
-            {user_data.editor && (
+            {user_editor && (
               <Link href={`/admin/edit/${section}/interview_section`}>
                 Edit Section
               </Link>
@@ -66,7 +79,7 @@ export default function QuestionsPage() {
       <hr />
       <section className="interview_question_section">
         <h1>Adult Questions</h1>
-        {user_data.editor && (
+        {user_editor && (
           <h1>
             <Link href="/admin/add/interview_question">
               <a>Add New Question</a>
@@ -75,7 +88,7 @@ export default function QuestionsPage() {
         )}
         {adult_questions?.map((question: any, i: number) => (
           <div className="interview_question_detail" key={question?._id}>
-            {user_data.editor && (
+            {user_editor && (
               <p>
                 {titleCase(question.section.split("_").join(" "))} -{" "}
                 <Link href={`/admin/edit/${question._id}/question`}>
@@ -94,7 +107,7 @@ export default function QuestionsPage() {
       </section>
       <section className="interview_question_section">
         <h1>Youth Questions</h1>
-        {user_data.editor && (
+        {user_editor && (
           <h1>
             <Link href="/admin/add/interview_question">
               <a>Add New Question</a>
@@ -103,7 +116,7 @@ export default function QuestionsPage() {
         )}
         {youth_questions?.map((question: any, i: number) => (
           <div className="interview_question_detail" key={question._id}>
-            {user_data.editor && (
+            {user_editor && (
               <p>
                 {titleCase(question.section.split("_").join(" "))} -{" "}
                 <Link href={`/admin/edit/${question._id}/question`}>
@@ -122,7 +135,7 @@ export default function QuestionsPage() {
       </section>
       <section className="interview_question_section">
         <h1>Agnostic Questions </h1>
-        {user_data.editor && (
+        {user_editor && (
           <h1>
             <Link href="/admin/add/interview_question">
               <a>Add New Question</a>
@@ -131,7 +144,7 @@ export default function QuestionsPage() {
         )}
         {agnostic_questions?.map((question: any, i: number) => (
           <div className="interview_question_detail" key={question._id}>
-            {user_data.editor && (
+            {user_editor && (
               <p>
                 {titleCase(question.section.split("_").join(" "))} -{" "}
                 <Link href={`/admin/edit/${question._id}/question`}>

@@ -1,11 +1,8 @@
-import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 
-export default function CardDetailPage({ card_record }: any) {
-  const user_data = useSelector((state: any) => state.user);
+export default function CardDetailPage({ card_record, user_admin }: any) {
   const {
     received_date,
     amount,
@@ -25,12 +22,12 @@ export default function CardDetailPage({ card_record }: any) {
         For ${amount} on {received_date}
       </h1>
       {number != 0 && <h1>Card Number: {number}</h1>}
-      {user_data.user?.admin && (
+      {user_admin && (
         <Link href={`/gift_card/${_id}/edit`}>
           <a>Edit Card Information</a>
         </Link>
       )}
-      {user_data.user?.admin && (
+      {user_admin && (
         <Link
           href={`/admin/interview_detail/${interview_type}/${interview_id}`}
         >
@@ -43,11 +40,11 @@ export default function CardDetailPage({ card_record }: any) {
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_admin = cookies.get("user_admin");
+  const user_admin = req.cookies.user_admin;
   if (!user_admin) {
     return {
       props: {
+        user_admin,
         card_record: {},
       },
     };
@@ -57,6 +54,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ _id: new ObjectId(ctx.params.id as string) });
   return {
     props: {
+      user_admin,
       card_record: JSON.parse(JSON.stringify(card_record)),
     },
   };

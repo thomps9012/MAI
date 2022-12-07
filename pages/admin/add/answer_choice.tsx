@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-
-export default function BasePage() {
-  const user_data = useSelector((state: any) => state.user);
+export async function getServerSideProps({ req, res }: any) {
+  const editor_status = req.cookies.user_editor;
+  return {
+    props: {
+      user_editor: editor_status,
+    },
+  };
+}
+export default function BasePage({ user_editor }: { user_editor: boolean }) {
   const router = useRouter();
   const [answer_type, setAnswerType] = useState("");
   const addNew = async () => {
@@ -15,7 +20,7 @@ export default function BasePage() {
       choice != "" && choice_arr.push(choice);
     }
     const response = await fetch("/api/answers/all/add", {
-      headers: { editor: user_data.user.editor },
+      headers: { editor: JSON.stringify(user_editor) },
       body: JSON.stringify({
         type: answer_type.toUpperCase().split(" ").join("_"),
         choices: choice_arr,
@@ -25,7 +30,7 @@ export default function BasePage() {
     answer_cache.put("/all", await fetch("/api/answers/all"));
     response.acknowledged && router.push("/admin/answer_choices");
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>

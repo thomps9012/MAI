@@ -1,19 +1,16 @@
-import Cookies from "cookies";
 import Link from "next/link";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 
-export default function AllClientsPage({ all_clients }: any) {
-  const user_data = useSelector((state: any) => state.user);
+export default function AllClientsPage({ all_clients, user_admin }: any) {
   const [client_records, setClientRecords] = useState(all_clients);
   const { data: agency_data, error: agency_err } = useSWR(
     "/api/answers/testing_agencies",
     fetcher
   );
-  if (!user_data.user?.admin) {
+  if (!user_admin) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -103,12 +100,12 @@ export default function AllClientsPage({ all_clients }: any) {
 }
 
 export async function getServerSideProps({ req, res }: any) {
-  const cookies = new Cookies(req, res);
-  const admin_status = cookies.get("user_admin");
-  if (!admin_status) {
+  const user_admin = req.cookies.user_admin;
+  if (!user_admin) {
     return {
       props: {
         all_clients: [],
+        user_admin: false,
       },
     };
   }
@@ -125,6 +122,7 @@ export async function getServerSideProps({ req, res }: any) {
   return {
     props: {
       all_clients: JSON.parse(JSON.stringify(all_clients)),
+      user_admin,
     },
   };
 }

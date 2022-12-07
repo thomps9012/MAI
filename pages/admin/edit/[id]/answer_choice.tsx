@@ -1,18 +1,16 @@
-import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../utils/mongodb";
 
 export default function BasePage({
   answer_id,
   answer_choice,
+  user_editor,
 }: {
+  user_editor: boolean;
   answer_choice: any;
   answer_id: string;
 }) {
-  const user_data = useSelector((state: any) => state.user);
-
   const router = useRouter();
   const saveEdits = async () => {
     const answer_choices = document.getElementsByClassName("answer_choice");
@@ -22,7 +20,7 @@ export default function BasePage({
       choice != "" && choice_arr.push(choice);
     }
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: answer_id, editor: user_data.user.editor },
+      headers: { answer_id: answer_id, editor: JSON.stringify(user_editor) },
       body: JSON.stringify({
         type: answer_choice.type,
         choices: choice_arr,
@@ -32,7 +30,7 @@ export default function BasePage({
     answer_cache.put("/all", await fetch("/api/answers/all"));
     response.acknowledged && router.push("/admin/answer_choices");
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -69,11 +67,11 @@ export default function BasePage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         answer_choice: "",
         answer_id: "",
       },
@@ -84,6 +82,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ _id: ctx.params.id });
   return {
     props: {
+      user_editor,
       answer_choice: answer_choice
         ? JSON.parse(JSON.stringify(answer_choice))
         : {},

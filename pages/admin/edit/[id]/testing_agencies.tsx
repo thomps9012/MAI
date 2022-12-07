@@ -1,19 +1,17 @@
-import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
 
 export default function BasePage({
   answer_id,
   agencies,
+  user_editor,
 }: {
   agencies: any;
   answer_id: string;
+  user_editor: boolean;
 }) {
-  const user_data = useSelector((state: any) => state.user);
-
   const router = useRouter();
   const saveEdits = async () => {
     const agency_names = document.getElementsByClassName("agency_name");
@@ -26,7 +24,7 @@ export default function BasePage({
       agency_arr.push(name);
     }
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: answer_id, editor: user_data.user.editor },
+      headers: { answer_id: answer_id, editor: JSON.stringify(user_editor) },
       body: JSON.stringify({
         type: "TESTING_AGENCIES",
         choices: agency_arr,
@@ -36,7 +34,7 @@ export default function BasePage({
     answer_cache.put("/all", await fetch("/api/answers/all"));
     response.acknowledged && router.push("/admin/answer_choices");
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -70,11 +68,11 @@ export default function BasePage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         agencies: {},
         answer_id: "",
       },
@@ -85,6 +83,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ _id: ctx.params.id });
   return {
     props: {
+      user_editor,
       agencies: agencies ? JSON.parse(JSON.stringify(agencies)) : {},
       answer_id: ctx.params.id ? ctx.params.id : "",
     },

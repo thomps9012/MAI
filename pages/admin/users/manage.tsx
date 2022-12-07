@@ -1,11 +1,8 @@
-import Cookies from "cookies";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 
-export default function ManageUsers({ users }: any) {
-  const user_data = useSelector((state: any) => state.user);
-  if (!user_data.user?.editor) {
+export default function ManageUsers({ users, user_editor }: any) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -40,11 +37,13 @@ export default function ManageUsers({ users }: any) {
 }
 
 export async function getServerSideProps({ req, res }: any) {
-  const cookies = new Cookies(req, res);
-  const admin_status = cookies.get("user_admin");
+  const admin_status = req.cookies.user_admin;
+  const editor_status = req.cookies.user_editor;
   if (!admin_status) {
     return {
       props: {
+        user_admin: false,
+        user_editor: false,
         users: [],
       },
     };
@@ -53,6 +52,8 @@ export async function getServerSideProps({ req, res }: any) {
   const users = await db.collection("users").find({}).toArray();
   return {
     props: {
+      user_admin: admin_status,
+      user_editor: editor_status,
       users: JSON.parse(JSON.stringify(users)),
     },
   };

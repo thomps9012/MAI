@@ -4,15 +4,13 @@ import { connectToDatabase } from "../../../../utils/mongodb";
 import useSWR from "swr";
 import fetcher from "../../../../utils/fetcher";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import Cookies from "cookies";
 
 export default function ClientEditPage({
   baseline_record,
   testing_only_record,
   client_PID,
+  user_editor,
 }: any) {
-  const user_data = useSelector((state: any) => state.user);
   const router = useRouter();
   const { data: testing_agencies, error: testing_agency_err } = useSWR(
     "/api/answers/testing_agencies",
@@ -99,8 +97,9 @@ export default function ClientEditPage({
     const duplicate_PID = await fetch(`/api/client/PID_exists?PID=${PID}`);
     if (duplicate_PID) return;
     if (!validPhoneNumber) return;
+    // replace with headers
     const response = await fetch(
-      `/api/client/edit_demographics?record_id=${interview_id}&interview_type=${type}?editor=${user_data.user.editor}`,
+      `/api/client/edit_demographics?record_id=${interview_id}&interview_type=${type}?editor=${user_editor}`,
       {
         body: JSON.stringify({
           date_of_birth: date_of_birth,
@@ -122,7 +121,7 @@ export default function ClientEditPage({
     );
     response.acknowledged && router.push(`/admin/client_detail/${PID}`);
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -202,11 +201,11 @@ export default function ClientEditPage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         baseline_record: {},
         testing_only_record: {},
         client_PID: "",
@@ -241,6 +240,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
   );
   return {
     props: {
+      user_editor,
       baseline_record: baseline_record
         ? JSON.parse(JSON.stringify(baseline_record))
         : {},

@@ -1,13 +1,13 @@
+import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import titleCase from "../../utils/titleCase";
 
 export default function DataReview() {
-  const interview_data = useSelector((state: any) => state.interview);
-  const user_data = useSelector((state: any) => state.user);
+  const interview_data = JSON.parse(getCookie("interview_data") as string);
+  const user_editor = getCookie("user_editor");
   const router = useRouter();
   const { data: interview, error: interview_err } = useSWR(
     `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`,
@@ -134,7 +134,7 @@ export default function DataReview() {
       <h3>PID: {PID}</h3>
       <h3>{client_name}</h3>
       <h3> Tested by {agency}</h3>
-      {user_data.user?.editor && (
+      {user_editor && (
         <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}>
           <a className="page-link">Edit Interview</a>
         </Link>

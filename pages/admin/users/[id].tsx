@@ -1,28 +1,41 @@
-import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
-
+import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 export default function EditUser({ user, editor_status }: any) {
-  const user_data = useSelector((state: any) => state.user);
   const router = useRouter();
-
   const [full_name, setFullName] = useState(user.full_name);
   const [username, setUserName] = useState(user.username);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState(user.email);
   const [admin, setAdmin] = useState(user.admin);
   const [editor, setEditor] = useState(user.editor);
-  const saveEdits = async () => {
-    const username_exists = await fetch(
+  const [email_exists, setEmailExists] = useState(false);
+  const [username_exists, setUserNameExists] = useState(false);
+  const check_username = async () => {
+    const exists = await fetch(
       `/api/user/username_exists?username=${username}`
+    ).then((res) => res.json());
+    setUserNameExists(exists);
+  };
+  const check_email = async () => {
+    const exists = await fetch(`/api/user/email_exists?email=${email}`).then(
+      (res) => res.json()
     );
-    if (username_exists) return;
-    const email_exists = await fetch(`/api/user/email_exists?email=${email}`);
-    if (email_exists) return;
+    setEmailExists(exists);
+  };
+  const saveEdits = async () => {
+    if (username_exists) {
+      alert("username is already taken");
+      return;
+    }
+    if (email_exists) {
+      alert("email is already taken");
+      return;
+    }
     if (password === "") {
       const res = await fetch("/api/user/edit", {
         method: "POST",
@@ -35,7 +48,7 @@ export default function EditUser({ user, editor_status }: any) {
           editor: editor,
         }),
       }).then((response) => response.json());
-      res.acknowledged && router.push("/admin/users/manage");
+      res.acknowledged && router.push("/");
     } else {
       const res = await fetch("/api/user/edit", {
         method: "POST",
@@ -49,10 +62,10 @@ export default function EditUser({ user, editor_status }: any) {
           editor: editor,
         }),
       }).then((response) => response.json());
-      res.acknowledged && router.push("/admin/users/manage");
+      res.acknowledged && router.push("/");
     }
   };
-  if (!editor_status && user_data.user?.id != user._id) {
+  if (!editor_status && !user) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -83,6 +96,7 @@ export default function EditUser({ user, editor_status }: any) {
           name="username"
           defaultValue={username}
           onChange={(e: any) => setUserName(e.target.value)}
+          onInput={check_username}
         />
         <p>Email</p>
         <input
@@ -90,6 +104,7 @@ export default function EditUser({ user, editor_status }: any) {
           name="email"
           defaultValue={email}
           onChange={(e: any) => setEmail(e.target.value)}
+          onInput={check_email}
         />
         <p>Password</p>
         <input
@@ -98,7 +113,7 @@ export default function EditUser({ user, editor_status }: any) {
           placeholder="New Password..."
           onChange={(e: any) => setPassword(e.target.value)}
         />
-        {user_data.editor && (
+        {editor_status && (
           <>
             <div
               style={{
@@ -142,12 +157,19 @@ export default function EditUser({ user, editor_status }: any) {
   );
 }
 
-export async function getServerSideProps({ ctx, req, res }: any) {
-  const cookies = new Cookies(req, res);
-  const admin_status = cookies.get("user_editor");
-  const cookie_user_id = cookies.get("user_id");
-  const user_id = req.url.split("/")[3];
-  console.log(admin_status)
+export async function getServerSideProps({
+  req,
+  res,
+  query,
+}: {
+  req: NextRequest;
+  res: NextResponse;
+  query: NextApiRequestQuery;
+}) {
+  const admin_status = req.cookies.user_admin;
+  const cookie_user_id = req.cookies.user_id;
+  console.log(query);
+  const user_id = query.id;
   if (!admin_status && user_id != cookie_user_id) {
     return {
       props: {
@@ -158,11 +180,12 @@ export async function getServerSideProps({ ctx, req, res }: any) {
   const { db } = await connectToDatabase();
   const user_info = await db
     .collection("users")
-    .findOne({ _id: new ObjectId(user_id) });
+    .findOne({ _id: new ObjectId(user_id as string) });
+  console.log(user_info);
   return {
     props: {
       user: JSON.parse(JSON.stringify(user_info)),
-      editor_status: admin_status
+      editor_status: user_info.editor,
     },
   };
 }

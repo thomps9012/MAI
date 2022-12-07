@@ -5,13 +5,13 @@ import fetcher from "../../../utils/fetcher";
 import NumberInput from "../../../utils/number-input";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import MultipleSelect from "../../../utils/multiple-select";
 import InterviewHeader from "../../../components/interview-header";
+import { deleteCookie, getCookie } from "cookies-next";
 
 export default function SexualBehavior() {
   const [current_question, setCurrentQuestion] = useState(0);
-  const interview_data = useSelector((state: any) => state.interview);
+  const interview_data = JSON.parse(getCookie("interview_data") as string);
   const router = useRouter();
   const { data: questions, error: question_err } = useSWR(
     "/api/questions/youth/sexual_behavior",
@@ -68,28 +68,24 @@ export default function SexualBehavior() {
       }
     });
     sessionStorage.setItem(section, JSON.stringify(section_info));
+    const { id, type } = interview_data;
     const res = await fetch("/api/interviews/update", {
       method: "POST",
       headers: {
         interview_section: section,
-        interview_type: interview_data.type,
-        record_id: interview_data.id,
+        interview_type: type,
+        record_id: id,
         editor: "true",
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
-    const interview_cache = await caches.open("interviews");
-    interview_cache.put(
-      `${interview_data.id}/type/${interview_data.type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-      )
-    );
-    res.acknowledged
-      ? router.push("/interview/youth/drug_behavior")
-      : confirm(
-          "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-        ) && router.push("/");
+    if (res.acknowledged) {
+      router.push("/interview/youth/drug_behavior");
+    }
+    deleteCookie("interview_data");
+    confirm(
+      "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
+    ) && router.push("/");
   };
   if (question_err || answer_err)
     return (

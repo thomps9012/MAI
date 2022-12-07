@@ -1,12 +1,26 @@
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import titleCase from "../../utils/titleCase";
-export default function AnswersPage() {
-  const user_data = useSelector((state: any) => state.user);
+export async function getServerSideProps({ req, res, ctx }: any) {
+  const user_editor = req.cookies.user_editor;
+  const user_admin = req.cookies.user_admin;
+  return {
+    props: {
+      user_editor,
+      user_admin,
+    },
+  };
+}
+export default function AnswersPage({
+  user_editor,
+  user_admin,
+}: {
+  user_editor: boolean;
+  user_admin: boolean;
+}) {
   const { data, error } = useSWR("/api/answers/all", fetcher);
-  if (!user_data.user?.admin) {
+  if (!user_admin) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -44,7 +58,7 @@ export default function AnswersPage() {
           {answer.choices.map((choice: string) => (
             <p key={choice}>{choice}</p>
           ))}
-          {user_data.editor && (
+          {user_editor && (
             <Link href={`/admin/edit/${answer._id}/answer_choice`}>
               Edit Answer
             </Link>

@@ -1,13 +1,14 @@
-import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
 import titleCase from "../../../../../../../utils/titleCase";
 
-export default function EditInterviewPage({ interview_record, adult }: any) {
-  const user_data = useSelector((state: any) => state.user);
-  if (!user_data.user?.editor) {
+export default function EditInterviewPage({
+  interview_record,
+  adult,
+  user_editor,
+}: any) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -63,11 +64,11 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         interview_record: {},
         adult: false,
       },
@@ -81,6 +82,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     );
   return {
     props: {
+      user_editor,
       interview_record: JSON.parse(JSON.stringify(interview_record)),
       adult: JSON.parse(JSON.stringify(ctx.params.adult)),
     },

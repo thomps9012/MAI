@@ -1,11 +1,11 @@
+import { getCookie } from "cookies-next";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import titleCase from "../../utils/titleCase";
 export default function Success() {
-  const interview_data = useSelector((state: any) => state.interview);
-  const user_data = useSelector((state: any) => state.user);
+  const interview_data = JSON.parse(getCookie("interview_data") as string);
+  const user_admin = getCookie("user_admin");
   const { data: card_data, error: card_err } = useSWR(
     `/api/cards/find?interview_id=${interview_data.id}`,
     fetcher
@@ -27,13 +27,13 @@ export default function Success() {
         {titleCase(interview_data.type.split("_").join(" "))} Interview
       </h1>
       <br />
-      {!user_data.user?.admin && (
+      {!user_admin && (
         <h1>
           Thank you for submitting your questionnaire, please show this screen
           to a testing administrator to receive your Gift Card.
         </h1>
       )}
-      {user_data.user?.admin && (
+      {user_admin && (
         <>
           <a className="landing-link" onClick={() => sessionStorage.clear()}>
             <Link href={`/gift_card/${gift_card_id}/disperse`}>

@@ -1,11 +1,13 @@
-import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 
-export default function BasePage({ section_name }: { section_name: string }) {
-  const user_data = useSelector((state: any) => state.user);
-
+export default function BasePage({
+  section_name,
+  user_editor,
+}: {
+  section_name: string;
+  user_editor: boolean;
+}) {
   const router = useRouter();
   const saveEdits = async () => {
     const response = await fetch("/api/questions/edit_section", {
@@ -13,7 +15,7 @@ export default function BasePage({ section_name }: { section_name: string }) {
         section_name: (
           document.getElementById("section_name") as HTMLInputElement
         )?.value,
-        editor: user_data.user.editor,
+        editor: JSON.stringify(user_editor),
       },
     }).then((res) => res.json());
     const question_cache = await caches.open("questions");
@@ -22,7 +24,7 @@ export default function BasePage({ section_name }: { section_name: string }) {
     question_cache.put("/youth/all", await fetch("/api/questions/youth/all"));
     response.acknowledged && router.push("/admin/questions");
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -53,17 +55,18 @@ export default function BasePage({ section_name }: { section_name: string }) {
 }
 
 export async function getServerSideProps({ req, res, ctx }: any) {
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         section_name: "",
       },
     };
   }
   return {
     props: {
+      user_editor,
       section_name: ctx.params.id ? ctx.params.id : "",
     },
   };

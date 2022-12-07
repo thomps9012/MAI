@@ -5,17 +5,15 @@ import fetcher from "../../../../utils/fetcher";
 import titleCase from "../../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
-import Cookies from "cookies";
 export default function BasePage({
   question_id,
   question_choice,
+  user_editor,
 }: {
+  user_editor: boolean;
   question_choice: any;
   question_id: string;
 }) {
-  const user_data = useSelector((state: any) => state.user);
-
   const router = useRouter();
   const [selected_answer, setAnswer] = useState({
     _id: "",
@@ -89,7 +87,10 @@ export default function BasePage({
         });
 
     const response = await fetch("/api/questions/edit", {
-      headers: { question_id: question_id, editor: user_data.user.editor },
+      headers: {
+        question_id: question_id,
+        editor: JSON.stringify(user_editor),
+      },
       method: "POST",
       body: JSON.stringify(question_data),
     }).then((res) => res.json());
@@ -119,7 +120,7 @@ export default function BasePage({
         </h1>
       </main>
     );
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -267,11 +268,11 @@ export default function BasePage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         question_choice: "",
         question_id: "",
       },
@@ -282,6 +283,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ _id: ctx.params.id });
   return {
     props: {
+      user_editor,
       question_choice: question_choice
         ? JSON.parse(JSON.stringify(question_choice))
         : {},

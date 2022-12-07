@@ -1,8 +1,7 @@
-import Cookies from "cookies";
+import { getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
 
@@ -11,13 +10,13 @@ export default function EditCardPage({
   card_types,
   card_amounts,
 }: any) {
-  const user_data = useSelector((state: any) => state.user);
+  const user_admin = getCookie("user_admin");
   const router = useRouter();
   const [date, setReceivedDate] = useState(card_record.received_date);
   const [amount, setAmount] = useState(card_record.amount);
   const [type, setType] = useState(card_record.type);
   const [card_number, setCardNumber] = useState(card_record.number);
-  const interview_data = useSelector((state: any) => state.interview);
+  const interview_data = JSON.parse(getCookie("interview_data") as string);
   useEffect(() => {
     amount != -1 &&
       type != "" &&
@@ -34,7 +33,7 @@ export default function EditCardPage({
     record_id: string
   ) => {
     const res = await fetch("/api/cards/disperse", {
-      headers: { admin: user_data.user.admin },
+      headers: { admin: JSON.stringify(user_admin) },
       method: "POST",
       body: JSON.stringify({
         interview_id: card_record.interview_id,
@@ -59,7 +58,7 @@ export default function EditCardPage({
     );
     res.acknowledged && router.push("/gift_card/records");
   };
-  if (!user_data.user.admin) {
+  if (!user_admin) {
     return (
       <main className="container">
         <h1>You are Unauthorized to View this Page</h1>
@@ -141,8 +140,7 @@ export default function EditCardPage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_admin = cookies.get("user_admin");
+  const user_admin = req.cookies.user_admin;
   if (!user_admin) {
     return {
       props: {

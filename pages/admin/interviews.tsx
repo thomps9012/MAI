@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
-import Cookies from "cookies";
 import GraphDisplay from "../../components/graphDisplay";
 import InterviewOverviews from "../../components/interviewOverview";
 export default function InterviewRecordsPage({
@@ -12,8 +10,8 @@ export default function InterviewRecordsPage({
   testing_only_records,
   follow_up_records,
   exit_records,
+  user_admin,
 }: any) {
-  const user_data = useSelector((state: any) => state.user);
   const [baselines, setBaselines] = useState(baseline_records);
   const [testing_only, setTestingOnly] = useState(testing_only_records);
   const [follow_ups, setFollowUps] = useState(follow_up_records);
@@ -32,7 +30,7 @@ export default function InterviewRecordsPage({
         </h1>
       </main>
     );
-  if (!user_data.user?.admin) {
+  if (!user_admin) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -286,11 +284,11 @@ export default function InterviewRecordsPage({
 }
 
 export async function getServerSideProps({ req, res }: any) {
-  const cookies = new Cookies(req, res);
-  const admin_status = cookies.get("user_admin");
+  const admin_status = req.cookies.user_admin;
   if (!admin_status) {
     return {
       props: {
+        user_admin: false,
         baseline_records: [],
         testing_only_records: [],
         follow_up_records: [],
@@ -317,6 +315,7 @@ export async function getServerSideProps({ req, res }: any) {
     .toArray();
   return {
     props: {
+      user_admin: true,
       baseline_records: baseline_records
         ? JSON.parse(JSON.stringify(baseline_records))
         : [],

@@ -1,15 +1,13 @@
-import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
 export default function EditInterviewPage({
   interview_record,
   gift_card,
+  user_editor,
 }: any) {
-  const user_data = useSelector((state: any) => state.user);
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -56,11 +54,11 @@ export default function EditInterviewPage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor,
         interview_record: {},
         gift_card: {},
       },
@@ -77,6 +75,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ interview_id: new ObjectId(ctx.params.id) }, { _id: 1 });
   return {
     props: {
+      user_editor,
       interview_record: JSON.parse(JSON.stringify(interview_record)),
       gift_card: JSON.parse(JSON.stringify(gift_card)),
     },

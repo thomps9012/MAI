@@ -3,10 +3,16 @@ import fetcher from "../../../utils/fetcher";
 import titleCase from "../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import Link from "next/link";
-export default function BasePage() {
-  const user_data = useSelector((state: any) => state.user);
+export async function getServerSideProps({ req, res }: any) {
+  const editor_status = req.cookies.user_editor;
+  return {
+    props: {
+      user_editor: editor_status,
+    },
+  };
+}
+export default function BasePage({user_editor}:{user_editor: boolean}) {
   const router = useRouter();
   const { data: answer_data, error: answer_err } = useSWR(
     "/api/answers/all",
@@ -91,7 +97,7 @@ export default function BasePage() {
   const question_sections: Array<string> =
     section_data &&
     Array.from(new Set(section_data?.map((question: any) => question.section)));
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>

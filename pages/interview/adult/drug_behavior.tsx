@@ -5,13 +5,13 @@ import fetcher from "../../../utils/fetcher";
 import NumberInput from "../../../utils/number-input";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import MultipleSelect from "../../../utils/multiple-select";
 import InterviewHeader from "../../../components/interview-header";
+import { deleteCookie, getCookie } from "cookies-next";
 
 export default function DrugBehavior() {
   const [current_question, setCurrentQuestion] = useState(0);
-  const interview_data = useSelector((state: any) => state.interview);
+  const interview_data = JSON.parse(getCookie("interview_data") as string);
   const router = useRouter();
   const { data: questions, error: question_err } = useSWR(
     "/api/questions/drug_behavior",
@@ -87,18 +87,11 @@ export default function DrugBehavior() {
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
-    const interview_cache = await caches.open("interviews");
-    interview_cache.put(
-      `${interview_data.id}/type/${interview_data.type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-      )
-    );
-    res.acknowledged
-      ? router.push("/interview/review")
-      : confirm(
-          "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-        ) && router.push("/");
+    if (res.acknowledged) router.push("/interview/review");
+    deleteCookie("interview_data");
+    confirm(
+      "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
+    ) && router.push("/");
   };
   return (
     <main className="container">

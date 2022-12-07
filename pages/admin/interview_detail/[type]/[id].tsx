@@ -1,22 +1,15 @@
-import Cookies from "cookies";
+import { setCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setInterviewID,
-  setInterviewType,
-  setInterviewAgency,
-  setInterviewDate,
-  setClientPID,
-  setClientName,
-} from "../../../../utils/interviewReducer";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
 
-export default function InterviewDetailPage({ interview_record }: any) {
-  const dispatch = useDispatch();
-  const user_data = useSelector((state: any) => state.user);
-  if (!user_data.user?.admin) {
+export default function InterviewDetailPage({
+  interview_record,
+  user_admin,
+  user_editor,
+}: any) {
+  if (!user_admin) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -30,12 +23,12 @@ export default function InterviewDetailPage({ interview_record }: any) {
       </main>
     );
   }
-  dispatch(setInterviewID(interview_record._id));
-  dispatch(setInterviewType(interview_record.type));
-  dispatch(setInterviewAgency(interview_record.agency));
-  dispatch(setInterviewDate(interview_record.date));
-  dispatch(setClientPID(interview_record.PID));
-  dispatch(setClientName(interview_record.client_name));
+  setCookie(
+    "interview_data",
+    JSON.stringify({
+      ...interview_record,
+    })
+  );
   const {
     type,
     _id,
@@ -55,7 +48,7 @@ export default function InterviewDetailPage({ interview_record }: any) {
       <h3>PID: {PID}</h3>
       <h3>{client_name}</h3>
       <h3> Tested by {agency}</h3>
-      {user_data.editor && (
+      {user_editor && (
         <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}>
           <a className="page-link">Edit Interview</a>
         </Link>
@@ -78,11 +71,13 @@ export default function InterviewDetailPage({ interview_record }: any) {
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const admin_status = cookies.get("user_admin");
+  const admin_status = req.cookies.user_admin;
+  const editor_status = req.cookies.user_editor;
   if (!admin_status) {
     return {
       props: {
+        user_admin: false,
+        user_editor: false,
         users: [],
       },
     };
@@ -92,6 +87,8 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ _id: new ObjectId(ctx.params.id as string) });
   return {
     props: {
+      user_admin: admin_status,
+      user_editor: editor_status,
       interview_record: JSON.parse(JSON.stringify(interview_record)),
     },
   };

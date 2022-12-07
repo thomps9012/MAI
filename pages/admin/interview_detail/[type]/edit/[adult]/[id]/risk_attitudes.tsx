@@ -1,8 +1,6 @@
-import Cookies from "cookies";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import useSWR from "swr";
 import InterviewHeader from "../../../../../../../components/interview-header";
 import EditButtonSelect from "../../../../../../../utils/edit-button-select";
@@ -12,8 +10,12 @@ import EditNumberInput from "../../../../../../../utils/edit-number-input";
 import fetcher from "../../../../../../../utils/fetcher";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
 
-export default function EditInterviewPage({ interview_record, adult }: any) {
-  const user_data = useSelector((state: any) => state.user);
+export default function EditInterviewPage({
+  interview_record,
+  adult,
+  user_editor,
+  user_admin,
+}: any) {
   const router = useRouter();
   const { _id, risk_attitudes, type } = interview_record;
   const { data: questions, error: question_err } = useSWR(
@@ -77,7 +79,7 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
         interview_section: section,
         interview_type: type,
         record_id: _id,
-        editor: user_data.user.editor
+        editor: user_editor,
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
@@ -103,7 +105,7 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
           "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
         ) && router.push("/");
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -178,11 +180,13 @@ export default function EditInterviewPage({ interview_record, adult }: any) {
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
+  const user_admin = req.cookies.user_admin;
   if (!user_editor) {
     return {
       props: {
+        user_admin,
+        user_editor,
         interview_record: {},
         adult: false,
       },
@@ -196,6 +200,8 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     );
   return {
     props: {
+      user_admin,
+      user_editor,
       interview_record: JSON.parse(JSON.stringify(interview_record)),
       adult: JSON.parse(JSON.stringify(ctx.params.adult)),
     },

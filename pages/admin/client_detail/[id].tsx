@@ -1,6 +1,4 @@
-import Cookies from "cookies";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
 
@@ -10,9 +8,10 @@ export default function ClientDetailPage({
   follow_up_record,
   exit_record,
   client_PID,
+  user_admin,
+  user_editor,
 }: any) {
-  const user_data = useSelector((state: any) => state.user);
-  if (!user_data.user?.admin) {
+  if (!user_admin) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -28,7 +27,7 @@ export default function ClientDetailPage({
   }
   return (
     <main className="container">
-      {user_data.editor && (
+      {user_editor && (
         <Link href={`/admin/client_detail/edit/${client_PID}`}>
           <a>Edit Client Demographics</a>
         </Link>
@@ -88,11 +87,13 @@ export default function ClientDetailPage({
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_admin = cookies.get("user_admin");
+  const user_admin = req.cookies.user_admin;
+  const user_editor = req.cookies.user_editor;
   if (!user_admin) {
     return {
       props: {
+        user_admin,
+        user_editor,
         baseline_record: {},
         testing_only_record: {},
         follow_up_record: {},
@@ -115,6 +116,8 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ PID: ctx.params.id }, { _id: 1, date: 1, type: 1, agency: 1 });
   return {
     props: {
+      user_admin,
+      user_editor,
       baseline_record: baseline_record
         ? JSON.parse(JSON.stringify(baseline_record))
         : {},

@@ -3,16 +3,8 @@ import GenerateID from "../../utils/generate-id";
 import titleCase from "../../utils/titleCase";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import {
-  setClientName,
-  setClientPID,
-  setInterviewAgency,
-  setInterviewDate,
-  setInterviewID,
-  setInterviewType,
-} from "../../utils/interviewReducer";
 import fetcher from "../../utils/fetcher";
+import { setCookie } from "cookies-next";
 
 export default function InterviewSelect() {
   const [date] = useState(
@@ -33,7 +25,6 @@ export default function InterviewSelect() {
         ?.setAttribute("style", "display: flex; flex-direction: column;");
   }, [PID]);
   const router = useRouter();
-  const dispatch = useDispatch();
   const { data, error } = useSWR("/api/client/count_records", fetcher);
   const { data: testing_agencies, error: testing_agency_err } = useSWR(
     "/api/answers/testing_agencies",
@@ -281,12 +272,17 @@ export default function InterviewSelect() {
         )
       );
       sessionStorage.setItem("interview_id", res.insertedIds[0]);
-      dispatch(setInterviewID(res.insertedIds[0]));
-      dispatch(setInterviewType(type));
-      dispatch(setInterviewAgency(agency));
-      dispatch(setInterviewDate(date));
-      dispatch(setClientPID(PID));
-      dispatch(setClientName(client_name));
+      setCookie(
+        "interview_data",
+        JSON.stringify({
+          _id: res.insertedIds[0],
+          type,
+          agency,
+          date,
+          PID,
+          client_name,
+        })
+      );
       if (
         confirm(
           `This is a(n) \n\n ${titleCase(

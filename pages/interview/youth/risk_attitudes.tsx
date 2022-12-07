@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import ButtonSelect from "../../../utils/button-select";
 import useSWR from "swr";
 import fetcher from "../../../utils/fetcher";
@@ -8,10 +7,12 @@ import InterviewHeader from "../../../components/interview-header";
 import MultipleSelect from "../../../utils/multiple-select";
 import NumberInput from "../../../utils/number-input";
 import DropDownSelect from "../../../utils/drop-down-select";
+import { deleteCookie, getCookie } from "cookies-next";
 export default function Attitudes() {
   const [current_question, setCurrentQuestion] = useState(0);
   const router = useRouter();
-  const interview_data = useSelector((state: any) => state.interview);
+  // move all of these to SSR
+  const interview_data = JSON.parse(getCookie("interview_data") as string);
   const { data: questions, error: question_err } = useSWR(
     "/api/questions/youth/risk_attitudes",
     fetcher
@@ -86,18 +87,13 @@ export default function Attitudes() {
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
-    const interview_cache = await caches.open("interviews");
-    interview_cache.put(
-      `${interview_data.id}/type/${interview_data.type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-      )
-    );
-    res.acknowledged
-      ? router.push("/interview/youth/sexual_behavior")
-      : confirm(
-          "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-        ) && router.push("/");
+    if (res.acknowledged) {
+      router.push("/interview/youth/sexual_behavior");
+    }
+    deleteCookie("interview_data");
+    confirm(
+      "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
+    ) && router.push("/");
   };
   return (
     <main className="container">

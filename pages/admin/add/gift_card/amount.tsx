@@ -1,17 +1,14 @@
-import Cookies from "cookies";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { connectToDatabase } from "../../../../utils/mongodb";
 
-export default function BasePage({ card_amounts }: any) {
-  const user_data = useSelector((state: any) => state.user);
+export default function BasePage({ card_amounts, user_editor }: any) {
   const router = useRouter();
   const [new_amount, setNewAmount] = useState(0);
   const addNew = async () => {
     const response = await fetch("/api/answers/edit", {
-      headers: { answer_id: card_amounts._id, editor: user_data.user.editor },
+      headers: { answer_id: card_amounts._id, editor: user_editor },
       body: JSON.stringify({
         type: "CARD_AMOUNTS",
         choices: [...card_amounts.choices, new_amount],
@@ -21,7 +18,7 @@ export default function BasePage({ card_amounts }: any) {
     const answer_cache = await caches.open("answers");
     answer_cache.put("/all", await fetch("/api/answers/all"));
   };
-  if (!user_data.user?.editor) {
+  if (!user_editor) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -52,11 +49,11 @@ export default function BasePage({ card_amounts }: any) {
 
 export async function getServerSideProps({ req, res, ctx }: any) {
   const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_editor = cookies.get("user_editor");
+  const user_editor = req.cookies.user_editor;
   if (!user_editor) {
     return {
       props: {
+        user_editor: false,
         card_amounts: {},
       },
     };
@@ -66,6 +63,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ type: "CARD_AMOUNTS" }, { _id: 1, choices: 1 });
   return {
     props: {
+      user_editor: true,
       card_amounts: card_amounts
         ? JSON.parse(JSON.stringify(card_amounts))
         : {},
