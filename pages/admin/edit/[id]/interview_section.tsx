@@ -1,5 +1,9 @@
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { connectToDatabase } from "../../../../utils/mongodb";
 
 export default function BasePage({
   section_name,
@@ -54,8 +58,19 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps({ req, res, ctx }: any) {
-  const user_editor = req.cookies.user_editor;
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
   if (!user_editor) {
     return {
       props: {
@@ -67,7 +82,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
   return {
     props: {
       user_editor,
-      section_name: ctx.params.id ? ctx.params.id : "",
+      section_name: query.id,
     },
   };
 }

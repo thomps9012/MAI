@@ -4,15 +4,23 @@ import titleCase from "../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-export async function getServerSideProps({ req, res }: any) {
-  const editor_status = req.cookies.user_editor;
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { connectToDatabase } from "../../../utils/mongodb";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
   return {
     props: {
-      user_editor: editor_status,
+      user_editor,
     },
   };
 }
-export default function BasePage({user_editor}:{user_editor: boolean}) {
+export default function BasePage({ user_editor }: { user_editor: boolean }) {
   const router = useRouter();
   const { data: answer_data, error: answer_err } = useSWR(
     "/api/answers/all",

@@ -11,14 +11,18 @@ export async function getServerSideProps({
   req,
   res,
 }: {
-  req: NextApiRequest;
   res: NextApiResponse;
+  req: NextApiRequest;
 }) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
   const interview_type = req.cookies.interview_type;
   const interview_id = req.cookies.interview_id;
-  const user_editor = req.cookies.user_editor;
   const client_PID = req.cookies.client_PID;
-  const { db } = await connectToDatabase();
   const interview_data = await db
     .collection(interview_type)
     .findOne({ _id: new ObjectId(interview_id) });
@@ -103,6 +107,36 @@ export default function DataReview({
     res.acknowledged && sessionStorage.setItem("gift_card_id", res.insertedId);
     res.acknowledged && router.push("/interview/success");
   };
+  if (!user_editor) {
+    return (
+      <main className="container">
+        <h2 style={{ textAlign: "center" }}>
+          Please Review Your Data before Submitting
+        </h2>
+        <h2>{date}</h2>
+        <h1>{titleCase(type.split("_").join(" "))} Interview</h1>
+        <h3>PID: {PID}</h3>
+        <h3>{client_name}</h3>
+        <h3> Tested by {agency}</h3>
+        <h4>Demographics</h4>
+        <hr />
+        <pre>{JSON.stringify(demographics, null, "\t")}</pre>
+        <h4>Drug Behaviors</h4>
+        <hr />
+        <pre>{JSON.stringify(behaviors.drug, null, "\t")}</pre>
+        <h4>Sexual Behaviors</h4>
+        <hr />
+        <pre>{JSON.stringify(behaviors.sexual, null, "\t")}</pre>
+        <h4>Risk Attitudes</h4>
+        <hr />
+        <pre>{JSON.stringify(risk_attitudes, null, "\t")}</pre>
+        <hr />
+        <a className="page_button" onClick={success}>
+          The Information Above is Correct
+        </a>
+      </main>
+    );
+  }
   return (
     <main className="container">
       <h2 style={{ textAlign: "center" }}>
@@ -113,11 +147,9 @@ export default function DataReview({
       <h3>PID: {PID}</h3>
       <h3>{client_name}</h3>
       <h3> Tested by {agency}</h3>
-      {user_editor && (
-        <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}>
-          <a className="page-link">Edit Interview</a>
-        </Link>
-      )}
+      <Link href={`/admin/interview_detail/${type}/edit/${adult}/${_id}`}>
+        <a className="page-link">Edit Interview</a>
+      </Link>
       <h4>Demographics</h4>
       <hr />
       <pre>{JSON.stringify(demographics, null, "\t")}</pre>

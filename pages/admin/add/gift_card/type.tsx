@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -47,13 +49,17 @@ export default function BasePage({ card_types, user_editor }: any) {
   );
 }
 
-export async function getServerSideProps({ req, res, ctx }: any) {
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
-  const user_editor = req.cookies.user_editor;
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
   if (!user_editor) {
     return {
       props: {
-        user_editor: false,
+        user_editor,
         card_types: {},
       },
     };
@@ -63,7 +69,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     .findOne({ type: "CARD_TYPES" }, { _id: 1, choices: 1 });
   return {
     props: {
-      user_editor: true,
+      user_editor,
       card_types: card_types ? JSON.parse(JSON.stringify(card_types)) : {},
     },
   };

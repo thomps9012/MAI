@@ -1,11 +1,18 @@
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-export async function getServerSideProps({ req, res }: any) {
-  const editor_status = req.cookies.user_editor;
+import { connectToDatabase } from "../../../utils/mongodb";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
   return {
     props: {
-      user_editor: editor_status,
+      user_editor: user.editor,
     },
   };
 }

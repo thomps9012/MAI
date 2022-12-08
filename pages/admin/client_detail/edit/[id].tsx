@@ -4,6 +4,9 @@ import { connectToDatabase } from "../../../../utils/mongodb";
 import useSWR from "swr";
 import fetcher from "../../../../utils/fetcher";
 import { useRouter } from "next/router";
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 
 export default function ClientEditPage({
   baseline_record,
@@ -199,9 +202,19 @@ export default function ClientEditPage({
   );
 }
 
-export async function getServerSideProps({ req, res, ctx }: any) {
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
   const { db } = await connectToDatabase();
-  const user_editor = req.cookies.user_editor;
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
   if (!user_editor) {
     return {
       props: {
@@ -213,7 +226,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     };
   }
   const baseline_record = await db.collection("baseline").findOne(
-    { PID: ctx.params.id },
+    { PID: query.id },
     {
       _id: 1,
       type: 1,
@@ -226,7 +239,7 @@ export async function getServerSideProps({ req, res, ctx }: any) {
     }
   );
   const testing_only_record = await db.collection("testing_only").findOne(
-    { PID: ctx.params.id },
+    { PID: query.id },
     {
       _id: 1,
       type: 1,
@@ -241,13 +254,9 @@ export async function getServerSideProps({ req, res, ctx }: any) {
   return {
     props: {
       user_editor,
-      baseline_record: baseline_record
-        ? JSON.parse(JSON.stringify(baseline_record))
-        : {},
-      testing_only_record: testing_only_record
-        ? JSON.parse(JSON.stringify(testing_only_record))
-        : {},
-      client_PID: ctx.params.id ? ctx.params.id : "",
+      baseline_record: JSON.parse(JSON.stringify(baseline_record)),
+      testing_only_record: JSON.parse(JSON.stringify(testing_only_record)),
+      client_PID: query.id,
     },
   };
 }

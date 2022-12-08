@@ -5,6 +5,9 @@ import fetcher from "../../../../utils/fetcher";
 import titleCase from "../../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 export default function BasePage({
   question_id,
   question_choice,
@@ -266,9 +269,19 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps({ req, res, ctx }: any) {
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
   const { db } = await connectToDatabase();
-  const user_editor = req.cookies.user_editor;
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
   if (!user_editor) {
     return {
       props: {
@@ -280,14 +293,12 @@ export async function getServerSideProps({ req, res, ctx }: any) {
   }
   const question_choice = await db
     .collection("questions")
-    .findOne({ _id: ctx.params.id });
+    .findOne({ _id: query.id });
   return {
     props: {
       user_editor,
-      question_choice: question_choice
-        ? JSON.parse(JSON.stringify(question_choice))
-        : {},
-      question_id: ctx.params.id ? ctx.params.id : "",
+      question_choice: JSON.parse(JSON.stringify(question_choice)),
+      question_id: query.id,
     },
   };
 }
