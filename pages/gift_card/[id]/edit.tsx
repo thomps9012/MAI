@@ -1,30 +1,108 @@
 import { getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
-
+import { AnswerChoice, GiftCardData } from "../../../utils/types";
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { admin: 1, editor: 1 });
+  const user_admin = user.admin;
+  const user_editor = user.editor;
+  if (!user_admin) {
+    return {
+      props: {
+        user_admin: false,
+        user_editor: false,
+        card_amounts: {},
+        card_record: {},
+        card_types: {},
+      },
+    };
+  }
+  const card_record = await db
+    .collection("cards")
+    .findOne({ _id: new ObjectId(query._id as string) });
+  const card_types = await db
+    .collection("answers")
+    .findOne({ type: "CARD_TYPES" });
+  const card_amounts = await db
+    .collection("answers")
+    .findOne({ type: "CARD_AMOUNTS" });
+  return {
+    props: {
+      user_admin,
+      user_editor,
+      card_record,
+      card_amounts,
+      card_types,
+    },
+  };
+}
 export default function EditCardPage({
+  user_admin,
+  user_editor,
   card_record,
-  card_types,
   card_amounts,
-}: any) {
-  const user_admin = getCookie("user_admin");
+  card_types,
+}: {
+  user_admin: boolean;
+  user_editor: boolean;
+  card_record: GiftCardData;
+  card_amounts: AnswerChoice;
+  card_types: AnswerChoice;
+}) {
+  if (!user_admin || !user_editor) {
+    return (
+      <main className="landing">
+        <h1>You are Unauthorized to View this Page</h1>
+        <br />
+        or
+        <br /> <h1>Not Signed in</h1>
+        <hr />
+        <Link href="/sign_in">Login</Link>
+        <br />
+        <Link href="/sign_up">Sign Up</Link>
+      </main>
+    );
+  }
+  const {
+    interview_type,
+    PID,
+    interview_id,
+    _id,
+    amount,
+    number,
+    received_date,
+    type,
+  } = card_record;
   const router = useRouter();
-  const [date, setReceivedDate] = useState(card_record.received_date);
-  const [amount, setAmount] = useState(card_record.amount);
-  const [type, setType] = useState(card_record.type);
-  const [card_number, setCardNumber] = useState(card_record.number);
+  const [date, setReceivedDate] = useState(received_date);
+  const [card_amount, setAmount] = useState(amount);
+  const [card_type, setType] = useState(type);
+  const [card_number, setCardNumber] = useState(number);
   const interview_data = JSON.parse(getCookie("interview_data") as string);
   useEffect(() => {
-    amount != -1 &&
-      type != "" &&
+    card_amount != -1 &&
+      card_type != "" &&
       card_number != -1 &&
       document
         .getElementById("page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
-  }, [amount, type, card_number]);
+  }, [card_amount, card_type, card_number]);
   const disperseCard = async (
     type: string,
     amount: number,
@@ -36,40 +114,22 @@ export default function EditCardPage({
       headers: { admin: JSON.stringify(user_admin) },
       method: "POST",
       body: JSON.stringify({
-        interview_id: card_record.interview_id,
-        PID: card_record.PID,
-        amount: amount,
+        interview_id,
+        PID,
+        amount,
         type: type,
         received_date: date,
-        interview_type: interview_data.type,
-        card_number: card_number,
-        record_id: record_id,
+        interview_type,
+        card_number,
+        record_id,
       }),
     }).then((response) => response.json());
-    const card_cache = await caches.open("gift_cards");
-    const client_cache = await caches.open("clients");
-    client_cache.put(
-      `interview/${card_record.interview_id}/gift_card/${record_id}`,
-      await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-    );
-    card_cache.put(
-      `interview/${interview_data.id}/card_id/${res.insertedId}`,
-      await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-    );
     res.acknowledged && router.push("/gift_card/records");
   };
-  if (!user_admin) {
-    return (
-      <main className="container">
-        <h1>You are Unauthorized to View this Page</h1>
-      </main>
-    );
-  }
   return (
     <main className="container">
       <h1>
-        Edit Gift Card for {interview_data.client_name}{" "}
-        {titleCase(interview_data.type)} Interview
+        Edit Gift Card for {PID} {titleCase(interview_type)} Interview
       </h1>
       <form>
         <h2>Received Date</h2>
@@ -93,7 +153,7 @@ export default function EditCardPage({
           <option hidden value="" disabled>
             Select...
           </option>
-          {card_types.choices.map((option: any) => (
+          {card_types.choices.map((option: string) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -109,7 +169,7 @@ export default function EditCardPage({
             Select...
           </option>
           <option value={0}>N/A</option>
-          {card_amounts.choices.map((option: any) => (
+          {card_amounts.choices.map((option: string) => (
             <option key={option} value={option}>
               ${option}
             </option>
@@ -128,7 +188,13 @@ export default function EditCardPage({
           className="page_button"
           id="page_submit"
           onClick={() =>
-            disperseCard(type, amount, card_number, date, card_record.id)
+            disperseCard(
+              card_type,
+              card_amount,
+              card_number,
+              date,
+              JSON.stringify(_id)
+            )
           }
         >
           Disperse Card
@@ -136,34 +202,4 @@ export default function EditCardPage({
       </form>
     </main>
   );
-}
-
-export async function getServerSideProps({ req, res, ctx }: any) {
-  const { db } = await connectToDatabase();
-  const user_admin = req.cookies.user_admin;
-  if (!user_admin) {
-    return {
-      props: {
-        card_amounts: {},
-        card_record: {},
-        card_types: {},
-      },
-    };
-  }
-  const card_record = await db
-    .collection("cards")
-    .findOne({ _id: new ObjectId(ctx.params.id as string) });
-  const card_types = await db
-    .collection("answers")
-    .findOne({ type: "CARD_TYPES" });
-  const card_amounts = await db
-    .collection("answers")
-    .findOne({ type: "CARD_AMOUNTS" });
-  return {
-    props: {
-      card_record: JSON.parse(JSON.stringify(card_record)),
-      card_types: JSON.parse(JSON.stringify(card_types)),
-      card_amounts: JSON.parse(JSON.stringify(card_amounts)),
-    },
-  };
 }

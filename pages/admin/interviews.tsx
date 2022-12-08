@@ -5,31 +5,80 @@ import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
 import GraphDisplay from "../../components/graphDisplay";
 import InterviewOverviews from "../../components/interviewOverview";
+import { NextApiRequest } from "next";
+import { ObjectId } from "mongodb";
+import { AnswerChoice, InterviewOverview } from "../../utils/types";
+
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
+  const admin_status = user.admin;
+  if (!admin_status) {
+    return {
+      props: {
+        user_admin: false,
+        testing_agencies: {},
+        baseline_records: [],
+        testing_only_records: [],
+        follow_up_records: [],
+        exit_records: [],
+      },
+    };
+  }
+  const baseline_records = await db
+    .collection("baseline")
+    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
+    .toArray();
+  const testing_only_records = await db
+    .collection("testing_only")
+    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
+    .toArray();
+  const follow_up_records = await db
+    .collection("follow_up")
+    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
+    .toArray();
+  const exit_records = await db
+    .collection("exit")
+    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
+    .toArray();
+  const testing_agencies = await db
+    .collection("answers")
+    .findOne({ type: "TESTING_AGENCIES" });
+  return {
+    props: {
+      user_admin: admin_status,
+      testing_agencies,
+      baseline_records: JSON.parse(JSON.stringify(baseline_records)),
+      testing_only_records: JSON.parse(JSON.stringify(testing_only_records)),
+      follow_up_records: JSON.parse(JSON.stringify(follow_up_records)),
+      exit_records: JSON.parse(JSON.stringify(exit_records)),
+    },
+  };
+}
+
 export default function InterviewRecordsPage({
   baseline_records,
   testing_only_records,
   follow_up_records,
   exit_records,
   user_admin,
-}: any) {
+  testing_agencies,
+}: {
+  testing_agencies: AnswerChoice;
+  user_admin: boolean;
+  baseline_records: InterviewOverview[];
+  exit_records: InterviewOverview[];
+  follow_up_records: InterviewOverview[];
+  testing_only_records: InterviewOverview[];
+}) {
   const [baselines, setBaselines] = useState(baseline_records);
   const [testing_only, setTestingOnly] = useState(testing_only_records);
   const [follow_ups, setFollowUps] = useState(follow_up_records);
   const [exits, setExits] = useState(exit_records);
   const [selected_type, setSelectedType] = useState("all");
-  const { data: agency_data, error: agency_err } = useSWR(
-    "/api/answers/testing_agencies",
-    fetcher
-  );
-  if (agency_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
   if (!user_admin) {
     return (
       <main className="landing">
@@ -57,38 +106,48 @@ export default function InterviewRecordsPage({
   };
   const filter_by_PID = async (PID: string) => {
     setBaselines(
-      baseline_records.filter((record: any) => record.PID.includes(PID))
+      baseline_records.filter((record: InterviewOverview) =>
+        record.PID.includes(PID)
+      )
     );
     setTestingOnly(
-      testing_only_records.filter((record: any) => record.PID.includes(PID))
+      testing_only_records.filter((record: InterviewOverview) =>
+        record.PID.includes(PID)
+      )
     );
     setFollowUps(
-      follow_up_records.filter((record: any) => record.PID.includes(PID))
+      follow_up_records.filter((record: InterviewOverview) =>
+        record.PID.includes(PID)
+      )
     );
-    setExits(exit_records.filter((record: any) => record.PID.includes(PID)));
+    setExits(
+      exit_records.filter((record: InterviewOverview) =>
+        record.PID.includes(PID)
+      )
+    );
   };
   const filter_by_agency = async (agency: string, PID_input: string) => {
     setBaselines(
       baseline_records.filter(
-        (record: any) =>
+        (record: InterviewOverview) =>
           record.agency === agency && record.PID.includes(PID_input)
       )
     );
     setTestingOnly(
       testing_only_records.filter(
-        (record: any) =>
+        (record: InterviewOverview) =>
           record.agency === agency && record.PID.includes(PID_input)
       )
     );
     setFollowUps(
       follow_up_records.filter(
-        (record: any) =>
+        (record: InterviewOverview) =>
           record.agency === agency && record.PID.includes(PID_input)
       )
     );
     setExits(
       exit_records.filter(
-        (record: any) =>
+        (record: InterviewOverview) =>
           record.agency === agency && record.PID.includes(PID_input)
       )
     );
@@ -240,7 +299,7 @@ export default function InterviewRecordsPage({
             defaultValue=""
           >
             <option value="">All Agencies</option>
-            {agency_data?.choices.map((agency: string, i: number) => (
+            {testing_agencies?.choices.map((agency: string, i: number) => (
               <option key={i} value={agency}>
                 {agency}
               </option>
@@ -281,53 +340,4 @@ export default function InterviewRecordsPage({
       </section>
     </main>
   );
-}
-
-export async function getServerSideProps({ req, res }: any) {
-  const admin_status = req.cookies.user_admin;
-  if (!admin_status) {
-    return {
-      props: {
-        user_admin: false,
-        baseline_records: [],
-        testing_only_records: [],
-        follow_up_records: [],
-        exit_records: [],
-      },
-    };
-  }
-  const { db } = await connectToDatabase();
-  const baseline_records = await db
-    .collection("baseline")
-    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
-    .toArray();
-  const testing_only_records = await db
-    .collection("testing_only")
-    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
-    .toArray();
-  const follow_up_records = await db
-    .collection("follow_up")
-    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
-    .toArray();
-  const exit_records = await db
-    .collection("exit")
-    .find({}, { _id: 1, PID: 1, date: 1, agency: 1, client_name: 1, adult: 1 })
-    .toArray();
-  return {
-    props: {
-      user_admin: true,
-      baseline_records: baseline_records
-        ? JSON.parse(JSON.stringify(baseline_records))
-        : [],
-      testing_only_records: testing_only_records
-        ? JSON.parse(JSON.stringify(testing_only_records))
-        : [],
-      follow_up_records: follow_up_records
-        ? JSON.parse(JSON.stringify(follow_up_records))
-        : [],
-      exit_records: exit_records
-        ? JSON.parse(JSON.stringify(exit_records))
-        : [],
-    },
-  };
 }

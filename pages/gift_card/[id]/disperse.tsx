@@ -1,16 +1,80 @@
-import { getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
+import { AnswerChoice, GiftCardData } from "../../../utils/types";
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
+  const user_admin = user.admin;
+  if (!user_admin) {
+    return {
+      props: {
+        user_admin: false,
+        card_amounts: {},
+        card_record: {},
+        card_types: {},
+      },
+    };
+  }
+  const card_record = await db
+    .collection("cards")
+    .findOne({ _id: new ObjectId(query._id as string) });
+  const card_types = await db
+    .collection("answers")
+    .findOne({ type: "CARD_TYPES" });
+  const card_amounts = await db
+    .collection("answers")
+    .findOne({ type: "CARD_AMOUNTS" });
+  return {
+    props: {
+      user_admin,
+      card_record,
+      card_amounts,
+      card_types,
+    },
+  };
+}
 
 export default function DisperseCardPage({
   card_record,
   card_types,
   card_amounts,
   user_admin,
-}: any) {
+}: {
+  user_admin: boolean;
+  card_record: GiftCardData;
+  card_types: AnswerChoice;
+  card_amounts: AnswerChoice;
+}) {
+  if (!user_admin) {
+    return (
+      <main className="landing">
+        <h1>You are Unauthorized to View this Page</h1>
+        <br />
+        or
+        <br /> <h1>Not Signed in</h1>
+        <hr />
+        <Link href="/sign_in">Login</Link>
+        <br />
+        <Link href="/sign_up">Sign Up</Link>
+      </main>
+    );
+  }
+  const { interview_type, PID, interview_id, _id } = card_record;
   const router = useRouter();
   const [date] = useState(
     new Intl.DateTimeFormat("en", {
@@ -20,7 +84,6 @@ export default function DisperseCardPage({
   const [amount, setAmount] = useState(-1);
   const [type, setType] = useState("");
   const [card_number, setCardNumber] = useState(-1);
-  const interview_data = JSON.parse(getCookie("interview_data") as string);
   useEffect(() => {
     amount != -1 &&
       type != "" &&
@@ -31,59 +94,24 @@ export default function DisperseCardPage({
   }, [amount, type, card_number]);
   const disperseCard = async () => {
     const res = await fetch("/api/cards/disperse", {
-      headers: { admin: user_admin },
+      headers: { admin: JSON.stringify(user_admin) },
       method: "POST",
       body: JSON.stringify({
-        interview_id: card_record.interview_id,
+        interview_id: interview_id,
         amount: amount,
         type: type,
         received_date: date,
-        interview_type: interview_data.type,
-        card_id: card_record._id,
+        interview_type: type,
+        card_id: _id,
         card_number: card_number,
       }),
     }).then((response) => response.json());
-    // res.acknowledged && await fetch('/api/cards/notify_admin', {
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //         PID: card_record.PID,
-    //         card_id: card_record._id,
-    //         type: type,
-    //         amount: amount,
-    //         interview_id: card_record.interview_id,
-    //         interview_type: interview_data.type,
-    //     })
-    // })
-    const card_cache = await caches.open("gift_cards");
-    const client_cache = await caches.open("clients");
-    client_cache.put(
-      `interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-      )
-    );
-    client_cache.put(
-      `interview/${interview_data.id}/gift_card/${interview_data.id}`,
-      await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-    );
-    card_cache.put(
-      `interview/${interview_data.id}/card_id/${res.insertedId}`,
-      await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-    );
     res.acknowledged && router.push("/gift_card/records");
   };
-  if (!user_admin) {
-    return (
-      <main className="container">
-        <h1>You are Unauthorized to View this Page</h1>
-      </main>
-    );
-  }
   return (
     <main className="container">
       <h1>
-        Disperse Gift Card for {interview_data.client_name}{" "}
-        {titleCase(interview_data.type)} Interview
+        Disperse Gift Card for {PID} {titleCase(interview_type)} Interview
       </h1>
       <form>
         <h2>Type</h2>
@@ -111,7 +139,7 @@ export default function DisperseCardPage({
             Select...
           </option>
           <option value={0}>N/A</option>
-          {card_amounts.choices.map((option: any) => (
+          {card_amounts.choices.map((option: string) => (
             <option key={option} value={option}>
               ${option}
             </option>
@@ -131,36 +159,4 @@ export default function DisperseCardPage({
       </form>
     </main>
   );
-}
-
-export async function getServerSideProps({ req, res, ctx }: any) {
-  const { db } = await connectToDatabase();
-  const user_admin = req.cookies.user_admin;
-  if (!user_admin) {
-    return {
-      props: {
-        user_admin: false,
-        card_amounts: {},
-        card_record: {},
-        card_types: {},
-      },
-    };
-  }
-  const card_record = await db
-    .collection("cards")
-    .findOne({ _id: new ObjectId(ctx.params.id as string) });
-  const card_types = await db
-    .collection("answers")
-    .findOne({ type: "CARD_TYPES" });
-  const card_amounts = await db
-    .collection("answers")
-    .findOne({ type: "CARD_AMOUNTS" });
-  return {
-    props: {
-      user_admin: true,
-      card_record: JSON.parse(JSON.stringify(card_record)),
-      card_types: JSON.parse(JSON.stringify(card_types)),
-      card_amounts: JSON.parse(JSON.stringify(card_amounts)),
-    },
-  };
 }

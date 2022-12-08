@@ -1,26 +1,79 @@
-import Cookies from "cookies";
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
 import Link from "next/link";
 import { useState } from "react";
-import useSWR from "swr";
 import CardGraphs from "../../components/cardGraphDisplay";
-import fetcher from "../../utils/fetcher";
 import { connectToDatabase } from "../../utils/mongodb";
-
-export default function CardRecordsPage({ card_records, card_amounts, card_types }: any) {
-  const [gift_card_records, setGiftCards] = useState(card_records);
-  const { data: agency_data, error: agency_err } = useSWR(
-    "/api/answers/testing_agencies",
-    fetcher
-  );
-  if (agency_err)
+import { AnswerChoice, GiftCardData } from "../../utils/types";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
+  const user_admin = user.admin;
+  if (!user_admin) {
+    return {
+      props: {
+        user_admin,
+        card_records: [],
+        card_amounts: {},
+        card_types: {},
+        testing_agencies: {},
+      },
+    };
+  }
+  const card_records = await db
+    .collection("cards")
+    .find({}, { _id: 1, PID: 1, date: 1, received_date: 1 })
+    .toArray();
+  const card_types = await db
+    .collection("answers")
+    .findOne({ type: "CARD_TYPES" });
+  const card_amounts = await db
+    .collection("answers")
+    .findOne({ type: "CARD_AMOUNTS" });
+  const testing_agencies = await db
+    .collection("answers")
+    .findOne({ type: "TESTING_AGENCIES" });
+  return {
+    props: {
+      user_admin,
+      card_records: JSON.parse(JSON.stringify(card_records)),
+      card_types,
+      card_amounts,
+      testing_agencies,
+    },
+  };
+}
+export default function CardRecordsPage({
+  card_records,
+  card_amounts,
+  card_types,
+  user_admin,
+  testing_agencies,
+}: {
+  testing_agencies: AnswerChoice;
+  user_admin: boolean;
+  card_records: GiftCardData[];
+  card_amounts: AnswerChoice;
+  card_types: AnswerChoice;
+}) {
+  if (!user_admin) {
     return (
       <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
+        <h1>You are Unauthorized to View this Page</h1>
+        <br />
+        or
+        <br /> <h1>Not Signed in</h1>
+        <hr />
+        <Link href="/sign_in">Login</Link>
+        <br />
+        <Link href="/sign_up">Sign Up</Link>
       </main>
     );
+  }
+  const [gift_card_records, setGiftCards] = useState(card_records);
   const filter = () => {
     const selected_agency = (
       document.getElementById("agency") as HTMLInputElement
@@ -33,11 +86,13 @@ export default function CardRecordsPage({ card_records, card_amounts, card_types
     if (dispersed_filter === "") {
       selected_agency === ""
         ? setGiftCards(
-            card_records.filter((record: any) => record.PID.includes(PID_input))
+            card_records.filter((record: GiftCardData) =>
+              record.PID.includes(PID_input)
+            )
           )
         : setGiftCards(
             card_records.filter(
-              (record: any) =>
+              (record: GiftCardData) =>
                 record.PID.includes(selected_agency) &&
                 record.PID.split(selected_agency)[1].includes(PID_input)
             )
@@ -46,22 +101,22 @@ export default function CardRecordsPage({ card_records, card_amounts, card_types
       selected_agency === ""
         ? setGiftCards(
             card_records
-              .filter((record: any) =>
+              .filter((record: GiftCardData) =>
                 JSON.parse(dispersed_filter)
                   ? record.received_date
                   : !record.received_date
               )
-              .filter((record: any) => record.PID.includes(PID_input))
+              .filter((record: GiftCardData) => record.PID.includes(PID_input))
           )
         : setGiftCards(
             card_records
-              .filter((record: any) =>
+              .filter((record: GiftCardData) =>
                 JSON.parse(dispersed_filter)
                   ? record.received_date
                   : !record.received_date
               )
               .filter(
-                (record: any) =>
+                (record: GiftCardData) =>
                   record.PID.includes(selected_agency) &&
                   record.PID.split(selected_agency)[1].includes(PID_input)
               )
@@ -83,7 +138,7 @@ export default function CardRecordsPage({ card_records, card_amounts, card_types
           <h3>Agency</h3>
           <select name="agency" id="agency" onChange={filter} defaultValue="">
             <option value="">All Agencies</option>
-            {agency_data?.choices.map((agency: string) => (
+            {testing_agencies?.choices.map((agency: string) => (
               <option
                 key={agency}
                 value={
@@ -116,56 +171,25 @@ export default function CardRecordsPage({ card_records, card_amounts, card_types
         gift_card_records={gift_card_records}
         card_amounts={card_amounts}
         card_types={card_types}
-        />
-      {gift_card_records.map((record: any) => (
-        <div className="gift_card_card" key={record._id}>
-          <h1>{record.PID}</h1>
-          <h1>{record.date}</h1>
-          {record.received_date != null ? (
-            <Link href={`/gift_card/${record._id}/detail`}>
-              <a>Card Detail</a>
-            </Link>
-          ) : (
-            <Link href={`/gift_card/${record._id}/disperse`}>
-              <a>Disperse Card</a>
-            </Link>
-          )}
-        </div>
-      ))}
+      />
+      {gift_card_records.map((record: GiftCardData) => {
+        const { _id, PID, received_date, interview_type } = record;
+        return (
+          <div className="gift_card_card" key={JSON.stringify(_id)}>
+            <h1>{PID}</h1>
+            <h1>{interview_type}</h1>
+            {received_date != null ? (
+              <Link href={`/gift_card/${_id}/detail`}>
+                <a>Card Detail</a>
+              </Link>
+            ) : (
+              <Link href={`/gift_card/${_id}/disperse`}>
+                <a>Disperse Card</a>
+              </Link>
+            )}
+          </div>
+        );
+      })}
     </main>
   );
-}
-
-export async function getServerSideProps({ req, res, ctx }: any) {
-  const { db } = await connectToDatabase();
-  const cookies = new Cookies(req, res);
-  const user_admin = cookies.get("user_admin");
-  if (!user_admin) {
-    return {
-      props: {
-        card_records: [],
-        card_amounts: {},
-        card_types: {}
-      },
-    };
-  }
-  const card_records = await db
-    .collection("cards")
-    .find({}, { _id: 1, PID: 1, date: 1, received_date: 1 })
-    .toArray();
-    const card_types = await db
-    .collection("answers")
-    .findOne({ type: "CARD_TYPES" });
-  const card_amounts = await db
-    .collection("answers")
-    .findOne({ type: "CARD_AMOUNTS" });
-  return {
-    props: {
-      card_records: card_records
-        ? JSON.parse(JSON.stringify(card_records))
-        : [],
-        card_types: JSON.parse(JSON.stringify(card_types)),
-        card_amounts: JSON.parse(JSON.stringify(card_amounts)),
-    },
-  };
 }

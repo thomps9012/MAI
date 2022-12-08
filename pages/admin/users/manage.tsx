@@ -1,6 +1,35 @@
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
 import Link from "next/link";
 import { connectToDatabase } from "../../../utils/mongodb";
+import { UserInfo } from "../../../utils/types";
 
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const user_id = req.cookies.user_id;
+  const { db } = await connectToDatabase();
+  const user = await db
+    .collection("users")
+    .find({ _id: new ObjectId(user_id) }, { editor: 1, admin: 1 });
+  const admin_status = user.admin;
+  const editor_status = user.editor;
+  if (!admin_status) {
+    return {
+      props: {
+        user_admin: false,
+        user_editor: false,
+        users: [],
+      },
+    };
+  }
+  const users = await db.collection("users").find({}).toArray();
+  return {
+    props: {
+      user_admin: admin_status,
+      user_editor: editor_status,
+      users: JSON.parse(JSON.stringify(users)),
+    },
+  };
+}
 export default function ManageUsers({ users, user_editor }: any) {
   if (!user_editor) {
     return (
@@ -19,42 +48,22 @@ export default function ManageUsers({ users, user_editor }: any) {
   return (
     <main className="landing">
       <h1>User Management</h1>
-      {users?.map((user: any) => (
-        <section key={user._id}>
-          <h4>{user.full_name}</h4>
-          <Link href={`/admin/users/${user._id}`}>
-            <a>
-              <h5>Edit User</h5>
-            </a>
-          </Link>
-          <p>{user.username}</p>
-          <p>{user.admin ? "Admin" : "No Admin Capabilities"}</p>
-          <p>{user.editor ? "Editor" : "No Edit Capabilities"}</p>
-        </section>
-      ))}
+      {users?.map((user: UserInfo) => {
+        const { _id, full_name, username, admin, editor } = user;
+        return (
+          <section key={JSON.stringify(_id)}>
+            <h4>{full_name}</h4>
+            <Link href={`/admin/users/${_id}`}>
+              <a>
+                <h5>Edit User</h5>
+              </a>
+            </Link>
+            <p>{username}</p>
+            <p>{admin ? "Admin" : "No Admin Capabilities"}</p>
+            <p>{editor ? "Editor" : "No Edit Capabilities"}</p>
+          </section>
+        );
+      })}
     </main>
   );
-}
-
-export async function getServerSideProps({ req, res }: any) {
-  const admin_status = req.cookies.user_admin;
-  const editor_status = req.cookies.user_editor;
-  if (!admin_status) {
-    return {
-      props: {
-        user_admin: false,
-        user_editor: false,
-        users: [],
-      },
-    };
-  }
-  const { db } = await connectToDatabase();
-  const users = await db.collection("users").find({}).toArray();
-  return {
-    props: {
-      user_admin: admin_status,
-      user_editor: editor_status,
-      users: JSON.parse(JSON.stringify(users)),
-    },
-  };
 }

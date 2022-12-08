@@ -8,6 +8,16 @@ export interface ClientOverview {
   agency: string;
 }
 
+export interface UserInfo {
+  _id: ObjectId;
+  username: string;
+  email: string;
+  editor: boolean;
+  admin: boolean;
+  full_name: string;
+  password: string;
+}
+
 export interface AnswerChoice {
   _id: ObjectId;
   type: string;
@@ -33,6 +43,7 @@ export interface InterviewOverview {
   date: string;
   type: string;
   agency: string;
+  PID: string;
 }
 
 export interface InterviewData {
