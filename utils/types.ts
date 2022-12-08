@@ -19,6 +19,36 @@ export interface QuestionChoice {
   answers: ObjectId;
   answer_choices: string[];
 }
+
+export interface InterviewData {
+  _id: ObjectId;
+  gift_card_received: boolean;
+  risk_attitudes: RiskAttitudes | YouthRiskAttitudes;
+  demographics: Demographics | YouthDemographics;
+  date: string;
+  type: string;
+  client_name: string;
+  phone_number: string;
+  adult: boolean;
+  PID: string;
+  agency: string;
+  behaviors: {
+    drug: DrugBehaviors;
+    sexual: SexualBehaviors | YouthSexualBehaviors;
+  };
+}
+
+export interface GiftCardData {
+  _id: ObjectId;
+  interview_id: ObjectId;
+  PID: string;
+  amount: number;
+  type: string;
+  interview_type: string;
+  received_date: string;
+  number: number;
+}
+
 interface RiskAttitudes {
   tobacco_use: string;
   binge_alcohol_use: string;
@@ -104,21 +134,4 @@ interface YouthSexualBehaviors {
   relationship_abuse: string;
   partner_sexual_pressure: string;
   safe_in_relationship: string;
-}
-export interface InterviewData {
-  _id: ObjectId;
-  gift_card_received: boolean;
-  risk_attitudes: RiskAttitudes | YouthRiskAttitudes;
-  demographics: Demographics | YouthDemographics;
-  date: string;
-  type: string;
-  client_name: string;
-  phone_number: string;
-  adult: boolean;
-  PID: string;
-  agency: string;
-  behaviors: {
-    drug: DrugBehaviors;
-    sexual: SexualBehaviors | YouthSexualBehaviors;
-  };
 }

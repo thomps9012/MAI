@@ -22,12 +22,11 @@ export async function getServerSideProps({
   const interview_data = await db
     .collection(interview_type)
     .findOne({ _id: new ObjectId(interview_id) });
-  const gift_card_exists = await db.collection("cards").findOne({
+  const gift_card = await db.collection("cards").findOne({
     interview_id: new ObjectId(interview_id as string),
-    interview_type: interview_type,
   });
-  if (gift_card_exists) {
-    setCookie("gift_card_id", gift_card_exists._id, { req, res });
+  if (gift_card) {
+    setCookie("gift_card_id", gift_card._id, { req, res });
   }
   return {
     props: {
@@ -36,8 +35,8 @@ export async function getServerSideProps({
       client_PID,
       user_editor,
       interview_data,
-      gift_card_exists: gift_card_exists._id ? true : false,
-      gift_card_id: gift_card_exists._id,
+      gift_card_exists: gift_card._id ? true : false,
+      gift_card_id: gift_card._id,
     },
   };
 }
