@@ -33,8 +33,6 @@ export default function BasePage({ user_editor }: { user_editor: boolean }) {
         choices: choice_arr,
       }),
     }).then((res) => res.json());
-    const answer_cache = await caches.open("answers");
-    answer_cache.put("/all", await fetch("/api/answers/all"));
     response.acknowledged && router.push("/admin/answer_choices");
   };
   if (!user_editor) {

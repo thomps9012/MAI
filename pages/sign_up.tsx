@@ -93,7 +93,6 @@ export default function SignUp() {
         username: userName,
       }),
     }).then((res) => res.json());
-    console.log(user_exists);
     setUserExists(user_exists);
   };
   const createUser = async (e: any) => {

@@ -22,10 +22,6 @@ export default function BasePage({
         editor: JSON.stringify(user_editor),
       },
     }).then((res) => res.json());
-    const question_cache = await caches.open("questions");
-    question_cache.put("/all", await fetch("/api/questions/all"));
-    question_cache.put("/adult/all", await fetch("/api/questions/adult/all"));
-    question_cache.put("/youth/all", await fetch("/api/questions/youth/all"));
     response.acknowledged && router.push("/admin/questions");
   };
   if (!user_editor) {

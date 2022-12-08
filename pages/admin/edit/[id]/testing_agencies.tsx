@@ -33,8 +33,6 @@ export default function BasePage({
         choices: agency_arr,
       }),
     }).then((res) => res.json());
-    const answer_cache = await caches.open("answers");
-    answer_cache.put("/all", await fetch("/api/answers/all"));
     response.acknowledged && router.push("/admin/answer_choices");
   };
   if (!user_editor) {

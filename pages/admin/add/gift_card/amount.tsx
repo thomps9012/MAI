@@ -53,8 +53,6 @@ export default function BasePage({
       }),
     }).then((res) => res.json());
     response.acknowledged && router.push("/admin/answer_choices");
-    const answer_cache = await caches.open("answers");
-    answer_cache.put("/all", await fetch("/api/answers/all"));
   };
   if (!user_editor) {
     return (

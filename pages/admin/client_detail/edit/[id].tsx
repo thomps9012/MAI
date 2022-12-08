@@ -7,22 +7,97 @@ import { useRouter } from "next/router";
 import { ObjectId } from "mongodb";
 import { NextApiRequest } from "next";
 import { NextApiRequestQuery } from "next/dist/server/api-utils";
+import {
+  AnswerChoice,
+  InterviewData,
+  InterviewOverview,
+} from "../../../../utils/types";
+
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
+  const { db } = await connectToDatabase();
+  const user_id = req.cookies.user_id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
+  if (!user_editor) {
+    return {
+      props: {
+        user_editor,
+        baseline_record: {},
+        testing_only_record: {},
+        client_PID: "",
+        gender_options: {},
+        testing_agencies: {},
+      },
+    };
+  }
+  const baseline_record = await db.collection("baseline").findOne(
+    { PID: query.id },
+    {
+      _id: 1,
+      type: 1,
+      agency: 1,
+      "demographics.date_of_birth": 1,
+      "demographics.gender": 1,
+      client_name: 1,
+      phone_number: 1,
+      adult: 1,
+    }
+  );
+  const testing_only_record = await db.collection("testing_only").findOne(
+    { PID: query.id },
+    {
+      _id: 1,
+      type: 1,
+      agency: 1,
+      "demographics.date_of_birth": 1,
+      "demographics.gender": 1,
+      client_name: 1,
+      phone_number: 1,
+      adult: 1,
+    }
+  );
+  const gender_options = await db
+    .collection("answers")
+    .findOne({ type: "GENDER" });
+  const testing_agencies = await db
+    .collection("answers")
+    .findOne({ type: "TESTING_AGENCIES" });
+  return {
+    props: {
+      user_editor,
+      baseline_record: JSON.parse(JSON.stringify(baseline_record)),
+      testing_only_record: JSON.parse(JSON.stringify(testing_only_record)),
+      client_PID: query.id,
+      gender_options,
+      testing_agencies,
+    },
+  };
+}
 
 export default function ClientEditPage({
   baseline_record,
   testing_only_record,
   client_PID,
   user_editor,
-}: any) {
+  testing_agencies,
+  gender_options,
+}: {
+  baseline_record: InterviewData;
+  testing_only_record: InterviewData;
+  client_PID: string;
+  user_editor: boolean;
+  testing_agencies: AnswerChoice;
+  gender_options: AnswerChoice;
+}) {
   const router = useRouter();
-  const { data: testing_agencies, error: testing_agency_err } = useSWR(
-    "/api/answers/testing_agencies",
-    fetcher
-  );
-  const { data: gender_options, error: gender_option_err } = useSWR(
-    "/api/questions/gender_options",
-    fetcher
-  );
   const [client_info, setClientInfo] = useState({
     interview_id: "",
     client_name: "",
@@ -37,7 +112,7 @@ export default function ClientEditPage({
   useEffect(() => {
     baseline_record._id != null
       ? setClientInfo({
-          interview_id: baseline_record._id,
+          interview_id: baseline_record._id as unknown as string,
           client_name: baseline_record.client_name,
           date_of_birth: baseline_record.demographics.date_of_birth,
           phone_number: baseline_record.phone_number,
@@ -48,7 +123,7 @@ export default function ClientEditPage({
           agency: baseline_record.agency,
         })
       : setClientInfo({
-          interview_id: testing_only_record._id,
+          interview_id: testing_only_record._id as unknown as string,
           client_name: testing_only_record.client_name,
           date_of_birth: testing_only_record.demographics.date_of_birth,
           phone_number: testing_only_record.phone_number,
@@ -115,13 +190,6 @@ export default function ClientEditPage({
         }),
       }
     ).then((res) => res.json());
-    const client_cache = await caches.open("clients");
-    client_cache.put(
-      `interview/${interview_id}/PID/${PID}/type/${type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_id}&interview_type=${type}`
-      )
-    );
     response.acknowledged && router.push(`/admin/client_detail/${PID}`);
   };
   if (!user_editor) {
@@ -135,16 +203,6 @@ export default function ClientEditPage({
         <Link href="/sign_in">Login</Link>
         <br />
         <Link href="/sign_up">Sign Up</Link>
-      </main>
-    );
-  }
-  if (gender_option_err || testing_agency_err) {
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
       </main>
     );
   }
@@ -200,63 +258,4 @@ export default function ClientEditPage({
       </a>
     </main>
   );
-}
-
-export async function getServerSideProps({
-  req,
-  query,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-}) {
-  const { db } = await connectToDatabase();
-  const user_id = req.cookies.user_id;
-  const user = await db
-    .collection("users")
-    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
-  const user_editor = user.editor;
-  if (!user_editor) {
-    return {
-      props: {
-        user_editor,
-        baseline_record: {},
-        testing_only_record: {},
-        client_PID: "",
-      },
-    };
-  }
-  const baseline_record = await db.collection("baseline").findOne(
-    { PID: query.id },
-    {
-      _id: 1,
-      type: 1,
-      agency: 1,
-      "demographics.date_of_birth": 1,
-      "demographics.gender": 1,
-      client_name: 1,
-      phone_number: 1,
-      adult: 1,
-    }
-  );
-  const testing_only_record = await db.collection("testing_only").findOne(
-    { PID: query.id },
-    {
-      _id: 1,
-      type: 1,
-      agency: 1,
-      "demographics.date_of_birth": 1,
-      "demographics.gender": 1,
-      client_name: 1,
-      phone_number: 1,
-      adult: 1,
-    }
-  );
-  return {
-    props: {
-      user_editor,
-      baseline_record: JSON.parse(JSON.stringify(baseline_record)),
-      testing_only_record: JSON.parse(JSON.stringify(testing_only_record)),
-      client_PID: query.id,
-    },
-  };
 }

@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import fetcher from "../../../utils/fetcher";
 import titleCase from "../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -7,6 +5,7 @@ import Link from "next/link";
 import { ObjectId } from "mongodb";
 import { NextApiRequest } from "next";
 import { connectToDatabase } from "../../../utils/mongodb";
+import { AnswerChoice, QuestionChoice } from "../../../utils/types";
 export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
   const user_id = req.cookies.user_id;
@@ -14,24 +13,28 @@ export async function getServerSideProps({ req }: { req: NextApiRequest }) {
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
   const user_editor = user.editor;
+  const answers = await db.collect("answers").find().toArray();
+  const questions = await db.collect("questions").find().toArray();
   return {
     props: {
       user_editor,
+      answers: JSON.parse(JSON.stringify(answers)),
+      questions: JSON.parse(JSON.stringify(questions)),
     },
   };
 }
-export default function BasePage({ user_editor }: { user_editor: boolean }) {
+export default function BasePage({
+  user_editor,
+  answers,
+  questions,
+}: {
+  questions: QuestionChoice[];
+  answers: AnswerChoice[];
+  user_editor: boolean;
+}) {
   const router = useRouter();
-  const { data: answer_data, error: answer_err } = useSWR(
-    "/api/answers/all",
-    fetcher
-  );
-  const { data: section_data, error: section_err } = useSWR(
-    "/api/questions/all",
-    fetcher
-  );
   const [selected_answer, setAnswer] = useState({
-    _id: "",
+    _id: new ObjectId(""),
     type: "",
     choices: [""],
   });
@@ -41,7 +44,9 @@ export default function BasePage({ user_editor }: { user_editor: boolean }) {
   const [question_details, setQuestionDetails] = useState("");
   const handleAnswerChange = (e: any) => {
     const answer_id = e.target.value;
-    setAnswer(answer_data?.filter((answer: any) => answer?._id === answer_id));
+    setAnswer(
+      answers?.filter((answer: AnswerChoice) => answer?._id === answer_id)[0]
+    );
   };
   const saveEdits = async () => {
     let question_data;
@@ -96,15 +101,11 @@ export default function BasePage({ user_editor }: { user_editor: boolean }) {
       method: "POST",
       body: JSON.stringify(question_data),
     }).then((res) => res.json());
-    const question_cache = await caches.open("questions");
-    question_cache.put("/all", await fetch("/api/questions/all"));
-    question_cache.put("/adult/all", await fetch("/api/questions/adult/all"));
-    question_cache.put("/youth/all", await fetch("/api/questions/youth/all"));
     response.acknowledged && router.push("/admin/questions");
   };
-  const question_sections: Array<string> =
-    section_data &&
-    Array.from(new Set(section_data?.map((question: any) => question.section)));
+  const question_sections: Array<string> = Array.from(
+    new Set(questions?.map((question: QuestionChoice) => question.section))
+  );
   if (!user_editor) {
     return (
       <main className="landing">
@@ -119,15 +120,6 @@ export default function BasePage({ user_editor }: { user_editor: boolean }) {
       </main>
     );
   }
-  if (section_err || answer_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
   return (
     <main className="container">
       <h2>Question Language</h2>
@@ -162,8 +154,11 @@ export default function BasePage({ user_editor }: { user_editor: boolean }) {
           <h2>Answer Set</h2>
           <select onChange={handleAnswerChange} id="answers">
             <option value="">Select...</option>
-            {answer_data.map((answer_choice: any) => (
-              <option key={answer_choice._id} value={answer_choice._id}>
+            {answers.map((answer_choice: AnswerChoice) => (
+              <option
+                key={JSON.stringify(answer_choice._id)}
+                value={JSON.stringify(answer_choice._id)}
+              >
                 {titleCase(answer_choice.type.split("_").join(" "))}
               </option>
             ))}

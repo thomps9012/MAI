@@ -8,18 +8,23 @@ import { useRouter } from "next/router";
 import { ObjectId } from "mongodb";
 import { NextApiRequest } from "next";
 import { NextApiRequestQuery } from "next/dist/server/api-utils";
+import { AnswerChoice, QuestionChoice } from "../../../../utils/types";
 export default function BasePage({
   question_id,
   question_choice,
   user_editor,
+  answers,
+  section_data,
 }: {
   user_editor: boolean;
-  question_choice: any;
+  question_choice: QuestionChoice;
   question_id: string;
+  answers: AnswerChoice[];
+  section_data: string[];
 }) {
   const router = useRouter();
   const [selected_answer, setAnswer] = useState({
-    _id: "",
+    _id: new ObjectId(""),
     type: "",
     choices: [""],
   });
@@ -37,7 +42,11 @@ export default function BasePage({
   );
   const handleAnswerChange = (e: any) => {
     const answer_id = e.target.value;
-    setAnswer(answer_data.filter((answer: any) => answer._id === answer_id));
+    setAnswer(
+      answers.filter(
+        (answer: any) => JSON.stringify(answer._id) === answer_id
+      )[0]
+    );
   };
   const saveEdits = async () => {
     let question_data;
@@ -97,32 +106,8 @@ export default function BasePage({
       method: "POST",
       body: JSON.stringify(question_data),
     }).then((res) => res.json());
-    const question_cache = await caches.open("questions");
-    question_cache.put("/all", await fetch("/api/questions/all"));
-    question_cache.put("/adult/all", await fetch("/api/questions/adult/all"));
-    question_cache.put("/youth/all", await fetch("/api/questions/youth/all"));
     response.acknowledged && router.push("/admin/questions");
   };
-  const { data: answer_data, error: answer_err } = useSWR(
-    "/api/answers/all",
-    fetcher
-  );
-  const { data: section_data, error: section_err } = useSWR(
-    "/api/questions/all",
-    fetcher
-  );
-  const question_sections: Array<string> = Array.from(
-    new Set(section_data?.map((question: any) => question.section))
-  );
-  if (section_err || answer_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
   if (!user_editor) {
     return (
       <main className="landing">
@@ -151,7 +136,7 @@ export default function BasePage({
         name="section"
         id="section"
       >
-        {question_sections.map((section: string) => (
+        {section_data.map((section: string) => (
           <option key={section} value={section}>
             {titleCase(section.split("_").join(" "))}
           </option>
@@ -163,7 +148,11 @@ export default function BasePage({
       </span>
       <input defaultValue={question_choice.state} name="state" id="state" />
       <h2>Availble to Adult or Youth</h2>
-      <select name="adult" defaultValue={question_choice.adult} id="adult">
+      <select
+        name="adult"
+        defaultValue={JSON.stringify(question_choice.adult)}
+        id="adult"
+      >
         <option value="true">Adult</option>
         <option value="false">Youth</option>
         <option value="null">Both</option>
@@ -192,13 +181,16 @@ export default function BasePage({
         <>
           <h2>Answer Set</h2>
           <select
-            defaultValue={question_choice.answers}
+            defaultValue={JSON.stringify(question_choice.answers)}
             onChange={handleAnswerChange}
             id="answers"
           >
             <option value="">Select...</option>
-            {answer_data.map((answer_choice: any) => (
-              <option key={answer_choice._id} value={answer_choice._id}>
+            {answers.map((answer_choice: AnswerChoice) => (
+              <option
+                key={answer_choice._id as unknown as string}
+                value={answer_choice._id as unknown as string}
+              >
                 {titleCase(answer_choice.type.split("_").join(" "))}
               </option>
             ))}
@@ -288,17 +280,26 @@ export async function getServerSideProps({
         user_editor,
         question_choice: "",
         question_id: "",
+        answers: [],
+        section_data: [],
       },
     };
   }
+  const answers = await db.collection("answers").find().toArray();
   const question_choice = await db
     .collection("questions")
     .findOne({ _id: query.id });
+  const questions = await db.collection("questions").find().toArray();
+  const section_data = Array.from(
+    new Set(questions?.map((question: any) => question.section))
+  );
   return {
     props: {
       user_editor,
-      question_choice: JSON.parse(JSON.stringify(question_choice)),
+      question_choice,
       question_id: query.id,
+      section_data: JSON.parse(JSON.stringify(section_data)),
+      answers: JSON.parse(JSON.stringify(answers)),
     },
   };
 }
