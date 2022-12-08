@@ -1,18 +1,10 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
-import { AnswerChoice } from "../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const { db } = await connectToDatabase();
   const user = await db
@@ -26,17 +18,7 @@ export async function getServerSideProps({
     answers: JSON.parse(JSON.stringify(answers)),
   };
 }
-export default function AnswersPage({
-  logged_in,
-  admin,
-  editor,
-  answers,
-}: {
-  logged_in;
-  admin;
-  editor;
-  answers: AnswerChoice[];
-}) {
+export default function AnswersPage({ logged_in, admin, editor, answers }) {
   if (!admin || !logged_in) {
     return (
       <main className="landing">
@@ -55,11 +37,11 @@ export default function AnswersPage({
     return (
       <main className="container">
         <h1>View Answers</h1>
-        {answers?.map((answer: AnswerChoice) => (
+        {answers?.map((answer) => (
           <div className="answer_choice_section" key={answer?.type}>
             <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
             <h3>Choices</h3>
-            {answer.choices.map((choice: string) => (
+            {answer.choices.map((choice) => (
               <p key={choice}>{choice}</p>
             ))}
             <hr />
@@ -76,11 +58,11 @@ export default function AnswersPage({
           <a>Add New Option</a>
         </Link>
       </h1>
-      {answers?.map((answer: AnswerChoice) => (
+      {answers?.map((answer) => (
         <div className="answer_choice_section" key={answer?.type}>
           <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
           <h3>Choices</h3>
-          {answer.choices.map((choice: string) => (
+          {answer.choices.map((choice) => (
             <p key={choice}>{choice}</p>
           ))}
           <Link href={`/admin/edit/${answer._id}/answer_choice`}>

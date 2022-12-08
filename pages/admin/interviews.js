@@ -3,19 +3,11 @@ import { useState } from "react";
 import { connectToDatabase } from "../../utils/mongodb";
 import GraphDisplay from "../../components/graphDisplay";
 import InterviewOverviews from "../../components/interviewOverview";
-import { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
-import { AnswerChoice, InterviewOverview } from "../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
@@ -70,13 +62,6 @@ export default function InterviewRecordsPage({
   exit_records,
   user_admin,
   testing_agencies,
-}: {
-  testing_agencies: AnswerChoice;
-  user_admin;
-  baseline_records: InterviewOverview[];
-  exit_records: InterviewOverview[];
-  follow_up_records: InterviewOverview[];
-  testing_only_records: InterviewOverview[];
 }) {
   const [baselines, setBaselines] = useState(baseline_records);
   const [testing_only, setTestingOnly] = useState(testing_only_records);
@@ -98,61 +83,42 @@ export default function InterviewRecordsPage({
     );
   }
   const getPIDInput = () => {
-    const PID_input = (document.getElementById("pid") as HTMLInputElement)
-      ?.value;
+    const PID_input = document.getElementById("pid")?.value;
     return PID_input;
   };
   const getAgencyInput = () => {
-    const selected_agency = (
-      document.getElementById("agency") as HTMLSelectElement
-    )?.value;
+    const selected_agency = document.getElementById("agency")?.value;
     return selected_agency;
   };
-  const filter_by_PID = async (PID: string) => {
-    setBaselines(
-      baseline_records.filter((record: InterviewOverview) =>
-        record.PID.includes(PID)
-      )
-    );
+  const filter_by_PID = async (PID) => {
+    setBaselines(baseline_records.filter((record) => record.PID.includes(PID)));
     setTestingOnly(
-      testing_only_records.filter((record: InterviewOverview) =>
-        record.PID.includes(PID)
-      )
+      testing_only_records.filter((record) => record.PID.includes(PID))
     );
     setFollowUps(
-      follow_up_records.filter((record: InterviewOverview) =>
-        record.PID.includes(PID)
-      )
+      follow_up_records.filter((record) => record.PID.includes(PID))
     );
-    setExits(
-      exit_records.filter((record: InterviewOverview) =>
-        record.PID.includes(PID)
-      )
-    );
+    setExits(exit_records.filter((record) => record.PID.includes(PID)));
   };
-  const filter_by_agency = async (agency: string, PID_input: string) => {
+  const filter_by_agency = async (agency, PID_input) => {
     setBaselines(
       baseline_records.filter(
-        (record: InterviewOverview) =>
-          record.agency === agency && record.PID.includes(PID_input)
+        (record) => record.agency === agency && record.PID.includes(PID_input)
       )
     );
     setTestingOnly(
       testing_only_records.filter(
-        (record: InterviewOverview) =>
-          record.agency === agency && record.PID.includes(PID_input)
+        (record) => record.agency === agency && record.PID.includes(PID_input)
       )
     );
     setFollowUps(
       follow_up_records.filter(
-        (record: InterviewOverview) =>
-          record.agency === agency && record.PID.includes(PID_input)
+        (record) => record.agency === agency && record.PID.includes(PID_input)
       )
     );
     setExits(
       exit_records.filter(
-        (record: InterviewOverview) =>
-          record.agency === agency && record.PID.includes(PID_input)
+        (record) => record.agency === agency && record.PID.includes(PID_input)
       )
     );
   };
@@ -164,7 +130,7 @@ export default function InterviewRecordsPage({
         ?.setAttribute("class", "interview_overviews");
     }
   };
-  const display_one = (elements, selected: string) => {
+  const display_one = (elements, selected) => {
     for (let i = 0; i < elements.length; i++) {
       const element_id = elements[i].id;
       if (element_id === selected) {
@@ -177,16 +143,12 @@ export default function InterviewRecordsPage({
     }
   };
   const get_elements = () => {
-    const elements = document.getElementsByClassName(
-      "interview_overviews"
-    ) as unknown as Array<HTMLElement>;
-    const hidden_elements = document.getElementsByClassName(
-      "hidden"
-    ) as unknown as Array<HTMLElement>;
+    const elements = document.getElementsByClassName("interview_overviews");
+    const hidden_elements = document.getElementsByClassName("hidden");
     const all_interview_elements = [...elements, ...hidden_elements];
     return all_interview_elements;
   };
-  const filter_by_type = (selected_type: string) => {
+  const filter_by_type = (selected_type) => {
     const elements = get_elements();
     filter_records();
     if (selected_type === "all") {
@@ -205,14 +167,8 @@ export default function InterviewRecordsPage({
   };
   const reset_filters = () => {
     const elements = get_elements();
-    (document.getElementById("pid") as HTMLInputElement).setAttribute(
-      "value",
-      ""
-    );
-    (document.getElementById("agency") as HTMLInputElement).setAttribute(
-      "value",
-      ""
-    );
+    document.getElementById("pid").setAttribute("value", "");
+    document.getElementById("agency").setAttribute("value", "");
     display_all(elements);
     setBaselines(baseline_records);
     setTestingOnly(testing_only_records);
@@ -303,7 +259,7 @@ export default function InterviewRecordsPage({
             defaultValue=""
           >
             <option value="">All Agencies</option>
-            {testing_agencies?.choices.map((agency: string, i: number) => (
+            {testing_agencies?.choices.map((agency, i) => (
               <option key={i} value={agency}>
                 {agency}
               </option>

@@ -3,19 +3,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { AnswerChoice, QuestionChoice } from "../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
@@ -30,15 +22,7 @@ export async function getServerSideProps({
     },
   };
 }
-export default function BasePage({
-  user_editor,
-  answers,
-  questions,
-}: {
-  questions: QuestionChoice[];
-  answers: AnswerChoice[];
-  user_editor;
-}) {
+export default function BasePage({ user_editor, answers, questions }) {
   const router = useRouter();
   const [selected_answer, setAnswer] = useState({
     _id: new ObjectId(""),
@@ -51,57 +35,39 @@ export default function BasePage({
   const [question_details, setQuestionDetails] = useState("");
   const handleAnswerChange = (e) => {
     const answer_id = e.target.value;
-    setAnswer(
-      answers?.filter((answer: AnswerChoice) => answer?._id === answer_id)[0]
-    );
+    setAnswer(answers?.filter((answer) => answer?._id === answer_id)[0]);
   };
   const saveEdits = async () => {
     let question_data;
     answers_available && multiple && question_details != ""
       ? (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          answers: (document.getElementById("answers") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          answers: document.getElementById("answers")?.value,
           multiple: true,
-          detail: (document.getElementById("detail") as HTMLInputElement)
-            ?.value,
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          detail: document.getElementById("detail")?.value,
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
         })
       : answers_available && multiple
       ? (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          answers: (document.getElementById("answers") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          answers: document.getElementById("answers")?.value,
           multiple: true,
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
         })
       : answers_available && question_details
       ? (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          answers: (document.getElementById("answers") as HTMLInputElement)
-            ?.value,
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          answers: document.getElementById("answers")?.value,
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
         })
       : number_input &&
         (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
           number_input: true,
         });
     const response = await fetch("/api/questions/add", {
@@ -110,8 +76,8 @@ export default function BasePage({
     }).then((res) => res.json());
     response.acknowledged && router.push("/admin/questions");
   };
-  const question_sections: Array<string> = Array.from(
-    new Set(questions?.map((question: QuestionChoice) => question.section))
+  const question_sections = Array.from(
+    new Set(questions?.map((question) => question.section))
   );
   if (!user_editor) {
     return (
@@ -133,7 +99,7 @@ export default function BasePage({
       <input name="question" id="question" />
       <h2>Question Section</h2>
       <select name="section" id="section">
-        {question_sections?.map((section: string) => (
+        {question_sections?.map((section) => (
           <option key={section} value={section}>
             {titleCase(section.split("_").join(" "))}
           </option>
@@ -161,7 +127,7 @@ export default function BasePage({
           <h2>Answer Set</h2>
           <select onChange={handleAnswerChange} id="answers">
             <option value="">Select...</option>
-            {answers.map((answer_choice: AnswerChoice) => (
+            {answers.map((answer_choice) => (
               <option
                 key={JSON.stringify(answer_choice._id)}
                 value={JSON.stringify(answer_choice._id)}
@@ -171,7 +137,7 @@ export default function BasePage({
             ))}
           </select>
           <h3>Answer Choices</h3>
-          {selected_answer.choices.map((choice: string) => (
+          {selected_answer.choices.map((choice) => (
             <p key={choice}>{choice}</p>
           ))}
         </>

@@ -1,12 +1,8 @@
 import { connectToDatabase } from "../../../utils/mongodb";
-import type { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  let editor = JSON.parse(req.headers.editor as string);
+export default async function handler(req, res) {
+  let editor = JSON.parse(req.headers.editor);
   if (!editor) {
     res.json({ res: "Unauthorized", status: 401 });
   } else {
@@ -25,7 +21,7 @@ export default async function handler(
     let record_id = params?.record_id;
     let interview_type = params?.interview_type;
     const response = await db.collection(interview_type).update(
-      { _id: new ObjectId(record_id as string) },
+      { _id: new ObjectId(record_id) },
       {
         $set: {
           PID: PID,

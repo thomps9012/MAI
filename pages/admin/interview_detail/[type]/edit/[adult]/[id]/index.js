@@ -10,14 +10,10 @@ export async function getServerSideProps({
   req,
   query,
   res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
 }) {
   const { db } = await connectToDatabase();
   const logged_in = getCookie("logged_in", { req, res });
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res }) ;
   const interview_type = query.type;
   const client_adult = query.adult;
   const interview_id = query.id;
@@ -40,7 +36,7 @@ export async function getServerSideProps({
   const interview_record = await db
     .collection(interview_type)
     .findOne(
-      { _id: new ObjectId(interview_id as string) },
+      { _id: new ObjectId(interview_id ) },
       { client_name: 1, agency: 1, PID: 1 }
     );
   return {
@@ -64,8 +60,8 @@ export default function EditInterviewPage({
 }: {
   user_editor;
   adult;
-  interview_type: string;
-  interview_id: string;
+  interview_type;
+  interview_id;
   logged_in;
   interview_record: InterviewData;
 }) {

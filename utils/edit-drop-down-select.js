@@ -18,7 +18,7 @@ const EditDropDownSelect = ({ question, id, defaultValue }) => {
         <option hidden disabled>
           Select...
         </option>
-        {answer_choices?.map((choice: string) => {
+        {answer_choices?.map((choice) => {
           return (
             <option value={choice} key={choice}>
               {choice}

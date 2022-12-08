@@ -1,11 +1,8 @@
 import { connectToDatabase } from "../../../utils/mongodb";
 import { ObjectId } from "mongodb";
 
-export default async function handler(
-  req: { body: string; headers },
-  res: { json: (arg0) => void }
-) {
-  let admin = JSON.parse(req.headers.admin as string);
+export default async function handler(req, res) {
+  let admin = JSON.parse(req.headers.admin);
   if (!admin) {
     res.json({ res: "Unauthorized", status: 401 });
   } else {

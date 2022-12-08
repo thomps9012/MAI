@@ -2,17 +2,9 @@ import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
-import { QuestionChoice } from "../../utils/types";
 import { getCookie } from "cookies-next";
-import { NextApiRequest, NextApiResponse } from "next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const { db } = await connectToDatabase();
   const user = await db
@@ -52,9 +44,6 @@ export async function getServerSideProps({
     },
   };
 }
-interface InterviewSection {
-  _id: string;
-}
 export default function QuestionsPage({
   user_admin,
   user_editor,
@@ -63,14 +52,6 @@ export default function QuestionsPage({
   youth_questions,
   agnostic_questions,
   question_sections,
-}: {
-  agnostic_questions: QuestionChoice[];
-  adult_questions: QuestionChoice[];
-  youth_questions: QuestionChoice[];
-  logged_in;
-  user_admin;
-  user_editor;
-  question_sections: InterviewSection[];
 }) {
   if (!user_admin || !logged_in) {
     return (
@@ -101,7 +82,7 @@ export default function QuestionsPage({
         <hr />
         <section className="interview_question_section">
           <h1>Adult Questions</h1>
-          {adult_questions?.map((question, i: number) => (
+          {adult_questions?.map((question, i) => (
             <div className="interview_question_detail" key={question?._id}>
               <p>{titleCase(question.section.split("_").join(" "))} - </p>
 
@@ -115,7 +96,7 @@ export default function QuestionsPage({
         </section>
         <section className="interview_question_section">
           <h1>Youth Questions</h1>
-          {youth_questions?.map((question, i: number) => (
+          {youth_questions?.map((question, i) => (
             <div className="interview_question_detail" key={question._id}>
               <p>{titleCase(question.section.split("_").join(" "))} - </p>
               <p>{question.question} </p>
@@ -128,7 +109,7 @@ export default function QuestionsPage({
         </section>
         <section className="interview_question_section">
           <h1>Agnostic Questions </h1>
-          {agnostic_questions?.map((question, i: number) => (
+          {agnostic_questions?.map((question, i) => (
             <div className="interview_question_detail" key={question._id}>
               <p>{titleCase(question.section.split("_").join(" "))} - </p>
 
@@ -171,7 +152,7 @@ export default function QuestionsPage({
       </h1>
       <section className="interview_question_section">
         <h1>Adult Questions</h1>
-        {adult_questions?.map((question, i: number) => (
+        {adult_questions?.map((question, i) => (
           <div className="interview_question_detail" key={question?._id}>
             <p>
               {titleCase(question.section.split("_").join(" "))} -{" "}
@@ -192,7 +173,7 @@ export default function QuestionsPage({
       <section className="interview_question_section">
         <h1>Youth Questions</h1>
         <h1></h1>
-        {youth_questions?.map((question, i: number) => (
+        {youth_questions?.map((question, i) => (
           <div className="interview_question_detail" key={question._id}>
             <p>
               {titleCase(question.section.split("_").join(" "))} -{" "}
@@ -212,7 +193,7 @@ export default function QuestionsPage({
       <section className="interview_question_section">
         <h1>Agnostic Questions </h1>
         <h1></h1>
-        {agnostic_questions?.map((question, i: number) => (
+        {agnostic_questions?.map((question, i) => (
           <div className="interview_question_detail" key={question._id}>
             <p>
               {titleCase(question.section.split("_").join(" "))} -{" "}

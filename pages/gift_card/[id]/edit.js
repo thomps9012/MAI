@@ -8,17 +8,9 @@ import { useState, useEffect } from "react";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
 import { AnswerChoice, GiftCardData } from "../../../utils/types";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1, editor: 1 });
@@ -37,7 +29,7 @@ export async function getServerSideProps({
   }
   const card_record = await db
     .collection("cards")
-    .findOne({ _id: new ObjectId(query._id as string) });
+    .findOne({ _id: new ObjectId(query._id) });
   const card_types = await db
     .collection("answers")
     .findOne({ type: "CARD_TYPES" });
@@ -60,12 +52,6 @@ export default function EditCardPage({
   card_record,
   card_amounts,
   card_types,
-}: {
-  user_admin;
-  user_editor;
-  card_record: GiftCardData;
-  card_amounts: AnswerChoice;
-  card_types: AnswerChoice;
 }) {
   if (!user_admin || !user_editor) {
     return (
@@ -104,13 +90,7 @@ export default function EditCardPage({
         .getElementById("page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
   }, [card_amount, card_type, card_number]);
-  const disperseCard = async (
-    type: string,
-    amount: number,
-    card_number: number,
-    date: string,
-    record_id: string
-  ) => {
+  const disperseCard = async (type, amount, card_number, date, record_id) => {
     const res = await fetch("/api/cards/disperse", {
       headers: { admin: JSON.stringify(user_admin) },
       method: "POST",
@@ -154,7 +134,7 @@ export default function EditCardPage({
           <option hidden value="" disabled>
             Select...
           </option>
-          {card_types.choices.map((option: string) => (
+          {card_types.choices.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -170,7 +150,7 @@ export default function EditCardPage({
             Select...
           </option>
           <option value={0}>N/A</option>
-          {card_amounts.choices.map((option: string) => (
+          {card_amounts.choices.map((option) => (
             <option key={option} value={option}>
               ${option}
             </option>

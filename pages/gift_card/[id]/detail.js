@@ -5,17 +5,9 @@ import Link from "next/link";
 import { connectToDatabase } from "../../../utils/mongodb";
 import { GiftCardData } from "../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
@@ -30,7 +22,7 @@ export async function getServerSideProps({
   }
   const card_record = await db
     .collection("cards")
-    .findOne({ _id: new ObjectId(query._id as string) });
+    .findOne({ _id: new ObjectId(query._id) });
   return {
     props: {
       user_admin,
@@ -38,13 +30,7 @@ export async function getServerSideProps({
     },
   };
 }
-export default function CardDetailPage({
-  card_record,
-  user_admin,
-}: {
-  card_record: GiftCardData;
-  user_admin;
-}) {
+export default function CardDetailPage({ card_record, user_admin }) {
   const {
     received_date,
     amount,

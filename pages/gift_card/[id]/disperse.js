@@ -8,17 +8,9 @@ import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
 import { AnswerChoice, GiftCardData } from "../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
@@ -35,7 +27,7 @@ export async function getServerSideProps({
   }
   const card_record = await db
     .collection("cards")
-    .findOne({ _id: new ObjectId(query._id as string) });
+    .findOne({ _id: new ObjectId(query._id) });
   const card_types = await db
     .collection("answers")
     .findOne({ type: "CARD_TYPES" });
@@ -57,11 +49,6 @@ export default function DisperseCardPage({
   card_types,
   card_amounts,
   user_admin,
-}: {
-  user_admin;
-  card_record: GiftCardData;
-  card_types: AnswerChoice;
-  card_amounts: AnswerChoice;
 }) {
   if (!user_admin) {
     return (
@@ -142,7 +129,7 @@ export default function DisperseCardPage({
             Select...
           </option>
           <option value={0}>N/A</option>
-          {card_amounts.choices.map((option: string) => (
+          {card_amounts.choices.map((option) => (
             <option key={option} value={option}>
               ${option}
             </option>

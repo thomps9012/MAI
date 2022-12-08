@@ -9,14 +9,10 @@ const ButtonSelect = ({ question, id, setCurrentQuestion }) => {
     const other_elements = document.getElementById(e.target.id)?.parentElement
       ?.childNodes;
     for (const item in other_elements) {
-      const element_classname = (other_elements[parseInt(item)] as HTMLElement)
-        ?.className;
-      const element_id = (other_elements[parseInt(item)] as HTMLElement)?.id;
+      const element_classname = other_elements[parseInt(item)]?.className;
+      const element_id = other_elements[parseInt(item)]?.id;
       if (e.target.id != element_id && element_classname != "other_element") {
-        (other_elements[parseInt(item)] as HTMLElement)?.setAttribute(
-          "class",
-          "button"
-        );
+        other_elements[parseInt(item)]?.setAttribute("class", "button");
       } else {
         document
           .getElementById(e.target.id)
@@ -39,7 +35,7 @@ const ButtonSelect = ({ question, id, setCurrentQuestion }) => {
       <span className="other_element">
         {question.detail && question.detail}
       </span>
-      {answer_choices?.map((choice: string) => (
+      {answer_choices?.map((choice) => (
         <a
           className="button"
           key={choice}

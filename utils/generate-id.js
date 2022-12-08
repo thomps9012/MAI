@@ -1,9 +1,9 @@
-const GenerateID = (
-  testing_agency: string,
-  AIDS_TASK_FORCE_RECORDS: number,
-  NORA_RECORDS: number,
-  CARE_ALLIANCE_RECORDS: number
-) => {
+const GenerateID = ({
+  testing_agency,
+  AIDS_TASK_FORCE_RECORDS,
+  NORA_RECORDS,
+  CARE_ALLIANCE_RECORDS,
+}) => {
   switch (testing_agency) {
     case "AIDS Task Force":
       return `ATF${AIDS_TASK_FORCE_RECORDS + 1}`;

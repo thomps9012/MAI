@@ -1,25 +1,15 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import { getCookie } from "cookies-next";
-export default function BasePage({
-  answer_id,
-  answer_choice,
-  user_editor,
-}: {
-  user_editor;
-  answer_choice;
-  answer_id: string;
-}) {
+export default function BasePage({ answer_id, answer_choice, user_editor }) {
   const router = useRouter();
   const saveEdits = async () => {
     const answer_choices = document.getElementsByClassName("answer_choice");
     let choice_arr = [];
     for (let i = 0; i < answer_choices.length; i++) {
-      const choice = (answer_choices[i] as HTMLInputElement).value;
+      const choice = answer_choices[i].value;
       choice != "" && choice_arr.push(choice);
     }
     const response = await fetch("/api/answers/edit", {
@@ -48,7 +38,7 @@ export default function BasePage({
   return (
     <main className="container">
       <h1>Current Answer Choices</h1>
-      {answer_choice.choices.map((choice: string) => (
+      {answer_choice.choices.map((choice) => (
         <input className="answer_choice" key={choice} defaultValue={choice} />
       ))}
       <h1>New Choices</h1>
@@ -66,17 +56,9 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });

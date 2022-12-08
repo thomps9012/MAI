@@ -3,25 +3,11 @@ import { useEffect, useState } from "react";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import { useRouter } from "next/router";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import { getCookie } from "cookies-next";
-import {
-  AnswerChoice,
-  InterviewData,
-} from "../../../../utils/types";
 
-export async function getServerSideProps({
-  req,
-  query,
-  res
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
@@ -89,13 +75,6 @@ export default function ClientEditPage({
   user_editor,
   testing_agencies,
   gender_options,
-}: {
-  baseline_record: InterviewData;
-  testing_only_record: InterviewData;
-  client_PID: string;
-  user_editor;
-  testing_agencies: AnswerChoice;
-  gender_options: AnswerChoice;
 }) {
   const router = useRouter();
   const [client_info, setClientInfo] = useState({
@@ -112,7 +91,7 @@ export default function ClientEditPage({
   useEffect(() => {
     baseline_record._id != null
       ? setClientInfo({
-          interview_id: baseline_record._id as unknown as string,
+          interview_id: baseline_record._id,
           client_name: baseline_record.client_name,
           date_of_birth: baseline_record.demographics.date_of_birth,
           phone_number: baseline_record.phone_number,
@@ -123,7 +102,7 @@ export default function ClientEditPage({
           agency: baseline_record.agency,
         })
       : setClientInfo({
-          interview_id: testing_only_record._id as unknown as string,
+          interview_id: testing_only_record._id,
           client_name: testing_only_record.client_name,
           date_of_birth: testing_only_record.demographics.date_of_birth,
           phone_number: testing_only_record.phone_number,
@@ -227,7 +206,7 @@ export default function ClientEditPage({
       <h2>Testing Agency {"&"} PID</h2>
       <div className="pid_select">
         <select name="agency" value={agency} onChange={handleChange}>
-          {testing_agencies?.choices.map((agency: string) => (
+          {testing_agencies?.choices.map((agency) => (
             <option key={agency}>{agency}</option>
           ))}
         </select>
@@ -242,7 +221,7 @@ export default function ClientEditPage({
       />
       <h2>Gender</h2>
       <select value={gender} name="gender" onChange={handleChange}>
-        {gender_options?.choices.map((gender: string) => (
+        {gender_options?.choices.map((gender) => (
           <option key={gender}>{gender}</option>
         ))}
       </select>

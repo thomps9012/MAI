@@ -44,11 +44,6 @@ export default function InterviewSelect({
   AIDS_TASK_FORCE_RECORDS,
   NORA_RECORDS,
   CARE_ALLIANCE_RECORDS,
-}: {
-  testing_agencies: AnswerChoice;
-  AIDS_TASK_FORCE_RECORDS: number;
-  NORA_RECORDS: number;
-  CARE_ALLIANCE_RECORDS: number;
 }) {
   const [date] = useState(
     new Intl.DateTimeFormat("en", {
@@ -68,7 +63,7 @@ export default function InterviewSelect({
         ?.setAttribute("style", "display: flex; flex-direction: column;");
   }, [PID]);
   const router = useRouter();
-  const retrieveClientName = async (PID: string) => {
+  const retrieveClientName = async (PID) => {
     const res = await fetch(`/api/client/find_name?client_pid=${PID}`, {
       method: "GET",
     });
@@ -125,7 +120,7 @@ export default function InterviewSelect({
           NORA_RECORDS,
           CARE_ALLIANCE_RECORDS
         );
-        setPID(generateId as string);
+        setPID(generateId);
         break;
       case "testing_only":
         document.getElementById("baseline")?.setAttribute("class", "button");
@@ -146,7 +141,7 @@ export default function InterviewSelect({
           NORA_RECORDS,
           CARE_ALLIANCE_RECORDS
         );
-        setPID(generateId as string);
+        setPID(generateId);
         break;
       case "follow_up":
         document.getElementById("baseline")?.setAttribute("class", "button");
@@ -239,12 +234,12 @@ export default function InterviewSelect({
     }
   };
   const Submit = async (
-    type: string,
-    date: string,
-    agency: string,
-    PID: string,
-    phone_number: string,
-    client_name: string,
+    type,
+    date,
+    agency,
+    PID,
+    phone_number,
+    client_name,
     adult
   ) => {
     if (
@@ -350,7 +345,7 @@ export default function InterviewSelect({
       <div className="agency_select">
         <h2>Agency...</h2>
         <br />
-        {testing_agencies?.choices.map((agency: string) => (
+        {testing_agencies?.choices.map((agency) => (
           <a
             className="button"
             onClick={handleAgencySelect}

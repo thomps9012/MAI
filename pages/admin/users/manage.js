@@ -1,17 +1,10 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { connectToDatabase } from "../../../utils/mongodb";
 import { UserInfo } from "../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const { db } = await connectToDatabase();
   const user = await db
     .collection("users")
@@ -54,7 +47,7 @@ export default function ManageUsers({ users, user_editor }) {
   return (
     <main className="landing">
       <h1>User Management</h1>
-      {users?.map((user: UserInfo) => {
+      {users?.map((user) => {
         const { _id, full_name, username, admin, editor } = user;
         return (
           <section key={JSON.stringify(_id)}>

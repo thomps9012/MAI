@@ -8,7 +8,7 @@ const MultipleSelect = ({ question, id, setCurrentQuestion }) => {
     let inputArr = [];
     try {
       for (const item in selected) {
-        const inputEl = selected[item] as HTMLInputElement;
+        const inputEl = selected[item];
         if (inputEl.checked) inputArr.push(inputEl.value);
       }
     } finally {
@@ -22,7 +22,7 @@ const MultipleSelect = ({ question, id, setCurrentQuestion }) => {
       <h2>{question.question}</h2>
       <span>{question.detail && question.detail}</span>
       <select onBlur={handleChange} multiple id={state} name={state}>
-        {answer_choices?.map((choice: string) => (
+        {answer_choices?.map((choice) => (
           <option value={choice} key={choice}>
             {choice}
           </option>

@@ -1,24 +1,14 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import { getCookie } from "cookies-next";
-export default function BasePage({
-  section_name,
-  user_editor,
-}: {
-  section_name: string;
-  user_editor;
-}) {
+export default function BasePage({ section_name, user_editor }) {
   const router = useRouter();
   const saveEdits = async () => {
     const response = await fetch("/api/questions/edit_section", {
       headers: {
-        section_name: (
-          document.getElementById("section_name") as HTMLInputElement
-        )?.value,
+        section_name: document.getElementById("section_name")?.value,
         editor: JSON.stringify(user_editor),
       },
     }).then((res) => res.json());
@@ -54,17 +44,9 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });

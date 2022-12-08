@@ -1,16 +1,9 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest } from "next";
 import Link from "next/link";
 import { connectToDatabase } from "../utils/mongodb";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiRequest;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const { db } = await connectToDatabase();
   const user = await db
@@ -21,13 +14,7 @@ export async function getServerSideProps({
     admin: user.admin,
   };
 }
-export default function BasePage({
-  admin,
-  logged_in,
-}: {
-  admin;
-  logged_in;
-}) {
+export default function BasePage({ admin, logged_in }) {
   const clear_data = () => {
     sessionStorage.clear();
     deleteCookie("interview_type");

@@ -7,15 +7,9 @@ import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
 import { InterviewData } from "../../utils/types";
 
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-}) {
+export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
@@ -27,7 +21,7 @@ export async function getServerSideProps({
     .collection(interview_type)
     .findOne({ _id: new ObjectId(interview_id) });
   const gift_card = await db.collection("cards").findOne({
-    interview_id: new ObjectId(interview_id as string),
+    interview_id: new ObjectId(interview_id),
   });
   if (gift_card) {
     setCookie("gift_card_id", gift_card._id, { req, res });
@@ -53,14 +47,6 @@ export default function DataReview({
   interview_data,
   gift_card_exists,
   gift_card_id,
-}: {
-  gift_card_id: string;
-  gift_card_exists;
-  interview_type: string;
-  interview_id: string;
-  client_PID: string;
-  user_editor;
-  interview_data: InterviewData;
 }) {
   const router = useRouter();
   const {
@@ -73,7 +59,6 @@ export default function DataReview({
     behaviors,
     demographics,
     risk_attitudes,
-    phone_number,
     agency,
   } = interview_data;
   const success = async (e) => {
@@ -90,20 +75,6 @@ export default function DataReview({
         PID: client_PID,
       }),
     }).then((response) => response.json());
-    const interviewSMTP = await fetch("/api/interviews/complete", {
-      method: "POST",
-      body: JSON.stringify({
-        interview_date: date,
-        interview_type,
-        agency,
-        PID: client_PID,
-        client_phone: phone_number,
-        interview_id,
-        card_id: res.insertedId,
-      }),
-    }).then((res) => res.json());
-    if (interviewSMTP[0].statusCode != 202)
-      alert("error processing email notification of completion");
     res.acknowledged && sessionStorage.setItem("gift_card_id", res.insertedId);
     res.acknowledged && router.push("/interview/success");
   };

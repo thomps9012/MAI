@@ -1,29 +1,16 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
 import { getCookie } from "cookies-next";
-export default function BasePage({
-  answer_id,
-  agencies,
-  user_editor,
-}: {
-  agencies;
-  answer_id: string;
-  user_editor;
-}) {
+export default function BasePage({ answer_id, agencies, user_editor }) {
   const router = useRouter();
   const saveEdits = async () => {
     const agency_names = document.getElementsByClassName("agency_name");
     let agency_arr = [];
     for (let i = 0; i < agency_names.length; i++) {
-      const name = (agency_names[i] as HTMLInputElement).value
-        .toUpperCase()
-        .split(" ")
-        .join("_");
+      const name = agency_names[i].value.toUpperCase().split(" ").join("_");
       agency_arr.push(name);
     }
     const response = await fetch("/api/answers/edit", {
@@ -52,7 +39,7 @@ export default function BasePage({
   return (
     <main className="container">
       <h1>Current Testing Agencies</h1>
-      {agencies.choices.map((agency: string) => (
+      {agencies.choices.map((agency) => (
         <input
           className="agency_name"
           key={agency}
@@ -67,17 +54,9 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });

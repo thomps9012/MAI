@@ -4,14 +4,8 @@ import Link from "next/link";
 import { connectToDatabase } from "../../utils/mongodb";
 import { AnswerChoice } from "../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const { db } = await connectToDatabase();
   const card_amounts = await db
@@ -41,12 +35,6 @@ export default function BasePage({
   user_admin,
   user_editor,
   logged_in,
-}: {
-  logged_in;
-  user_admin;
-  user_editor;
-  card_amounts: AnswerChoice;
-  card_types: AnswerChoice;
 }) {
   if (!user_admin || !logged_in) {
     return (
@@ -67,12 +55,12 @@ export default function BasePage({
       <main className="container">
         <h1>Gift Card Amounts</h1>
         <hr />
-        {card_amounts.choices?.map((amount: string) => (
+        {card_amounts.choices?.map((amount) => (
           <p key={amount}>{amount}</p>
         ))}
         <hr />
         <h2>Types</h2>
-        {card_types.choices?.map((amount: string) => (
+        {card_types.choices?.map((amount) => (
           <p key={amount}>{amount}</p>
         ))}
       </main>
@@ -83,7 +71,7 @@ export default function BasePage({
       <h1>Edit Gift Card</h1>
       <h2>Amounts</h2>
       <hr />
-      {card_amounts.choices?.map((amount: string) => (
+      {card_amounts.choices?.map((amount) => (
         <p key={amount}>{amount}</p>
       ))}
       <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>
@@ -94,7 +82,7 @@ export default function BasePage({
       </Link>
       <hr />
       <h2>Types</h2>
-      {card_types.choices?.map((amount: string) => (
+      {card_types.choices?.map((amount) => (
         <p key={amount}>{amount}</p>
       ))}
       <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>

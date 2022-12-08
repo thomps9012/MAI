@@ -3,7 +3,7 @@ import { setCookie } from "cookies-next";
 export default function SignIn() {
   const router = useRouter();
   const valid_password = () => {
-    const pw = (document.querySelector(".pw") as HTMLInputElement).value;
+    const pw = document.querySelector(".pw").value;
     const validation = pw.match(
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/g
     );
@@ -20,9 +20,8 @@ export default function SignIn() {
     }
   };
   const validate_user_id = () => {
-    const userName = (document.querySelector(".username") as HTMLInputElement)
-      .value;
-    const email = (document.querySelector(".email") as HTMLInputElement).value;
+    const userName = document.querySelector(".username").value;
+    const email = document.querySelector(".email").value;
     if (userName === "" && email === "") {
       document
         .getElementById("valid-user-id")
@@ -36,10 +35,9 @@ export default function SignIn() {
     }
   };
   const signIn = async () => {
-    const firstPW = (document.querySelector(".pw") as HTMLInputElement).value;
-    const userName = (document.querySelector(".username") as HTMLInputElement)
-      .value;
-    const email = (document.querySelector(".email") as HTMLInputElement).value;
+    const firstPW = document.querySelector(".pw").value;
+    const userName = document.querySelector(".username").value;
+    const email = document.querySelector(".email").value;
     if (!valid_password() || !validate_user_id()) {
       return;
     }

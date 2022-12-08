@@ -10,7 +10,7 @@ const EditMultipleSelect = ({ question, id, defaultValue }) => {
     let inputArr = [];
     try {
       for (const item in selected) {
-        const inputEl = selected[item] as HTMLInputElement;
+        const inputEl = selected[item];
         if (inputEl.checked) inputArr.push(inputEl.value);
       }
     } finally {
@@ -30,7 +30,7 @@ const EditMultipleSelect = ({ question, id, defaultValue }) => {
         value={question_state}
         onChange={handleChange}
       >
-        {answer_choices?.map((choice: string) => (
+        {answer_choices?.map((choice) => (
           <option value={choice} key={choice}>
             {choice}
           </option>

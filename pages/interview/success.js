@@ -4,18 +4,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, res }) {
   const interview_id = getCookie("interview_id", { req, res });
   const gift_card_id = getCookie("gift_card_id", { req, res });
   const interview_type = getCookie("interview_type", { req, res });
   const client_PID = getCookie("client_PID", { req, res });
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const { db } = await connectToDatabase();
   const user = await db
     .collection("users")
@@ -36,12 +30,6 @@ export default function Success({
   interview_type,
   client_PID,
   user_admin,
-}: {
-  interview_id: string;
-  interview_type: string;
-  client_PID: string;
-  user_admin;
-  gift_card_id: string;
 }) {
   const clear_data = () => {
     sessionStorage.clear();

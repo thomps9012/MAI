@@ -4,9 +4,6 @@ import titleCase from "../../../../utils/titleCase";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
-import { AnswerChoice, QuestionChoice } from "../../../../utils/types";
 import { getCookie } from "cookies-next";
 export default function BasePage({
   question_id,
@@ -14,12 +11,6 @@ export default function BasePage({
   user_editor,
   answers,
   section_data,
-}: {
-  user_editor;
-  question_choice: QuestionChoice;
-  question_id: string;
-  answers: AnswerChoice[];
-  section_data: string[];
 }) {
   const router = useRouter();
   const [selected_answer, setAnswer] = useState({
@@ -42,58 +33,40 @@ export default function BasePage({
   const handleAnswerChange = (e) => {
     const answer_id = e.target.value;
     setAnswer(
-      answers.filter(
-        (answer) => JSON.stringify(answer._id) === answer_id
-      )[0]
+      answers.filter((answer) => JSON.stringify(answer._id) === answer_id)[0]
     );
   };
   const saveEdits = async () => {
     let question_data;
     answers_available && multiple && question_details != ""
       ? (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          answers: (document.getElementById("answers") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          answers: document.getElementById("answers")?.value,
           multiple: true,
-          detail: (document.getElementById("detail") as HTMLInputElement)
-            ?.value,
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          detail: document.getElementById("detail")?.value,
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
         })
       : answers_available && multiple
       ? (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          answers: (document.getElementById("answers") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          answers: document.getElementById("answers")?.value,
           multiple: true,
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
         })
       : answers_available && question_details
       ? (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          answers: (document.getElementById("answers") as HTMLInputElement)
-            ?.value,
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          answers: document.getElementById("answers")?.value,
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
         })
       : number_input &&
         (question_data = {
-          adult: JSON.parse(
-            (document.getElementById("adult") as HTMLSelectElement)?.value
-          ),
-          state: (document.getElementById("state") as HTMLInputElement)?.value,
-          section: (document.getElementById("section") as HTMLInputElement)
-            ?.value,
+          adult: JSON.parse(document.getElementById("adult")?.value),
+          state: document.getElementById("state")?.value,
+          section: document.getElementById("section")?.value,
           number_input: true,
         });
 
@@ -135,7 +108,7 @@ export default function BasePage({
         name="section"
         id="section"
       >
-        {section_data.map((section: string) => (
+        {section_data.map((section) => (
           <option key={section} value={section}>
             {titleCase(section.split("_").join(" "))}
           </option>
@@ -185,17 +158,14 @@ export default function BasePage({
             id="answers"
           >
             <option value="">Select...</option>
-            {answers.map((answer_choice: AnswerChoice) => (
-              <option
-                key={answer_choice._id as unknown as string}
-                value={answer_choice._id as unknown as string}
-              >
+            {answers.map((answer_choice) => (
+              <option key={answer_choice._id} value={answer_choice._id}>
                 {titleCase(answer_choice.type.split("_").join(" "))}
               </option>
             ))}
           </select>
           <h3>Answer Choices</h3>
-          {selected_answer.choices.map((choice: string) => (
+          {selected_answer.choices.map((choice) => (
             <p key={choice}>{choice}</p>
           ))}
         </>
@@ -260,17 +230,9 @@ export default function BasePage({
   );
 }
 
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });

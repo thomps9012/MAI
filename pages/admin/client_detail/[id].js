@@ -1,22 +1,11 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
-import { InterviewOverview } from "../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const user = await db
     .collection("users")
@@ -77,15 +66,6 @@ export default function ClientDetailPage({
   user_admin,
   user_editor,
   logged_in,
-}: {
-  baseline_record: InterviewOverview;
-  testing_only_record: InterviewOverview;
-  follow_up_record: InterviewOverview;
-  exit_record: InterviewOverview;
-  logged_in;
-  user_admin;
-  user_editor;
-  client_PID: string;
 }) {
   if (!user_admin || !logged_in) {
     return (

@@ -1,7 +1,5 @@
 import { deleteCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import InterviewHeader from "../../../../../../../components/interview-header";
@@ -10,24 +8,11 @@ import EditDropDownSelect from "../../../../../../../utils/edit-drop-down-select
 import EditMultipleSelect from "../../../../../../../utils/edit-multiple-select";
 import EditNumberInput from "../../../../../../../utils/edit-number-input";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
-import {
-  AnswerChoice,
-  InterviewData,
-  QuestionChoice,
-} from "../../../../../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
   const logged_in = getCookie("logged_in", { req, res });
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const interview_type = query.type;
   const client_adult = query.adult;
   const interview_id = query.id;
@@ -41,9 +26,9 @@ export async function getServerSideProps({
     .toArray();
   const all_answers = await db.collection("answers").find({}).toArray();
   const drug_behavior_question_and_answers = drug_behavior_questions.map(
-    (question: QuestionChoice) =>
+    (question) =>
       (question.answer_choices = all_answers?.find(
-        (answer: AnswerChoice) => answer._id === question.answers
+        (answer) => answer._id === question.answers
       )?.choices)
   );
   if (!user_editor) {
@@ -59,10 +44,7 @@ export async function getServerSideProps({
   }
   const interview_record = await db
     .collection(interview_type)
-    .findOne(
-      { _id: new ObjectId(interview_id as string) },
-      { "behaviors.drug": 1 }
-    );
+    .findOne({ _id: new ObjectId(interview_id) }, { "behaviors.drug": 1 });
   return {
     props: {
       user_editor,
@@ -85,14 +67,6 @@ export default function EditInterviewPage({
   interview_type,
   logged_in,
   drug_behavior_question_and_answers,
-}: {
-  interview_type: string;
-  interview_id: string;
-  logged_in;
-  adult;
-  user_editor;
-  interview_record: InterviewData;
-  drug_behavior_question_and_answers: QuestionChoice[];
 }) {
   const router = useRouter();
   const { behaviors } = interview_record;
@@ -100,32 +74,29 @@ export default function EditInterviewPage({
   const pageSubmit = async (e) => {
     e.preventDefault();
     let section = "drug_behavior";
-    const state = drug_behavior_question_and_answers.map(
-      (question: QuestionChoice) =>
-        question.number_input
-          ? [question.state, 0]
-          : question.multiple
-          ? [question.state, []]
-          : [question.state, ""]
+    const state = drug_behavior_question_and_answers.map((question) =>
+      question.number_input
+        ? [question.state, 0]
+        : question.multiple
+        ? [question.state, []]
+        : [question.state, ""]
     );
     let section_info = Object.fromEntries(state);
-    drug_behavior_question_and_answers.map((question: QuestionChoice) => {
+    drug_behavior_question_and_answers.map((question) => {
       if (question.multiple) {
-        let options = document.getElementById(question.state)
-          ?.children as HTMLCollection;
+        let options = document.getElementById(question.state)?.children;
         let inputArr = [];
         for (let i = 0; i < options?.length; i++) {
-          (options[i] as HTMLOptionElement).selected &&
-            inputArr.push((options[i] as HTMLOptionElement).value);
+          options[i].selected && inputArr.push(options[i].value);
         }
-        section_info[question.state as keyof typeof drug] = inputArr;
+        section_info[question.state] = inputArr;
       } else if (question.number_input) {
-        section_info[question.state as keyof typeof drug] = parseInt(
-          (document.getElementById(question.state) as HTMLInputElement).value
+        section_info[question.state] = parseInt(
+          document.getElementById(question.state).value
         );
       } else {
-        section_info[question.state as keyof typeof drug] = (
-          document.getElementById(question.state) as HTMLInputElement
+        section_info[question.state] = document.getElementById(
+          question.state
         ).value;
       }
     });
@@ -185,48 +156,46 @@ export default function EditInterviewPage({
       <InterviewHeader section={4} edit={true} />
       <h3>Over the past 30 days how many days, if any did you ...</h3>
       <form className="section_questions" onSubmit={pageSubmit}>
-        {drug_behavior_question_and_answers?.map(
-          (question: QuestionChoice, i: number) => {
-            const { multiple, number_input, drop_down, _id, state } = question;
-            if (multiple) {
-              return (
-                <EditMultipleSelect
-                  question={question}
-                  id={`question_${i}`}
-                  key={_id}
-                  defaultValue={drug[state as keyof typeof drug]}
-                />
-              );
-            } else if (number_input) {
-              return (
-                <EditNumberInput
-                  question={question}
-                  id={`question_${i}`}
-                  key={_id}
-                  defaultValue={drug[state as keyof typeof drug]}
-                />
-              );
-            } else if (drop_down) {
-              return (
-                <EditDropDownSelect
-                  question={question}
-                  id={`question_${i}`}
-                  key={_id}
-                  defaultValue={drug[state as keyof typeof drug]}
-                />
-              );
-            } else {
-              return (
-                <EditButtonSelect
-                  question={question}
-                  id={`question_${i}`}
-                  key={_id}
-                  defaultValue={drug[state as keyof typeof drug]}
-                />
-              );
-            }
+        {drug_behavior_question_and_answers?.map((question, i) => {
+          const { multiple, number_input, drop_down, _id, state } = question;
+          if (multiple) {
+            return (
+              <EditMultipleSelect
+                question={question}
+                id={`question_${i}`}
+                key={_id}
+                defaultValue={drug[state]}
+              />
+            );
+          } else if (number_input) {
+            return (
+              <EditNumberInput
+                question={question}
+                id={`question_${i}`}
+                key={_id}
+                defaultValue={drug[state]}
+              />
+            );
+          } else if (drop_down) {
+            return (
+              <EditDropDownSelect
+                question={question}
+                id={`question_${i}`}
+                key={_id}
+                defaultValue={drug[state]}
+              />
+            );
+          } else {
+            return (
+              <EditButtonSelect
+                question={question}
+                id={`question_${i}`}
+                key={_id}
+                defaultValue={drug[state]}
+              />
+            );
           }
-        )}
+        })}
         <br />
         <hr />
         <br />

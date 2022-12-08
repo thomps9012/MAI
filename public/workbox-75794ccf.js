@@ -768,8 +768,8 @@ define(["exports"], function (t) {
           if (!n || (!n[1] && !n[2]))
             throw new s("invalid-range-values", { normalizedRangeHeader: e });
           return {
-            start: "" === n[1] ? void 0 : Number(n[1]),
-            end: "" === n[2] ? void 0 : Number(n[2]),
+            start: "" === n[1] ? void 0 (n[1]),
+            end: "" === n[2] ? void 0 (n[2]),
           };
         })(n),
         i = await e.blob(),

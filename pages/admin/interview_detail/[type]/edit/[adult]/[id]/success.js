@@ -1,22 +1,11 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
-import { GiftCardData } from "../../../../../../../utils/types";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  res: NextApiResponse;
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
   const logged_in = getCookie("logged_in", { req, res });
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const interview_type = query.type;
   const client_adult = query.adult;
   const interview_id = query.id;
@@ -38,10 +27,7 @@ export async function getServerSideProps({
   }
   const gift_card = await db
     .collection("cards")
-    .findOne(
-      { interview_id: new ObjectId(interview_id as string) },
-      { _id: 1 }
-    );
+    .findOne({ interview_id: new ObjectId(interview_id) }, { _id: 1 });
   return {
     props: {
       user_editor,
@@ -60,13 +46,6 @@ export default function EditInterviewPage({
   interview_type,
   logged_in,
   gift_card,
-}: {
-  gift_card: GiftCardData;
-  interview_type: string;
-  interview_id: string;
-  logged_in;
-  adult;
-  user_editor;
 }) {
   const clear_interview_data = () => {
     sessionStorage.clear();

@@ -1,19 +1,12 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { connectToDatabase } from "../../../utils/mongodb";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
@@ -23,14 +16,14 @@ export async function getServerSideProps({
     },
   };
 }
-export default function BasePage({ user_editor }: { user_editor }) {
+export default function BasePage({ user_editor }) {
   const router = useRouter();
   const [answer_type, setAnswerType] = useState("");
   const addNew = async () => {
     const answer_choices = document.getElementsByClassName("answer_choice");
     let choice_arr = [];
     for (let i = 0; i < answer_choices.length; i++) {
-      const choice = (answer_choices[i] as HTMLInputElement).value;
+      const choice = answer_choices[i].value;
       choice != "" && choice_arr.push(choice);
     }
     const response = await fetch("/api/answers/all/add", {

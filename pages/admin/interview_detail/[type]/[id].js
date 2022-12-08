@@ -6,16 +6,8 @@ import Link from "next/link";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
 import { InterviewData } from "../../../../utils/types";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}: {
-  req: NextApiRequest;
-  query: NextApiRequestQuery;
-  res: NextApiResponse;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, query, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const interview_type = query.type;
   const interview_id = query.id;
@@ -37,7 +29,7 @@ export async function getServerSideProps({
   }
   const interview_record = await db
     .collection(interview_type)
-    .findOne({ _id: new ObjectId(interview_id as string) });
+    .findOne({ _id: new ObjectId(interview_id) });
   return {
     props: {
       logged_in,
@@ -52,11 +44,6 @@ export default function InterviewDetailPage({
   user_admin,
   user_editor,
   logged_in,
-}: {
-  user_admin;
-  user_editor;
-  logged_in;
-  interview_record: InterviewData;
 }) {
   if (!user_admin || !logged_in) {
     return (

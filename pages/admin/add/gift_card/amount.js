@@ -1,20 +1,12 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { connectToDatabase } from "../../../../utils/mongodb";
-import { AnswerChoice } from "../../../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
@@ -39,13 +31,7 @@ export async function getServerSideProps({
     },
   };
 }
-export default function BasePage({
-  card_amounts,
-  user_editor,
-}: {
-  card_amounts: AnswerChoice;
-  user_editor;
-}) {
+export default function BasePage({ card_amounts, user_editor }) {
   const router = useRouter();
   const [new_amount, setNewAmount] = useState(0);
   const addNew = async () => {

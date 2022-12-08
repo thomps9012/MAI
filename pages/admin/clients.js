@@ -5,14 +5,8 @@ import { useState } from "react";
 import { connectToDatabase } from "../../utils/mongodb";
 import { ClientOverview, AnswerChoice } from "../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+export async function getServerSideProps({ req, res }) {
+  const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });
   const { db } = await connectToDatabase();
   const user = await db
@@ -43,11 +37,6 @@ export default function AllClientsPage({
   logged_in,
   admin,
   testing_agencies,
-}: {
-  all_clients: ClientOverview[];
-  testing_agencies: AnswerChoice;
-  logged_in;
-  admin;
 }) {
   const [client_records, setClientRecords] = useState(all_clients);
   if (!admin || !logged_in) {
@@ -65,20 +54,15 @@ export default function AllClientsPage({
     );
   }
   const filterByPID = () => {
-    const selected_agency = (
-      document.getElementById("agency") as HTMLInputElement
-    )?.value;
-    const PID_input = (document.getElementById("pid") as HTMLInputElement)
-      ?.value;
+    const selected_agency = document.getElementById("agency")?.value;
+    const PID_input = document.getElementById("pid")?.value;
     selected_agency === ""
       ? setClientRecords(
-          all_clients.filter((record: ClientOverview) =>
-            record.PID.includes(PID_input)
-          )
+          all_clients.filter((record) => record.PID.includes(PID_input))
         )
       : setClientRecords(
           all_clients.filter(
-            (record: ClientOverview) =>
+            (record) =>
               record.agency === selected_agency &&
               record.PID.includes(PID_input)
           )
@@ -104,7 +88,7 @@ export default function AllClientsPage({
             defaultValue=""
           >
             <option value="">All Agencies</option>
-            {testing_agencies?.choices.map((agency: string, i: number) => (
+            {testing_agencies?.choices.map((agency, i) => (
               <option key={i} value={agency}>
                 {agency}
               </option>
@@ -116,7 +100,7 @@ export default function AllClientsPage({
           <input name="pid" id="pid" type="number" onChange={filterByPID} />
         </div>
       </div>
-      {client_records.map((client: ClientOverview, i: number) => {
+      {client_records.map((client, i) => {
         const { PID, client_name, adult } = client;
         return (
           <div className="client_card" key={PID}>

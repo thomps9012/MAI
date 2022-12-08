@@ -6,15 +6,9 @@ import CardGraphs from "../../components/cardGraphDisplay";
 import { connectToDatabase } from "../../utils/mongodb";
 import { AnswerChoice, GiftCardData } from "../../utils/types";
 import { getCookie } from "cookies-next";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const user_id = getCookie("user_id", { req, res }) as unknown as string;
+  const user_id = getCookie("user_id", { req, res });
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
@@ -59,12 +53,6 @@ export default function CardRecordsPage({
   card_types,
   user_admin,
   testing_agencies,
-}: {
-  testing_agencies: AnswerChoice;
-  user_admin;
-  card_records: GiftCardData[];
-  card_amounts: AnswerChoice;
-  card_types: AnswerChoice;
 }) {
   if (!user_admin) {
     return (
@@ -82,24 +70,17 @@ export default function CardRecordsPage({
   }
   const [gift_card_records, setGiftCards] = useState(card_records);
   const filter = () => {
-    const selected_agency = (
-      document.getElementById("agency") as HTMLInputElement
-    )?.value;
-    const PID_input = (document.getElementById("pid") as HTMLInputElement)
-      ?.value;
-    const dispersed_filter = (
-      document.getElementById("dispersed") as HTMLInputElement
-    )?.value;
+    const selected_agency = document.getElementById("agency")?.value;
+    const PID_input = document.getElementById("pid")?.value;
+    const dispersed_filter = document.getElementById("dispersed")?.value;
     if (dispersed_filter === "") {
       selected_agency === ""
         ? setGiftCards(
-            card_records.filter((record: GiftCardData) =>
-              record.PID.includes(PID_input)
-            )
+            card_records.filter((record) => record.PID.includes(PID_input))
           )
         : setGiftCards(
             card_records.filter(
-              (record: GiftCardData) =>
+              (record) =>
                 record.PID.includes(selected_agency) &&
                 record.PID.split(selected_agency)[1].includes(PID_input)
             )
@@ -108,22 +89,22 @@ export default function CardRecordsPage({
       selected_agency === ""
         ? setGiftCards(
             card_records
-              .filter((record: GiftCardData) =>
+              .filter((record) =>
                 JSON.parse(dispersed_filter)
                   ? record.received_date
                   : !record.received_date
               )
-              .filter((record: GiftCardData) => record.PID.includes(PID_input))
+              .filter((record) => record.PID.includes(PID_input))
           )
         : setGiftCards(
             card_records
-              .filter((record: GiftCardData) =>
+              .filter((record) =>
                 JSON.parse(dispersed_filter)
                   ? record.received_date
                   : !record.received_date
               )
               .filter(
-                (record: GiftCardData) =>
+                (record) =>
                   record.PID.includes(selected_agency) &&
                   record.PID.split(selected_agency)[1].includes(PID_input)
               )
@@ -145,7 +126,7 @@ export default function CardRecordsPage({
           <h3>Agency</h3>
           <select name="agency" id="agency" onChange={filter} defaultValue="">
             <option value="">All Agencies</option>
-            {testing_agencies?.choices.map((agency: string) => (
+            {testing_agencies?.choices.map((agency) => (
               <option
                 key={agency}
                 value={
@@ -179,7 +160,7 @@ export default function CardRecordsPage({
         card_amounts={card_amounts}
         card_types={card_types}
       />
-      {gift_card_records.map((record: GiftCardData) => {
+      {gift_card_records.map((record) => {
         const { _id, PID, received_date, interview_type } = record;
         return (
           <div className="gift_card_card" key={JSON.stringify(_id)}>

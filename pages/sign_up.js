@@ -6,8 +6,8 @@ export default function SignUp() {
   const router = useRouter();
   const [user_exists, setUserExists] = useState(false);
   const passwordCheck = () => {
-    const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
-    const secondPW = (document.querySelector(".pw2") as HTMLInputElement).value;
+    const firstPW = document.querySelector(".pw1").value;
+    const secondPW = document.querySelector(".pw2").value;
     if (firstPW != secondPW) {
       document
         .getElementById("valid-pw2")
@@ -21,7 +21,7 @@ export default function SignUp() {
     }
   };
   const valid_password = () => {
-    const pw = (document.querySelector(".pw1") as HTMLInputElement).value;
+    const pw = document.querySelector(".pw1").value;
     const validation = pw.match(
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/g
     );
@@ -49,17 +49,11 @@ export default function SignUp() {
         ?.setAttribute("class", "input-validation");
     }
   };
-  interface UserInput {
-    username: string;
-    email: string;
-    password: string;
-    full_name: string;
-  }
-  const validate_all_fields = (user_object: UserInput) => {
+  const validate_all_fields = (user_object) => {
     const { username, email, password, full_name } = user_object;
     const fields = document.getElementsByName("user-input");
     for (let i = 0; i < fields.length; i++) {
-      let field = fields[i] as HTMLInputElement;
+      let field = fields[i];
       const { value, id } = field;
       if (value === "" || value === undefined || !value) {
         document
@@ -82,10 +76,8 @@ export default function SignUp() {
     return true;
   };
   const check_username_email = async () => {
-    const userName = (document.querySelector(".username") as HTMLInputElement)
-      .value;
-    const emailAddress = (document.querySelector(".email") as HTMLInputElement)
-      .value;
+    const userName = document.querySelector(".username").value;
+    const emailAddress = document.querySelector(".email").value;
     const user_exists = await fetch("/api/user/exists", {
       method: "POST",
       body: JSON.stringify({
@@ -97,13 +89,10 @@ export default function SignUp() {
   };
   const createUser = async (e) => {
     e.preventDefault();
-    const firstPW = (document.querySelector(".pw1") as HTMLInputElement).value;
-    const userName = (document.querySelector(".username") as HTMLInputElement)
-      .value;
-    const emailAddress = (document.querySelector(".email") as HTMLInputElement)
-      .value;
-    const fullName = (document.querySelector(".full_name") as HTMLInputElement)
-      .value;
+    const firstPW = document.querySelector(".pw1").value;
+    const userName = document.querySelector(".username").value;
+    const emailAddress = document.querySelector(".email").value;
+    const fullName = document.querySelector(".full_name").value;
     if (
       !validate_all_fields({
         username: userName,
