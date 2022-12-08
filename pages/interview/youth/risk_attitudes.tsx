@@ -13,7 +13,7 @@ export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
   const youth_risk_attitude_questions = await db
     .collection("questions")
-    .find({ adult: true, section: "risk_attitudes" })
+    .find({ adult: false, section: "risk_attitudes" })
     .toArray();
   const all_answers = await db.collection("answers").find({}).toArray();
   const youth_risk_attitude_question_and_answers =

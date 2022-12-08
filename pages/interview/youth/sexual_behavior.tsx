@@ -1,45 +1,64 @@
 import { useEffect, useState } from "react";
 import ButtonSelect from "../../../utils/button-select";
 import DropDownSelect from "../../../utils/drop-down-select";
-import fetcher from "../../../utils/fetcher";
 import NumberInput from "../../../utils/number-input";
-import useSWR from "swr";
 import { useRouter } from "next/router";
 import MultipleSelect from "../../../utils/multiple-select";
 import InterviewHeader from "../../../components/interview-header";
-import { deleteCookie, getCookie } from "cookies-next";
-
-export default function SexualBehavior() {
-  const [current_question, setCurrentQuestion] = useState(0);
-  const interview_data = JSON.parse(getCookie("interview_data") as string);
+import { deleteCookie } from "cookies-next";
+import { AnswerChoice, QuestionChoice } from "../../../utils/types";
+import { NextApiRequest } from "next";
+import { connectToDatabase } from "../../../utils/mongodb";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const adult_sexual_behavior_questions = await db
+    .collection("questions")
+    .find({ adult: true, section: "sexual_behavior" })
+    .toArray();
+  const all_answers = await db.collection("answers").find({}).toArray();
+  const adult_sexual_behavior_question_and_answers =
+    adult_sexual_behavior_questions.map(
+      (question: QuestionChoice) =>
+        (question.answer_choices = all_answers?.find(
+          (answer: AnswerChoice) => answer._id === question.answers
+        )?.choices)
+    );
+  const interview_id = req.cookies.interview_id;
+  const interview_type = req.cookies.interview_type;
+  return {
+    props: {
+      interview_id,
+      interview_type,
+      question_and_answers: JSON.parse(
+        JSON.stringify(adult_sexual_behavior_question_and_answers)
+      ),
+    },
+  };
+}
+export default function SexualBehavior({
+  interview_id,
+  interview_type,
+  question_and_answers,
+}: {
+  interview_id: string;
+  interview_type: string;
+  question_and_answers: QuestionChoice[];
+}) {
   const router = useRouter();
-  const { data: questions, error: question_err } = useSWR(
-    "/api/questions/youth/sexual_behavior",
-    fetcher
-  );
-  const { data: answers, error: answer_err } = useSWR(
-    "/api/answers/all",
-    fetcher
-  );
-  questions?.map(
-    (question: any) =>
-      (question.answer_choices = answers?.find(
-        (answer: any) => answer._id === question.answers
-      )?.choices)
-  );
+  const [current_question, setCurrentQuestion] = useState(0);
   useEffect(() => {
     document
       .getElementById(`question_${current_question}`)
       ?.setAttribute("style", "display: flex; flex-direction: column;");
-    current_question > questions?.length - 1 &&
+    current_question > question_and_answers?.length - 1 &&
       document
         .querySelector("#page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
-  }, [current_question, questions]);
+  }, [current_question, question_and_answers]);
   const pageSubmit = async (e: any) => {
     e.preventDefault();
     let section = "sexual_behavior";
-    const state = questions.map((question: any) =>
+    const state = question_and_answers.map((question: QuestionChoice) =>
       question.number_input
         ? [question.state, 0]
         : question.multiple
@@ -47,7 +66,7 @@ export default function SexualBehavior() {
         : [question.state, ""]
     );
     let section_info = Object.fromEntries(state);
-    questions.map((question: any) => {
+    question_and_answers.map((question: QuestionChoice) => {
       if (question.multiple) {
         let options = document.getElementById(question.state)
           ?.children as HTMLCollection;
@@ -68,13 +87,12 @@ export default function SexualBehavior() {
       }
     });
     sessionStorage.setItem(section, JSON.stringify(section_info));
-    const { id, type } = interview_data;
     const res = await fetch("/api/interviews/update", {
       method: "POST",
       headers: {
         interview_section: section,
-        interview_type: type,
-        record_id: id,
+        interview_type: interview_type,
+        record_id: interview_id,
         editor: "true",
       },
       body: JSON.stringify(section_info),
@@ -82,27 +100,30 @@ export default function SexualBehavior() {
     if (res.acknowledged) {
       router.push("/interview/youth/drug_behavior");
     }
-    deleteCookie("interview_data");
-    confirm(
-      "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-    ) && router.push("/");
+    if (
+      confirm(
+        "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
+      )
+    ) {
+      sessionStorage.clear();
+      deleteCookie("interview_type");
+      deleteCookie("interview_date");
+      deleteCookie("testing_agency");
+      deleteCookie("client_PID");
+      deleteCookie("client_phone_number");
+      deleteCookie("client_name");
+      deleteCookie("client_adult");
+      deleteCookie("interview_id");
+      router.push("/");
+    }
   };
-  if (question_err || answer_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
   return (
     <main className="container">
       <InterviewHeader section={3} edit={false} />
       <h1 className="title">Sexual Behavior</h1>
       <h3>Over the past 30 days how many days, if any did you ...</h3>
       <form className="section_questions" onSubmit={pageSubmit}>
-        {questions?.map((question: any, i: number) => {
+        {question_and_answers?.map((question: QuestionChoice, i: number) => {
           if (question.multiple) {
             return (
               <MultipleSelect
