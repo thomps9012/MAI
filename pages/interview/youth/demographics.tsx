@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import MultipleSelect from "../../../utils/multiple-select";
-import ButtonSelect from "../../../utils/button-select";
-import NumberInput from "../../../utils/number-input";
 import InterviewHeader from "../../../components/interview-header";
 import { useRouter } from "next/router";
-import DropDownSelect from "../../../utils/drop-down-select";
 import { deleteCookie } from "cookies-next";
 import { connectToDatabase } from "../../../utils/mongodb";
 import { NextApiRequest } from "next";
 import { QuestionChoice, AnswerChoice } from "../../../utils/types";
+import QuestionAndAnswers from "../../../components/questionAnswerSection";
 export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
   const youth_demographic_questions = await db
@@ -136,45 +133,10 @@ export default function Demographics({
       <h2>Date of Birth</h2>
       <input type="date" onChange={set_DOB} />
       <form className="section_questions" onSubmit={pageSubmit}>
-        {question_and_answers?.map((question: any, i: number) => {
-          if (question.multiple) {
-            return (
-              <MultipleSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else if (question.number_input) {
-            return (
-              <NumberInput
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else if (question.drop_down) {
-            return (
-              <DropDownSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else {
-            return (
-              <ButtonSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          }
-        })}
+      <QuestionAndAnswers
+          question_and_answers={question_and_answers}
+          setCurrentQuestion={setCurrentQuestion}
+        />
         <br />
         <hr />
         <br />

@@ -1,14 +1,11 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import ButtonSelect from "../../../utils/button-select";
 import InterviewHeader from "../../../components/interview-header";
-import MultipleSelect from "../../../utils/multiple-select";
-import NumberInput from "../../../utils/number-input";
-import DropDownSelect from "../../../utils/drop-down-select";
 import { deleteCookie } from "cookies-next";
 import { NextApiRequest } from "next";
 import { connectToDatabase } from "../../../utils/mongodb";
 import { QuestionChoice, AnswerChoice } from "../../../utils/types";
+import QuestionAndAnswers from "../../../components/questionAnswerSection";
 export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
   const adult_risk_attitude_questions = await db
@@ -99,7 +96,6 @@ export default function Attitudes({
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
     if (res.acknowledged) router.push("/interview/adult/sexual_behavior");
-    deleteCookie("interview_data");
     if (
       confirm(
         "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
@@ -126,45 +122,10 @@ export default function Attitudes({
         physically or in other ways when ...
       </h3>
       <form className="section_questions" onSubmit={pageSubmit}>
-        {question_and_answers?.map((question: QuestionChoice, i: number) => {
-          if (question.multiple) {
-            return (
-              <MultipleSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else if (question.number_input) {
-            return (
-              <NumberInput
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else if (question.drop_down) {
-            return (
-              <DropDownSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else {
-            return (
-              <ButtonSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          }
-        })}
+      <QuestionAndAnswers
+          question_and_answers={question_and_answers}
+          setCurrentQuestion={setCurrentQuestion}
+        />
         <br />
         <hr />
         <br />

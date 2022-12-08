@@ -1,54 +1,60 @@
 import { useEffect, useState } from "react";
-import ButtonSelect from "../../../utils/button-select";
-import DropDownSelect from "../../../utils/drop-down-select";
-import fetcher from "../../../utils/fetcher";
-import NumberInput from "../../../utils/number-input";
-import useSWR from "swr";
 import { useRouter } from "next/router";
-import MultipleSelect from "../../../utils/multiple-select";
 import InterviewHeader from "../../../components/interview-header";
-import { deleteCookie, getCookie } from "cookies-next";
-
-export default function DrugBehavior() {
-  const [current_question, setCurrentQuestion] = useState(0);
-  const interview_data = JSON.parse(getCookie("interview_data") as string);
+import { deleteCookie } from "cookies-next";
+import { NextApiRequest } from "next";
+import { connectToDatabase } from "../../../utils/mongodb";
+import { QuestionChoice, AnswerChoice } from "../../../utils/types";
+import QuestionAndAnswers from "../../../components/questionAnswerSection";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const drug_behavior_questions = await db
+    .collection("questions")
+    .find({ section: "drug_behavior" })
+    .toArray();
+  const all_answers = await db.collection("answers").find({}).toArray();
+  const drug_behavior_question_and_answers = drug_behavior_questions.map(
+    (question: QuestionChoice) =>
+      (question.answer_choices = all_answers?.find(
+        (answer: AnswerChoice) => answer._id === question.answers
+      )?.choices)
+  );
+  const interview_id = req.cookies.interview_id;
+  const interview_type = req.cookies.interview_type;
+  return {
+    props: {
+      interview_id,
+      interview_type,
+      question_and_answers: JSON.parse(
+        JSON.stringify(drug_behavior_question_and_answers)
+      ),
+    },
+  };
+}
+export default function DrugBehavior({
+  interview_id,
+  interview_type,
+  question_and_answers,
+}: {
+  interview_id: string;
+  interview_type: string;
+  question_and_answers: QuestionChoice[];
+}) {
   const router = useRouter();
-  const { data: questions, error: question_err } = useSWR(
-    "/api/questions/drug_behavior",
-    fetcher
-  );
-  const { data: answers, error: answer_err } = useSWR(
-    "/api/answers/all",
-    fetcher
-  );
+  const [current_question, setCurrentQuestion] = useState(0);
   useEffect(() => {
     document
       .getElementById(`question_${current_question}`)
       ?.setAttribute("style", "display: flex; flex-direction: column;");
-    current_question > questions?.length - 1 &&
+    current_question > question_and_answers?.length - 1 &&
       document
         .querySelector("#page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
-  }, [current_question, questions]);
-  if (question_err || answer_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
-  questions?.map(
-    (question: any) =>
-      (question.answer_choices = answers?.find(
-        (answer: any) => answer._id === question.answers
-      )?.choices)
-  );
+  }, [current_question, question_and_answers]);
   const pageSubmit = async (e: any) => {
     e.preventDefault();
     let section = "drug_behavior";
-    const state = questions.map((question: any) =>
+    const state = question_and_answers.map((question: QuestionChoice) =>
       question.number_input
         ? [question.state, 0]
         : question.multiple
@@ -56,7 +62,7 @@ export default function DrugBehavior() {
         : [question.state, ""]
     );
     let section_info = Object.fromEntries(state);
-    questions.map((question: any) => {
+    question_and_answers.map((question: QuestionChoice) => {
       if (question.multiple) {
         let options = document.getElementById(question.state)
           ?.children as HTMLCollection;
@@ -81,8 +87,8 @@ export default function DrugBehavior() {
       method: "POST",
       headers: {
         interview_section: section,
-        interview_type: interview_data.type,
-        record_id: interview_data.id,
+        interview_type: interview_type,
+        record_id: interview_id,
         editor: "true",
       },
       body: JSON.stringify(section_info),
@@ -90,10 +96,22 @@ export default function DrugBehavior() {
     if (res.acknowledged) {
       router.push("/interview/review");
     }
-    deleteCookie("interview_data");
-    confirm(
-      "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-    ) && router.push("/");
+    if (
+      confirm(
+        "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
+      )
+    ) {
+      sessionStorage.clear();
+      deleteCookie("interview_type");
+      deleteCookie("interview_date");
+      deleteCookie("testing_agency");
+      deleteCookie("client_PID");
+      deleteCookie("client_phone_number");
+      deleteCookie("client_name");
+      deleteCookie("client_adult");
+      deleteCookie("interview_id");
+      router.push("/");
+    }
   };
   return (
     <main className="container">
@@ -101,45 +119,10 @@ export default function DrugBehavior() {
       <h1 className="title">Drug Behavior</h1>
       <h3>Over the past 30 days how many days, if any did you ...</h3>
       <form className="section_questions" onSubmit={pageSubmit}>
-        {questions?.map((question: any, i: number) => {
-          if (question.multiple) {
-            return (
-              <MultipleSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else if (question.number_input) {
-            return (
-              <NumberInput
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else if (question.drop_down) {
-            return (
-              <DropDownSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          } else {
-            return (
-              <ButtonSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                setCurrentQuestion={setCurrentQuestion}
-              />
-            );
-          }
-        })}
+      <QuestionAndAnswers
+          question_and_answers={question_and_answers}
+          setCurrentQuestion={setCurrentQuestion}
+        />
         <br />
         <hr />
         <br />
