@@ -133,7 +133,7 @@ export default function Demographics({
       <h2>Date of Birth</h2>
       <input type="date" onChange={set_DOB} />
       <form className="section_questions" onSubmit={pageSubmit}>
-      <QuestionAndAnswers
+        <QuestionAndAnswers
           question_and_answers={question_and_answers}
           setCurrentQuestion={setCurrentQuestion}
         />

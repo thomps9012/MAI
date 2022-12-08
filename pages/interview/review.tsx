@@ -1,29 +1,65 @@
-import { getCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
+import { ObjectId } from "mongodb";
+import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR from "swr";
-import fetcher from "../../utils/fetcher";
+import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
+import { InterviewData } from "../../utils/types";
 
-export default function DataReview() {
-  const interview_data = JSON.parse(getCookie("interview_data") as string);
-  const user_editor = getCookie("user_editor");
+export async function getServerSideProps({
+  req,
+  res,
+}: {
+  req: NextApiRequest;
+  res: NextApiResponse;
+}) {
+  const interview_type = req.cookies.interview_type;
+  const interview_id = req.cookies.interview_id;
+  const user_editor = req.cookies.user_editor;
+  const client_PID = req.cookies.client_PID;
+  const { db } = await connectToDatabase();
+  const interview_data = await db
+    .collection(interview_type)
+    .findOne({ _id: new ObjectId(interview_id) });
+  const gift_card_exists = await db.collection("cards").findOne({
+    interview_id: new ObjectId(interview_id as string),
+    interview_type: interview_type,
+  });
+  if (gift_card_exists) {
+    setCookie("gift_card_id", gift_card_exists._id, { req, res });
+  }
+  return {
+    props: {
+      interview_type,
+      interview_id,
+      client_PID,
+      user_editor,
+      interview_data,
+      gift_card_exists: gift_card_exists._id ? true : false,
+      gift_card_id: gift_card_exists._id,
+    },
+  };
+}
+
+export default function DataReview({
+  interview_type,
+  interview_id,
+  client_PID,
+  user_editor,
+  interview_data,
+  gift_card_exists,
+  gift_card_id,
+}: {
+  gift_card_id: string;
+  gift_card_exists: boolean;
+  interview_type: string;
+  interview_id: string;
+  client_PID: string;
+  user_editor: boolean;
+  interview_data: InterviewData;
+}) {
   const router = useRouter();
-  const { data: interview, error: interview_err } = useSWR(
-    `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`,
-    fetcher
-  );
-  if (interview_err || interview === undefined)
-    return (
-      <main className="landing">
-        <main className="landing">
-          <h1>
-            Trouble Connecting to the Database... <br /> Check Your Internet or
-            Cellular Connection
-          </h1>
-        </main>
-      </main>
-    );
   const {
     type,
     _id,
@@ -34,95 +70,39 @@ export default function DataReview() {
     behaviors,
     demographics,
     risk_attitudes,
+    phone_number,
     agency,
-  } = interview;
+  } = interview_data;
   const success = async (e: any) => {
     e.preventDefault();
-    const gift_card_exists = await fetch(
-      `/api/cards/exists?interview_id=${interview_data.id}&interview_type=${interview_data.type}`
-    );
     if (gift_card_exists) {
-      const res = await fetch(
-        `/api/cards/find?interview_id=${interview_data.id}`
-      ).then((response) => response.json());
-      const interview_cache = await caches.open("interviews");
-      const card_cache = await caches.open("gift_cards");
-      const client_cache = await caches.open("clients");
-      client_cache.put(
-        `interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`,
-        await fetch(
-          `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-        )
-      );
-      client_cache.put(
-        `interview/${interview_data.id}/gift_card/${interview_data.id}`,
-        await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-      );
-      interview_cache.put(
-        `${interview_data.id}/type/${interview_data.type}`,
-        await fetch(
-          `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-        )
-      );
-      card_cache.put(
-        `${interview_data.id}/card_id/${res._id}`,
-        await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-      );
-      res.ok && sessionStorage.setItem("interview_id", interview_data.id);
-      res.ok && sessionStorage.setItem("gift_card_id", res._id);
-      res.ok && router.push("/interview/success");
-    } else {
-      const res = await fetch("/api/cards/create", {
-        method: "POST",
-        body: JSON.stringify({
-          interview_id: interview_data.id,
-          interview_type: interview_data.type,
-          PID: interview_data.PID,
-        }),
-      }).then((response) => response.json());
-      const interview_cache = await caches.open("interviews");
-      const card_cache = await caches.open("gift_cards");
-      const client_cache = await caches.open("clients");
-      client_cache.put(
-        `interview/${interview_data.id}/PID/${interview_data.PID}/type/${interview_data.type}`,
-        await fetch(
-          `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-        )
-      );
-      client_cache.put(
-        `interview/${interview_data.id}/gift_card/${interview_data.id}`,
-        await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-      );
-      interview_cache.put(
-        `${interview_data.id}/type/${interview_data.type}`,
-        await fetch(
-          `/api/interviews/find?record_id=${interview_data.id}&interview_type=${interview_data.type}`
-        )
-      );
-      card_cache.put(
-        `interview/${interview_data.id}/card_id/${res.insertedId}`,
-        await fetch(`/api/cards/find?interview_id=${interview_data.id}`)
-      );
-      const interviewSMTP = await fetch("/api/interviews/complete", {
-        method: "POST",
-        body: JSON.stringify({
-          interview_date: interview.date,
-          interview_type: interview.type,
-          agency: interview.agency,
-          PID: interview.PID,
-          client_phone: interview.phone_number,
-          interview_id: interview._id,
-          card_id: res.insertedId,
-        }),
-      }).then((res) => res.json());
-      if (interviewSMTP[0].statusCode != 202)
-        alert("error processing email notification of completion");
-      res.acknowledged &&
-        sessionStorage.setItem("interview_id", interview_data.id);
-      res.acknowledged &&
-        sessionStorage.setItem("gift_card_id", res.insertedId);
-      res.acknowledged && router.push("/interview/success");
+      sessionStorage.setItem("gift_card_id", gift_card_id);
+      router.push("/interview/success");
     }
+    const res = await fetch("/api/cards/create", {
+      method: "POST",
+      body: JSON.stringify({
+        interview_id,
+        interview_type,
+        PID: client_PID,
+      }),
+    }).then((response) => response.json());
+    const interviewSMTP = await fetch("/api/interviews/complete", {
+      method: "POST",
+      body: JSON.stringify({
+        interview_date: date,
+        interview_type,
+        agency,
+        PID: client_PID,
+        client_phone: phone_number,
+        interview_id,
+        card_id: res.insertedId,
+      }),
+    }).then((res) => res.json());
+    if (interviewSMTP[0].statusCode != 202)
+      alert("error processing email notification of completion");
+    res.acknowledged && sessionStorage.setItem("gift_card_id", res.insertedId);
+    res.acknowledged && router.push("/interview/success");
   };
   return (
     <main className="container">
