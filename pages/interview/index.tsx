@@ -1,12 +1,55 @@
 import { useEffect, useState } from "react";
 import GenerateID from "../../utils/generate-id";
 import titleCase from "../../utils/titleCase";
-import useSWR from "swr";
 import { useRouter } from "next/router";
-import fetcher from "../../utils/fetcher";
-import { setCookie } from "cookies-next";
+import { deleteCookie, setCookie } from "cookies-next";
+import { connectToDatabase } from "../../utils/mongodb";
+import { AnswerChoice } from "../../utils/types";
 
-export default function InterviewSelect() {
+export async function getServerSideProps() {
+  const { db } = await connectToDatabase();
+  const collections = ["baseline", "testing_only"];
+  let AIDS_TASK_FORCE_RECORDS = 101025;
+  let NORA_RECORDS = 100;
+  let CARE_ALLIANCE_RECORDS = 1501;
+  for (const item in collections) {
+    const taskForceCount = await db
+      .collection(collections[item])
+      .countDocuments({ agency: "AIDS Task Force" });
+    const noraCount = await db
+      .collection(collections[item])
+      .countDocuments({ agency: "NORA" });
+    const caCount = await db
+      .collection(collections[item])
+      .countDocuments({ agency: "Care Alliance" });
+    AIDS_TASK_FORCE_RECORDS += taskForceCount;
+    NORA_RECORDS += noraCount;
+    CARE_ALLIANCE_RECORDS += caCount;
+  }
+  const testing_agencies = await db
+    .collection("answers")
+    .findOne({ type: "TESTING_AGENCIES" });
+  return {
+    props: {
+      testing_agencies,
+      AIDS_TASK_FORCE_RECORDS,
+      NORA_RECORDS,
+      CARE_ALLIANCE_RECORDS,
+    },
+  };
+}
+
+export default function InterviewSelect({
+  testing_agencies,
+  AIDS_TASK_FORCE_RECORDS,
+  NORA_RECORDS,
+  CARE_ALLIANCE_RECORDS,
+}: {
+  testing_agencies: AnswerChoice;
+  AIDS_TASK_FORCE_RECORDS: number;
+  NORA_RECORDS: number;
+  CARE_ALLIANCE_RECORDS: number;
+}) {
   const [date] = useState(
     new Intl.DateTimeFormat("en", {
       dateStyle: "short",
@@ -25,21 +68,6 @@ export default function InterviewSelect() {
         ?.setAttribute("style", "display: flex; flex-direction: column;");
   }, [PID]);
   const router = useRouter();
-  const { data, error } = useSWR("/api/client/count_records", fetcher);
-  const { data: testing_agencies, error: testing_agency_err } = useSWR(
-    "/api/answers/testing_agencies",
-    fetcher
-  );
-  if (error || testing_agency_err) {
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
-  }
   const retrieveClientName = async (PID: string) => {
     const res = await fetch(`/api/client/find_name?client_pid=${PID}`, {
       method: "GET",
@@ -91,7 +119,12 @@ export default function InterviewSelect() {
         document
           .querySelector(".name_input")
           ?.setAttribute("style", "display: flex; flex-direction: column;");
-        generateId = GenerateID(agency, data);
+        generateId = GenerateID(
+          agency,
+          AIDS_TASK_FORCE_RECORDS,
+          NORA_RECORDS,
+          CARE_ALLIANCE_RECORDS
+        );
         setPID(generateId as string);
         break;
       case "testing_only":
@@ -107,7 +140,12 @@ export default function InterviewSelect() {
         document
           .querySelector(".name_input")
           ?.setAttribute("style", "display: flex; flex-direction: column;");
-        generateId = GenerateID(agency, data);
+        generateId = GenerateID(
+          agency,
+          AIDS_TASK_FORCE_RECORDS,
+          NORA_RECORDS,
+          CARE_ALLIANCE_RECORDS
+        );
         setPID(generateId as string);
         break;
       case "follow_up":
@@ -209,35 +247,20 @@ export default function InterviewSelect() {
     client_name: string,
     adult: boolean
   ) => {
-    if (type === "") {
+    if (
+      type === "" ||
+      date === "" ||
+      agency === "" ||
+      PID === "" ||
+      phone_number === "" ||
+      client_name === ""
+    ) {
       return;
     }
-    if (date === "") {
-      return;
-    }
-    if (agency === "") {
-      return;
-    }
-    if (PID === "") {
-      return;
-    }
-    if (phone_number === "") {
-      return;
-    }
-    if (client_name === "") {
-      return;
-    }
-    sessionStorage.setItem("interview_type", type);
-    sessionStorage.setItem("interview_date", date);
-    sessionStorage.setItem("testing_agency", agency);
-    sessionStorage.setItem("client_PID", PID);
-    sessionStorage.setItem("client_phone_number", phone_number);
-    sessionStorage.setItem("client_name", client_name);
-    sessionStorage.setItem("client_adult", JSON.stringify(adult));
+
     const PID_exists = await fetch("/api/client/PID_exists").then((res) =>
       res.json()
     );
-    console.log(PID_exists);
     if (
       (PID_exists && type === "testing_only") ||
       (type === "baseline" && PID_exists)
@@ -257,32 +280,22 @@ export default function InterviewSelect() {
       }),
     }).then((response) => response.json());
     if (res.acknowledged) {
-      const client_cache = await caches.open("clients");
-      const interview_cache = await caches.open("interviews");
-      client_cache.put(
-        `interview/${res.insertedIds[0]}/PID/${PID}/type/${type}`,
-        await fetch(
-          `/api/interviews/find?record_id=${res.insertedIds[0]}&interview_type=${type}`
-        )
-      );
-      interview_cache.put(
-        `${res.insertedIds[0]}/type/${type}`,
-        await fetch(
-          `/api/interviews/find?record_id=${res.insertedIds[0]}&interview_type=${type}`
-        )
-      );
+      sessionStorage.setItem("interview_type", type);
+      sessionStorage.setItem("interview_date", date);
+      sessionStorage.setItem("testing_agency", agency);
+      sessionStorage.setItem("client_PID", PID);
+      sessionStorage.setItem("client_phone_number", phone_number);
+      sessionStorage.setItem("client_name", client_name);
+      sessionStorage.setItem("client_adult", JSON.stringify(adult));
       sessionStorage.setItem("interview_id", res.insertedIds[0]);
-      setCookie(
-        "interview_data",
-        JSON.stringify({
-          _id: res.insertedIds[0],
-          type,
-          agency,
-          date,
-          PID,
-          client_name,
-        })
-      );
+      setCookie("interview_type", type);
+      setCookie("interview_date", date);
+      setCookie("testing_agency", agency);
+      setCookie("client_PID", PID);
+      setCookie("client_phone_number", phone_number);
+      setCookie("client_name", client_name);
+      setCookie("client_adult", JSON.stringify(adult));
+      setCookie("interview_id", res.insertedIds[0]);
       if (
         confirm(
           `This is a(n) \n\n ${titleCase(
@@ -293,6 +306,17 @@ export default function InterviewSelect() {
         adult
           ? router.push("/interview/adult/demographics")
           : router.push("/interview/youth/demographics");
+      } else {
+        sessionStorage.clear();
+        deleteCookie("interview_type");
+        deleteCookie("interview_date");
+        deleteCookie("testing_agency");
+        deleteCookie("client_PID");
+        deleteCookie("client_phone_number");
+        deleteCookie("client_name");
+        deleteCookie("client_adult");
+        deleteCookie("interview_id");
+        router.reload();
       }
     } else {
       if (
@@ -300,7 +324,16 @@ export default function InterviewSelect() {
           "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
         )
       ) {
-        window.location.assign("/");
+        sessionStorage.clear();
+        deleteCookie("interview_type");
+        deleteCookie("interview_date");
+        deleteCookie("testing_agency");
+        deleteCookie("client_PID");
+        deleteCookie("client_phone_number");
+        deleteCookie("client_name");
+        deleteCookie("client_adult");
+        deleteCookie("interview_id");
+        router.push("/");
       }
     }
   };
