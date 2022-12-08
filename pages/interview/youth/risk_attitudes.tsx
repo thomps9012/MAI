@@ -1,54 +1,64 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ButtonSelect from "../../../utils/button-select";
-import useSWR from "swr";
-import fetcher from "../../../utils/fetcher";
 import InterviewHeader from "../../../components/interview-header";
 import MultipleSelect from "../../../utils/multiple-select";
 import NumberInput from "../../../utils/number-input";
 import DropDownSelect from "../../../utils/drop-down-select";
-import { deleteCookie, getCookie } from "cookies-next";
-export default function Attitudes() {
+import { deleteCookie } from "cookies-next";
+import { NextApiRequest } from "next";
+import { connectToDatabase } from "../../../utils/mongodb";
+import { QuestionChoice, AnswerChoice } from "../../../utils/types";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const { db } = await connectToDatabase();
+  const youth_risk_attitude_questions = await db
+    .collection("questions")
+    .find({ adult: true, section: "risk_attitudes" })
+    .toArray();
+  const all_answers = await db.collection("answers").find({}).toArray();
+  const youth_risk_attitude_question_and_answers =
+    youth_risk_attitude_questions.map(
+      (question: QuestionChoice) =>
+        (question.answer_choices = all_answers?.find(
+          (answer: AnswerChoice) => answer._id === question.answers
+        )?.choices)
+    );
+  const interview_id = req.cookies.interview_id;
+  const interview_type = req.cookies.interview_type;
+  return {
+    props: {
+      interview_id,
+      interview_type,
+      question_and_answers: JSON.parse(
+        JSON.stringify(youth_risk_attitude_question_and_answers)
+      ),
+    },
+  };
+}
+export default function Attitudes({
+  interview_id,
+  interview_type,
+  question_and_answers,
+}: {
+  interview_id: string;
+  interview_type: string;
+  question_and_answers: QuestionChoice[];
+}) {
   const [current_question, setCurrentQuestion] = useState(0);
   const router = useRouter();
-  // move all of these to SSR
-  const interview_data = JSON.parse(getCookie("interview_data") as string);
-  const { data: questions, error: question_err } = useSWR(
-    "/api/questions/youth/risk_attitudes",
-    fetcher
-  );
-  const { data: answers, error: answer_err } = useSWR(
-    "/api/answers/all",
-    fetcher
-  );
   useEffect(() => {
     document
       .getElementById(`question_${current_question}`)
       ?.setAttribute("style", "display: flex; flex-direction: column;");
-    current_question > questions?.length - 1 &&
+    current_question > question_and_answers?.length - 1 &&
       document
         .querySelector("#page_submit")
         ?.setAttribute("style", "display: flex; flex-direction: column;");
-  }, [current_question, questions]);
-  if (question_err || answer_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
-  questions?.map(
-    (question: any) =>
-      (question.answer_choices = answers?.find(
-        (answer: any) => answer._id === question.answers
-      )?.choices)
-  );
+  }, [current_question, question_and_answers]);
   const pageSubmit = async (e: any) => {
     e.preventDefault();
     let section = "risk_attitudes";
-    const state = questions.map((question: any) =>
+    const state = question_and_answers.map((question: QuestionChoice) =>
       question.number_input
         ? [question.state, 0]
         : question.multiple
@@ -56,7 +66,7 @@ export default function Attitudes() {
         : [question.state, ""]
     );
     let section_info = Object.fromEntries(state);
-    questions.map((question: any) => {
+    question_and_answers.map((question: QuestionChoice) => {
       if (question.multiple) {
         let options = document.getElementById(question.state)
           ?.children as HTMLCollection;
@@ -81,8 +91,8 @@ export default function Attitudes() {
       method: "POST",
       headers: {
         interview_section: section,
-        interview_type: interview_data.type,
-        record_id: interview_data.id,
+        interview_type: interview_type,
+        record_id: interview_id,
         editor: "true",
       },
       body: JSON.stringify(section_info),
@@ -90,10 +100,22 @@ export default function Attitudes() {
     if (res.acknowledged) {
       router.push("/interview/youth/sexual_behavior");
     }
-    deleteCookie("interview_data");
-    confirm(
-      "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-    ) && router.push("/");
+    if (
+      confirm(
+        "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
+      )
+    ) {
+      sessionStorage.clear();
+      deleteCookie("interview_type");
+      deleteCookie("interview_date");
+      deleteCookie("testing_agency");
+      deleteCookie("client_PID");
+      deleteCookie("client_phone_number");
+      deleteCookie("client_name");
+      deleteCookie("client_adult");
+      deleteCookie("interview_id");
+      router.push("/");
+    }
   };
   return (
     <main className="container">
@@ -104,7 +126,7 @@ export default function Attitudes() {
         physically or in other ways when ...
       </h3>
       <form className="section_questions" onSubmit={pageSubmit}>
-        {questions?.map((question: any, i: number) => {
+        {question_and_answers?.map((question: QuestionChoice, i: number) => {
           if (question.multiple) {
             return (
               <MultipleSelect

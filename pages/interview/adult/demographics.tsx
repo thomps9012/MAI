@@ -5,17 +5,11 @@ import NumberInput from "../../../utils/number-input";
 import InterviewHeader from "../../../components/interview-header";
 import { useRouter } from "next/router";
 import DropDownSelect from "../../../utils/drop-down-select";
-import { deleteCookie, setCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { AnswerChoice, QuestionChoice } from "../../../utils/types";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
   const adult_demographic_questions = await db
     .collection("questions")

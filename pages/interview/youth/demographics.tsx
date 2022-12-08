@@ -7,15 +7,9 @@ import { useRouter } from "next/router";
 import DropDownSelect from "../../../utils/drop-down-select";
 import { deleteCookie } from "cookies-next";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import { QuestionChoice, AnswerChoice } from "../../../utils/types";
-export async function getServerSideProps({
-  req,
-  res,
-}: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
   const { db } = await connectToDatabase();
   const youth_demographic_questions = await db
     .collection("questions")
