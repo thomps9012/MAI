@@ -1,16 +1,42 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { deleteCookie, getCookie } from "cookies-next";
-export default function NavBar() {
+import { deleteCookie } from "cookies-next";
+import { NextApiRequest } from "next";
+import { connectToDatabase } from "../utils/mongodb";
+import { ObjectId } from "mongodb";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const user_id = req.cookies.user_id;
+  const user_full_name = req.cookies.user_full_name;
+  const logged_in = req.cookies.logged_in;
+  const { db } = await connectToDatabase();
+  const user = db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { admin: 1, editor: 1 });
+  return {
+    user_full_name,
+    logged_in,
+    admin: user.admin,
+    editor: user.editor,
+    user_id,
+  };
+}
+export default function NavBar({
+  user_full_name,
+  logged_in,
+  admin,
+  editor,
+  user_id,
+}: {
+  user_full_name: string;
+  logged_in: boolean;
+  admin: boolean;
+  editor: boolean;
+  user_id: string;
+}) {
   const router = useRouter();
   const [activeLink, setActiveLink] = useState("");
   const [show, setShow] = useState(false);
-  const logged_in = getCookie("logged_in");
-  const user_id = getCookie("user_id");
-  const user_full_name = getCookie("full_name");
-  const editor = getCookie("user_editor");
-  const admin = getCookie("user_admin");
   const setEditNav = (e: any) => {
     const link = e.target.value;
     link === "" && router.push("/");
@@ -19,11 +45,20 @@ export default function NavBar() {
   };
   const active_route = router.route;
   const logout = async () => {
+    sessionStorage.clear();
+    deleteCookie("interview_type");
+    deleteCookie("interview_date");
+    deleteCookie("testing_agency");
+    deleteCookie("client_PID");
+    deleteCookie("client_phone_number");
+    deleteCookie("client_name");
+    deleteCookie("client_adult");
+    deleteCookie("interview_id");
+    deleteCookie("gift_card_id");
     deleteCookie("user_id");
     deleteCookie("logged_in");
     deleteCookie("username");
-    deleteCookie("full_name");
-    deleteCookie("login_attempts");
+    deleteCookie("user_full_name");
     router.reload();
   };
   useEffect(() => {

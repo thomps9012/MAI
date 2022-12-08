@@ -56,9 +56,7 @@ export default function SignIn() {
       router.reload();
       return;
     }
-    const { admin, editor, _id, full_name } = user_res;
-    setCookie("user_admin", admin);
-    setCookie("user_editor", editor);
+    const { _id, full_name } = user_res;
     setCookie("user_id", _id);
     setCookie("user_full_name", full_name);
     setCookie("logged_in", true);

@@ -1,26 +1,36 @@
+import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
 import Link from "next/link";
-import useSWR from "swr";
-import fetcher from "../../utils/fetcher";
+import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
-export async function getServerSideProps({ req, res, ctx }: any) {
-  const user_editor = req.cookies.user_editor;
-  const user_admin = req.cookies.user_admin;
+import { AnswerChoice } from "../../utils/types";
+export async function getServerSideProps({ req }: { req: NextApiRequest }) {
+  const user_id = req.cookies.user_id;
+  const logged_in = req.cookies.logged_in;
+  const { db } = await connectToDatabase();
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { admin: 1, editor: 1 });
+  const answers = await db.collection("answers").find().toArray();
   return {
-    props: {
-      user_editor,
-      user_admin,
-    },
+    logged_in,
+    admin: user.admin,
+    editor: user.editor,
+    answers: JSON.parse(JSON.stringify(answers)),
   };
 }
 export default function AnswersPage({
-  user_editor,
-  user_admin,
+  logged_in,
+  admin,
+  editor,
+  answers,
 }: {
-  user_editor: boolean;
-  user_admin: boolean;
+  logged_in: boolean;
+  admin: boolean;
+  editor: boolean;
+  answers: AnswerChoice[];
 }) {
-  const { data, error } = useSWR("/api/answers/all", fetcher);
-  if (!user_admin) {
+  if (!admin || !logged_in) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -34,15 +44,23 @@ export default function AnswersPage({
       </main>
     );
   }
-  if (error)
+  if (!editor) {
     return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
+      <main className="container">
+        <h1>View Answers</h1>
+        {answers?.map((answer: AnswerChoice) => (
+          <div className="answer_choice_section" key={answer?.type}>
+            <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
+            <h3>Choices</h3>
+            {answer.choices.map((choice: string) => (
+              <p key={choice}>{choice}</p>
+            ))}
+            <hr />
+          </div>
+        ))}
       </main>
     );
+  }
   return (
     <main className="container">
       <h1>Edit Answers</h1>
@@ -51,18 +69,16 @@ export default function AnswersPage({
           <a>Add New Option</a>
         </Link>
       </h1>
-      {data?.map((answer: any) => (
-        <div className="answer_choice_section" key={answer?._id}>
+      {answers?.map((answer: AnswerChoice) => (
+        <div className="answer_choice_section" key={answer?.type}>
           <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
           <h3>Choices</h3>
           {answer.choices.map((choice: string) => (
             <p key={choice}>{choice}</p>
           ))}
-          {user_editor && (
-            <Link href={`/admin/edit/${answer._id}/answer_choice`}>
-              Edit Answer
-            </Link>
-          )}
+          <Link href={`/admin/edit/${answer._id}/answer_choice`}>
+            Edit Answer
+          </Link>
           <hr />
         </div>
       ))}

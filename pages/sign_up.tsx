@@ -38,7 +38,7 @@ export default function SignUp() {
     }
   };
   const validate_field = (e: any) => {
-    const {value, id} = e.target;
+    const { value, id } = e.target;
     if (value === "" || value === undefined) {
       document
         .getElementById("valid-" + id)
@@ -137,7 +137,7 @@ export default function SignUp() {
       setCookie("user_id", user_id);
       setCookie("logged_in", true);
       setCookie("username", userName);
-      setCookie("full_name", fullName);
+      setCookie("user_full_name", fullName);
       setCookie("user_editor", false);
       setCookie("user_admin", false);
       router.push("/");

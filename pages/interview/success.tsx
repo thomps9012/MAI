@@ -39,6 +39,7 @@ export default function Success({
 }) {
   const clear_data = () => {
     sessionStorage.clear();
+    deleteCookie("interview_id");
     deleteCookie("interview_type");
     deleteCookie("interview_date");
     deleteCookie("testing_agency");
@@ -46,17 +47,13 @@ export default function Success({
     deleteCookie("client_phone_number");
     deleteCookie("client_name");
     deleteCookie("client_adult");
-    deleteCookie("interview_id");
     deleteCookie("gift_card_id");
   };
   const keep_basic_interview_data = () => {
     sessionStorage.clear();
-    deleteCookie("interview_type");
-    deleteCookie("interview_date");
-    deleteCookie("testing_agency");
-    deleteCookie("client_PID");
+    deleteCookie("client_phone_number");
+    deleteCookie("client_adult");
     deleteCookie("client_name");
-    deleteCookie("interview_id");
   };
   if (!user_admin) {
     sessionStorage.clear();

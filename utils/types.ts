@@ -1,5 +1,13 @@
 import { ObjectId } from "mongodb";
 
+export interface ClientOverview {
+  _id: ObjectId | string;
+  PID: string;
+  adult: boolean;
+  client_name: string;
+  agency: string;
+}
+
 export interface AnswerChoice {
   _id: ObjectId;
   type: string;
@@ -18,6 +26,13 @@ export interface QuestionChoice {
   detail: string;
   answers: ObjectId;
   answer_choices: string[];
+}
+
+export interface InterviewOverview {
+  _id: ObjectId;
+  date: string;
+  type: string;
+  agency: string;
 }
 
 export interface InterviewData {
@@ -49,7 +64,7 @@ export interface GiftCardData {
   number: number;
 }
 
-interface RiskAttitudes {
+export interface RiskAttitudes {
   tobacco_use: string;
   binge_alcohol_use: string;
   marijuana_use: string;
@@ -60,7 +75,7 @@ interface RiskAttitudes {
   sex_under_influence: string;
   could_refuse_unprotected_sex: string;
 }
-interface YouthRiskAttitudes {
+export interface YouthRiskAttitudes {
   tobacco_use: string;
   binge_alcohol_use: string;
   marijuana_use: string;

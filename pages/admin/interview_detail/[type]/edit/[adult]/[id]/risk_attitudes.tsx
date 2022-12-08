@@ -1,58 +1,111 @@
+import { deleteCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
+import { NextApiRequest } from "next";
+import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 import InterviewHeader from "../../../../../../../components/interview-header";
 import EditButtonSelect from "../../../../../../../utils/edit-button-select";
 import EditDropDownSelect from "../../../../../../../utils/edit-drop-down-select";
 import EditMultipleSelect from "../../../../../../../utils/edit-multiple-select";
 import EditNumberInput from "../../../../../../../utils/edit-number-input";
-import fetcher from "../../../../../../../utils/fetcher";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
-
-export default function EditInterviewPage({
-  interview_record,
-  adult,
-  user_editor,
-  user_admin,
-}: any) {
-  const router = useRouter();
-  const { _id, risk_attitudes, type } = interview_record;
-  const { data: questions, error: question_err } = useSWR(
-    `/api/questions/${adult ? "adult" : "youth"}/risk_attitudes`,
-    fetcher
-  );
-  const { data: answers, error: answer_err } = useSWR(
-    "/api/answers/all",
-    fetcher
-  );
-  if (question_err || answer_err)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
-  questions?.map(
-    (question: any) =>
-      (question.answer_choices = answers?.find(
-        (answer: any) => answer._id === question.answers
+import {
+  AnswerChoice,
+  InterviewData,
+  QuestionChoice,
+} from "../../../../../../../utils/types";
+export async function getServerSideProps({
+  req,
+  query,
+}: {
+  req: NextApiRequest;
+  query: NextApiRequestQuery;
+}) {
+  const { db } = await connectToDatabase();
+  const logged_in = req.cookies.logged_in;
+  const user_id = req.cookies.user_id;
+  const interview_type = query.type;
+  const client_adult = query.adult;
+  const interview_id = query.id;
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
+  const user_editor = user.editor;
+  const risk_attitude_questions = await db
+    .collection("questions")
+    .find({ section: "risk_attitudes", adult: client_adult })
+    .toArray();
+  const all_answers = await db.collection("answers").find({}).toArray();
+  const risk_attitude_question_and_answers = risk_attitude_questions.map(
+    (question: QuestionChoice) =>
+      (question.answer_choices = all_answers?.find(
+        (answer: AnswerChoice) => answer._id === question.answers
       )?.choices)
   );
+  if (!user_editor) {
+    return {
+      props: {
+        user_editor,
+        logged_in,
+        interview_record: {},
+        adult: false,
+        risk_attitude_question_and_answers: [],
+      },
+    };
+  }
+  const interview_record = await db
+    .collection(interview_type)
+    .findOne(
+      { _id: new ObjectId(interview_id as string) },
+      { risk_attitudes: 1 }
+    );
+  return {
+    props: {
+      user_editor,
+      logged_in,
+      interview_record: JSON.parse(JSON.stringify(interview_record)),
+      adult: JSON.parse(JSON.stringify(client_adult)),
+      interview_type,
+      interview_id,
+      risk_attitude_question_and_answers: JSON.parse(
+        JSON.stringify(risk_attitude_question_and_answers)
+      ),
+    },
+  };
+}
+export default function EditInterviewPage({
+  interview_record,
+  interview_id,
+  adult,
+  user_editor,
+  interview_type,
+  risk_attitude_question_and_answers,
+  logged_in,
+}: {
+  interview_type: string;
+  interview_id: string;
+  adult: boolean;
+  logged_in: boolean;
+  user_editor: boolean;
+  interview_record: InterviewData;
+  risk_attitude_question_and_answers: QuestionChoice[];
+}) {
+  const router = useRouter();
+  const { risk_attitudes } = interview_record;
   const pageSubmit = async (e: any) => {
     e.preventDefault();
     let section = "risk_attitudes";
-    const state = questions.map((question: any) =>
-      question.number_input
-        ? [question.state, 0]
-        : question.multiple
-        ? [question.state, []]
-        : [question.state, ""]
+    const state = risk_attitude_question_and_answers.map(
+      (question: QuestionChoice) =>
+        question.number_input
+          ? [question.state, 0]
+          : question.multiple
+          ? [question.state, []]
+          : [question.state, ""]
     );
     let section_info = Object.fromEntries(state);
-    questions.map((question: any) => {
+    risk_attitude_question_and_answers.map((question: QuestionChoice) => {
       if (question.multiple) {
         let options = document.getElementById(question.state)
           ?.children as HTMLCollection;
@@ -72,40 +125,43 @@ export default function EditInterviewPage({
         ).value;
       }
     });
-    sessionStorage.setItem(section, JSON.stringify(section_info));
     const res = await fetch("/api/interviews/update", {
       method: "POST",
       headers: {
         interview_section: section,
-        interview_type: type,
-        record_id: _id,
-        editor: user_editor,
+        interview_type: interview_type,
+        record_id: interview_id,
+        editor: JSON.stringify(user_editor),
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
-    const interview_cache = await caches.open("interviews");
-    const client_cache = await caches.open("clients");
-    client_cache.put(
-      `interview/${interview_record.id}/PID/${interview_record.PID}/type/${interview_record.type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_record.id}&interview_type=${interview_record.type}`
+    if (res.acknowledged) {
+      sessionStorage.clear();
+      deleteCookie("client_phone_number");
+      deleteCookie("client_name");
+      router.push(
+        `/admin/interview_detail/${interview_type}/edit/${adult}/${interview_id}/success`
+      );
+    }
+    if (
+      confirm(
+        "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
       )
-    );
-    interview_cache.put(
-      `${interview_record.id}/type/${interview_record.type}`,
-      await fetch(
-        `/api/interviews/find?record_id=${interview_record.id}&interview_type=${interview_record.type}`
-      )
-    );
-    res.acknowledged
-      ? router.push(
-          `/admin/interview_detail/${type}/edit/${adult}/${_id}/success`
-        )
-      : confirm(
-          "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."
-        ) && router.push("/");
+    ) {
+      sessionStorage.clear();
+      deleteCookie("interview_type");
+      deleteCookie("interview_date");
+      deleteCookie("testing_agency");
+      deleteCookie("client_PID");
+      deleteCookie("client_phone_number");
+      deleteCookie("client_name");
+      deleteCookie("client_adult");
+      deleteCookie("interview_id");
+      deleteCookie("gift_card_id");
+      router.push("/");
+    }
   };
-  if (!user_editor) {
+  if (!user_editor || !logged_in) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -128,45 +184,56 @@ export default function EditInterviewPage({
         physically or in other ways when ...
       </h3>
       <form className="section_questions" onSubmit={pageSubmit}>
-        {questions?.map((question: any, i: number) => {
-          if (question.multiple) {
-            return (
-              <EditMultipleSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                defaultValue={risk_attitudes[question.state]}
-              />
-            );
-          } else if (question.number_input) {
-            return (
-              <EditNumberInput
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                defaultValue={risk_attitudes[question.state]}
-              />
-            );
-          } else if (question.drop_down) {
-            return (
-              <EditDropDownSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                defaultValue={risk_attitudes[question.state]}
-              />
-            );
-          } else {
-            return (
-              <EditButtonSelect
-                question={question}
-                id={`question_${i}`}
-                key={question._id}
-                defaultValue={risk_attitudes[question.state]}
-              />
-            );
+        {risk_attitude_question_and_answers?.map(
+          (question: QuestionChoice, i: number) => {
+            const { multiple, drop_down, number_input, _id, state } = question;
+            if (multiple) {
+              return (
+                <EditMultipleSelect
+                  question={question}
+                  id={`question_${i}`}
+                  key={_id}
+                  defaultValue={
+                    risk_attitudes[state as keyof typeof risk_attitudes]
+                  }
+                />
+              );
+            } else if (number_input) {
+              return (
+                <EditNumberInput
+                  question={question}
+                  id={`question_${i}`}
+                  key={_id}
+                  defaultValue={
+                    risk_attitudes[state as keyof typeof risk_attitudes]
+                  }
+                />
+              );
+            } else if (drop_down) {
+              return (
+                <EditDropDownSelect
+                  question={question}
+                  id={`question_${i}`}
+                  key={_id}
+                  defaultValue={
+                    risk_attitudes[state as keyof typeof risk_attitudes]
+                  }
+                />
+              );
+            } else {
+              return (
+                <EditButtonSelect
+                  question={question}
+                  id={`question_${i}`}
+                  key={_id}
+                  defaultValue={
+                    risk_attitudes[state as keyof typeof risk_attitudes]
+                  }
+                />
+              );
+            }
           }
-        })}
+        )}
         <br />
         <hr />
         <br />
@@ -176,34 +243,4 @@ export default function EditInterviewPage({
       </form>
     </main>
   );
-}
-
-export async function getServerSideProps({ req, res, ctx }: any) {
-  const { db } = await connectToDatabase();
-  const user_editor = req.cookies.user_editor;
-  const user_admin = req.cookies.user_admin;
-  if (!user_editor) {
-    return {
-      props: {
-        user_admin,
-        user_editor,
-        interview_record: {},
-        adult: false,
-      },
-    };
-  }
-  const interview_record = await db
-    .collection(ctx.params.type)
-    .findOne(
-      { _id: new ObjectId(ctx.params.id as string) },
-      { _id: 1, risk_attitudes: 1, type: 1 }
-    );
-  return {
-    props: {
-      user_admin,
-      user_editor,
-      interview_record: JSON.parse(JSON.stringify(interview_record)),
-      adult: JSON.parse(JSON.stringify(ctx.params.adult)),
-    },
-  };
 }

@@ -1,45 +1,71 @@
+import { ObjectId } from "mongodb";
 import Link from "next/link";
-import useSWR from "swr";
-import fetcher from "../../utils/fetcher";
+import { NextRequest } from "next/server";
+import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
-export async function getServerSideProps({ req, res }: any) {
-  const admin_status = req.cookies.user_admin;
-  const editor_status = req.cookies.user_editor;
+import { QuestionChoice } from "../../utils/types";
+export async function getServerSideProps({ req }: { req: NextRequest }) {
+  const user_id = req.cookies.user_id;
+  const logged_in = req.cookies.logged_in;
+  const { db } = await connectToDatabase();
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user_id) }, { editor: 1, admin: 1 });
+  const adult_questions = await db
+    .collection("questions")
+    .find({ adult: true })
+    .toArray();
+  const youth_questions = await db
+    .collection("questions")
+    .find({ adult: false })
+    .toArray();
+  const agnostic_questions = await db
+    .collection("questions")
+    .find({ adult: null })
+    .toArray();
+  const question_sections = await db
+    .collection("questions")
+    .aggregate([
+      {
+        $group: {
+          _id: "$section",
+        },
+      },
+    ])
+    .toArray();
   return {
     props: {
-      user_admin: admin_status,
-      user_editor: editor_status,
+      logged_in,
+      user_admin: user.admin,
+      user_editor: user.editor,
+      adult_questions: JSON.parse(JSON.stringify(adult_questions)),
+      youth_questions: JSON.parse(JSON.stringify(youth_questions)),
+      agnostic_questions: JSON.parse(JSON.stringify(agnostic_questions)),
+      question_sections: JSON.parse(JSON.stringify(question_sections)),
     },
   };
+}
+interface InterviewSection {
+  _id: string;
 }
 export default function QuestionsPage({
   user_admin,
   user_editor,
+  logged_in,
+  adult_questions,
+  youth_questions,
+  agnostic_questions,
+  question_sections,
 }: {
+  agnostic_questions: QuestionChoice[];
+  adult_questions: QuestionChoice[];
+  youth_questions: QuestionChoice[];
+  logged_in: boolean;
   user_admin: boolean;
   user_editor: boolean;
+  question_sections: InterviewSection[];
 }) {
-  const { data, error } = useSWR("/api/questions/all", fetcher);
-  if (error)
-    return (
-      <main className="landing">
-        <h1>
-          Trouble Connecting to the Database... <br /> Check Your Internet or
-          Cellular Connection
-        </h1>
-      </main>
-    );
-  const adult_questions = data?.filter((question: any) => question.adult);
-  const youth_questions = data?.filter(
-    (question: any) => question.adult === false
-  );
-  const agnostic_questions = data?.filter(
-    (question: any) => question.adult === null
-  );
-  const question_sections: Array<string> = Array.from(
-    new Set(data?.map((question: any) => question.section))
-  );
-  if (!user_admin) {
+  if (!user_admin || !logged_in) {
     return (
       <main className="landing">
         <h1>You are Unauthorized to View this Page</h1>
@@ -53,49 +79,100 @@ export default function QuestionsPage({
       </main>
     );
   }
+  if (!user_editor) {
+    return (
+      <main className="container">
+        <h1>View Questions</h1>
+        <section className="interview_question_section">
+          <h1>Sections</h1>
+          {question_sections?.map(({ _id }) => (
+            <div className="interview_section_detail" key={_id}>
+              <p>{titleCase(_id.split("_").join(" "))}</p>
+            </div>
+          ))}
+        </section>
+        <hr />
+        <section className="interview_question_section">
+          <h1>Adult Questions</h1>
+          {adult_questions?.map((question: any, i: number) => (
+            <div className="interview_question_detail" key={question?._id}>
+              <p>{titleCase(question.section.split("_").join(" "))} - </p>
+
+              <p>{question.question} </p>
+              {question.detail && <p>{question.detail}</p>}
+              {i > 0 &&
+                adult_questions[i].section !=
+                  adult_questions[i - 1].section && <hr />}
+            </div>
+          ))}
+        </section>
+        <section className="interview_question_section">
+          <h1>Youth Questions</h1>
+          {youth_questions?.map((question: any, i: number) => (
+            <div className="interview_question_detail" key={question._id}>
+              <p>{titleCase(question.section.split("_").join(" "))} - </p>
+              <p>{question.question} </p>
+              {question.detail && <p>{question.detail}</p>}
+              {i > 0 &&
+                youth_questions[i].section !=
+                  youth_questions[i - 1].section && <hr />}
+            </div>
+          ))}
+        </section>
+        <section className="interview_question_section">
+          <h1>Agnostic Questions </h1>
+          {agnostic_questions?.map((question: any, i: number) => (
+            <div className="interview_question_detail" key={question._id}>
+              <p>{titleCase(question.section.split("_").join(" "))} - </p>
+
+              <p>{question.question} </p>
+              {question.detail && <p>{question.detail}</p>}
+              {i > 0 &&
+                agnostic_questions[i].section !=
+                  agnostic_questions[i - 1].section && <hr />}
+            </div>
+          ))}
+        </section>
+      </main>
+    );
+  }
   return (
     <main className="container">
       <h1>Edit Questions</h1>
       <section className="interview_question_section">
         <h1>Sections</h1>
-        {user_editor && (
-          <h1>
-            <Link href="/admin/add/interview_section">
-              <a>Add New Section</a>
+        <h1>
+          <Link href="/admin/add/interview_section">
+            <a>Add New Section</a>
+          </Link>
+        </h1>
+        {question_sections?.map(({ _id }) => (
+          <div className="interview_section_detail" key={_id}>
+            <p>{titleCase(_id.split("_").join(" "))}</p>
+            <Link href={`/admin/edit/${_id}/interview_section`}>
+              Edit Section
             </Link>
-          </h1>
-        )}
-        {question_sections?.map((section: string) => (
-          <div className="interview_section_detail" key={section}>
-            <p>{titleCase(section.split("_").join(" "))}</p>
-            {user_editor && (
-              <Link href={`/admin/edit/${section}/interview_section`}>
-                Edit Section
-              </Link>
-            )}
           </div>
         ))}
       </section>
       <hr />
+      <h1>Questions</h1>
+      <h1>
+        <Link href="/admin/add/interview_question">
+          <a>Add New Question</a>
+        </Link>
+      </h1>
       <section className="interview_question_section">
         <h1>Adult Questions</h1>
-        {user_editor && (
-          <h1>
-            <Link href="/admin/add/interview_question">
-              <a>Add New Question</a>
-            </Link>
-          </h1>
-        )}
         {adult_questions?.map((question: any, i: number) => (
           <div className="interview_question_detail" key={question?._id}>
-            {user_editor && (
-              <p>
-                {titleCase(question.section.split("_").join(" "))} -{" "}
-                <Link href={`/admin/edit/${question._id}/question`}>
-                  Edit Question
-                </Link>
-              </p>
-            )}
+            <p>
+              {titleCase(question.section.split("_").join(" "))} -{" "}
+              <Link href={`/admin/edit/${question._id}/question`}>
+                Edit Question
+              </Link>
+            </p>
+
             <p>{question.question} </p>
             {question.detail && <p>{question.detail}</p>}
             {i > 0 &&
@@ -107,23 +184,15 @@ export default function QuestionsPage({
       </section>
       <section className="interview_question_section">
         <h1>Youth Questions</h1>
-        {user_editor && (
-          <h1>
-            <Link href="/admin/add/interview_question">
-              <a>Add New Question</a>
-            </Link>
-          </h1>
-        )}
+        <h1></h1>
         {youth_questions?.map((question: any, i: number) => (
           <div className="interview_question_detail" key={question._id}>
-            {user_editor && (
-              <p>
-                {titleCase(question.section.split("_").join(" "))} -{" "}
-                <Link href={`/admin/edit/${question._id}/question`}>
-                  Edit Question
-                </Link>
-              </p>
-            )}
+            <p>
+              {titleCase(question.section.split("_").join(" "))} -{" "}
+              <Link href={`/admin/edit/${question._id}/question`}>
+                Edit Question
+              </Link>
+            </p>
             <p>{question.question} </p>
             {question.detail && <p>{question.detail}</p>}
             {i > 0 &&
@@ -135,23 +204,15 @@ export default function QuestionsPage({
       </section>
       <section className="interview_question_section">
         <h1>Agnostic Questions </h1>
-        {user_editor && (
-          <h1>
-            <Link href="/admin/add/interview_question">
-              <a>Add New Question</a>
-            </Link>
-          </h1>
-        )}
+        <h1></h1>
         {agnostic_questions?.map((question: any, i: number) => (
           <div className="interview_question_detail" key={question._id}>
-            {user_editor && (
-              <p>
-                {titleCase(question.section.split("_").join(" "))} -{" "}
-                <Link href={`/admin/edit/${question._id}/question`}>
-                  Edit Question
-                </Link>
-              </p>
-            )}
+            <p>
+              {titleCase(question.section.split("_").join(" "))} -{" "}
+              <Link href={`/admin/edit/${question._id}/question`}>
+                Edit Question
+              </Link>
+            </p>
             <p>{question.question} </p>
             {question.detail && <p>{question.detail}</p>}
             {i > 0 &&
