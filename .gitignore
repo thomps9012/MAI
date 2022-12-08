@@ -2,5 +2,11 @@
 .env
 .env.local
 **/.env
-/.next
+**.next
 **/.next
+/.next
+**.vscode
+**/.vscode
+/.vscode
+**.deployment
+.deployment
