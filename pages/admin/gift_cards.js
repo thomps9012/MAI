@@ -22,7 +22,6 @@ export async function getServerSideProps({ req, res }) {
         : [],
       card_types: card_types ? JSON.parse(JSON.stringify(card_types)) : [],
       user_admin: user?.admin ? user.admin : false,
-      user_editor: user?.editor ? user.editor : false,
       logged_in,
     },
   };
@@ -31,7 +30,6 @@ export default function BasePage({
   card_amounts,
   card_types,
   user_admin,
-  user_editor,
   logged_in,
 }) {
   if (!user_admin || !logged_in) {
@@ -48,47 +46,18 @@ export default function BasePage({
       </main>
     );
   }
-  if (!user_editor) {
-    return (
-      <main className="container">
-        <h1>Gift Card Amounts</h1>
-        <hr />
-        {card_amounts.choices?.map((amount) => (
-          <p key={amount}>{amount}</p>
-        ))}
-        <hr />
-        <h2>Types</h2>
-        {card_types.choices?.map((amount) => (
-          <p key={amount}>{amount}</p>
-        ))}
-      </main>
-    );
-  }
   return (
     <main className="container">
-      <h1>Edit Gift Card</h1>
-      <h2>Amounts</h2>
+      <h1>Gift Card Amounts</h1>
       <hr />
       {card_amounts.choices?.map((amount) => (
         <p key={amount}>{amount}</p>
       ))}
-      <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>
-        Edit Amounts
-      </Link>
-      <Link href={`/admin/edit/${card_amounts._id}/gift_cards/amounts`}>
-        Add New Amount
-      </Link>
       <hr />
       <h2>Types</h2>
       {card_types.choices?.map((amount) => (
         <p key={amount}>{amount}</p>
       ))}
-      <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>
-        Edit Amounts
-      </Link>
-      <Link href={`/admin/edit/${card_types._id}/gift_cards/amounts`}>
-        Add New Amount
-      </Link>
     </main>
   );
 }

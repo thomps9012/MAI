@@ -14,11 +14,10 @@ export async function getServerSideProps({ req, res }) {
   return {
     logged_in,
     admin: user?.admin ? user.admin : false,
-    editor: user?.editor ? user.editor : false,
     answers: JSON.parse(JSON.stringify(answers)),
   };
 }
-export default function AnswersPage({ logged_in, admin, editor, answers }) {
+export default function AnswersPage({ logged_in, admin, answers }) {
   if (!admin || !logged_in) {
     return (
       <main className="landing">
@@ -33,31 +32,9 @@ export default function AnswersPage({ logged_in, admin, editor, answers }) {
       </main>
     );
   }
-  if (!editor) {
-    return (
-      <main className="container">
-        <h1>View Answers</h1>
-        {answers?.map((answer) => (
-          <div className="answer_choice_section" key={answer?.type}>
-            <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
-            <h3>Choices</h3>
-            {answer.choices.map((choice) => (
-              <p key={choice}>{choice}</p>
-            ))}
-            <hr />
-          </div>
-        ))}
-      </main>
-    );
-  }
   return (
     <main className="container">
-      <h1>Edit Answers</h1>
-      <h1>
-        <Link href="/admin/add/answer_choice">
-          <a>Add New Option</a>
-        </Link>
-      </h1>
+      <h1>View Answers</h1>
       {answers?.map((answer) => (
         <div className="answer_choice_section" key={answer?.type}>
           <h3>Type - {titleCase(answer.type.split("_").join(" "))}</h3>
@@ -65,9 +42,6 @@ export default function AnswersPage({ logged_in, admin, editor, answers }) {
           {answer.choices.map((choice) => (
             <p key={choice}>{choice}</p>
           ))}
-          <Link href={`/admin/edit/${answer._id}/answer_choice`}>
-            Edit Answer
-          </Link>
           <hr />
         </div>
       ))}
