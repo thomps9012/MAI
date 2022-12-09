@@ -25,7 +25,7 @@ export async function getServerSideProps({ req, query, res }) {
       },
     };
   }
-  const client_PID = query.id;
+  const client_PID = query.id.split("_")[0];
   const baseline_record = await db
     .collection("baseline")
     .findOne({ PID: client_PID }, { _id: 1, date: 1, type: 1, agency: 1 });
@@ -38,8 +38,10 @@ export async function getServerSideProps({ req, query, res }) {
   const exit_record = await db
     .collection("exit")
     .findOne({ PID: client_PID }, { _id: 1, date: 1, type: 1, agency: 1 });
+  console.log(baseline_record);
   return {
     props: {
+      logged_in,
       user_admin,
       user_editor,
       baseline_record: baseline_record

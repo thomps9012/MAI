@@ -15,6 +15,7 @@ export default function GraphDisplay({
     ...testing_only,
     ...exits,
   ]);
+  console.log("graph data", data);
   useEffect(() => {
     setData([...baselines, ...follow_ups, ...testing_only, ...exits]);
   }, [baselines, follow_ups, testing_only, exits]);
@@ -95,7 +96,7 @@ export default function GraphDisplay({
     for (let i = 0; i < data.length; i++) {
       const age =
         new Date().getFullYear() -
-        parseInt(data[i].demographics.date_of_birth.slice(0, 4));
+        parseInt(data[i].demographics?.date_of_birth?.slice(0, 4));
       if (age < 18) {
         under_18++;
       } else if (18 < age && age < 25) {
@@ -118,10 +119,10 @@ export default function GraphDisplay({
   };
   const gender_breakdown = (data) => {
     const male_count = data.filter(
-      (record) => record.demographics.gender === "Male"
+      (record) => record.demographics?.gender === "Male"
     ).length;
     const female_count = data.filter(
-      (record) => record.demographics.gender === "Female"
+      (record) => record.demographics?.gender === "Female"
     ).length;
     const other_count = data.length - male_count - female_count;
     return [
@@ -132,7 +133,7 @@ export default function GraphDisplay({
   };
   const latinX_breakdown = (data) => {
     const yes_count = data.filter(
-      (record) => record.demographics.latinx === "Yes"
+      (record) => record.demographics?.latinx === "Yes"
     ).length;
     const no_count = data.length - yes_count;
     return [
@@ -148,7 +149,7 @@ export default function GraphDisplay({
   };
   const vh_breakdown = (data) => {
     const yes_count = data.filter(
-      (record) => record.demographics.informed_of_VH_status === "Yes"
+      (record) => record.demographics?.informed_of_VH_status === "Yes"
     ).length;
     const no_count = data.length - yes_count;
     return [
@@ -164,7 +165,7 @@ export default function GraphDisplay({
   };
   const hiv_breakdown = (data) => {
     const yes_count = data.filter(
-      (record) => record.demographics.informed_of_HIV_status === "Yes"
+      (record) => record.demographics?.informed_of_HIV_status === "Yes"
     ).length;
     const no_count = data.length - yes_count;
     return [
@@ -180,7 +181,8 @@ export default function GraphDisplay({
   };
   const healthcare_breakdown = (data) => {
     const yes_count = data.filter(
-      (record) => record.demographics.knowledge_of_healthcare_facility === "Yes"
+      (record) =>
+        record.demographics?.knowledge_of_healthcare_facility === "Yes"
     ).length;
     const no_count = data.length - yes_count;
     return [

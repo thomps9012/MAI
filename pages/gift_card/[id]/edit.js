@@ -1,13 +1,10 @@
 import { getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
-import { AnswerChoice, GiftCardData } from "../../../utils/types";
 export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
   const user_id = getCookie("user_id", { req, res });
@@ -53,20 +50,6 @@ export default function EditCardPage({
   card_amounts,
   card_types,
 }) {
-  if (!user_admin || !user_editor) {
-    return (
-      <main className="landing">
-        <h1>You are Unauthorized to View this Page</h1>
-        <br />
-        or
-        <br /> <h1>Not Signed in</h1>
-        <hr />
-        <Link href="/sign_in">Login</Link>
-        <br />
-        <Link href="/sign_up">Sign Up</Link>
-      </main>
-    );
-  }
   const {
     interview_type,
     PID,
@@ -107,6 +90,20 @@ export default function EditCardPage({
     }).then((response) => response.json());
     res.acknowledged && router.push("/gift_card/records");
   };
+  if (!user_admin || !user_editor) {
+    return (
+      <main className="landing">
+        <h1>You are Unauthorized to View this Page</h1>
+        <br />
+        or
+        <br /> <h1>Not Signed in</h1>
+        <hr />
+        <Link href="/sign_in">Login</Link>
+        <br />
+        <Link href="/sign_up">Sign Up</Link>
+      </main>
+    );
+  }
   return (
     <main className="container">
       <h1>

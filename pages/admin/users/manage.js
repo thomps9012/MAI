@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { UserInfo } from "../../../utils/types";
 import { getCookie } from "cookies-next";
 export async function getServerSideProps({ req, res }) {
   const user_id = getCookie("user_id", { req, res });

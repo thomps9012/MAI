@@ -1,11 +1,14 @@
 import "../styles/globals.css";
-import Layout from "../components/layout";
+import DefaultHeader from "../components/defaultHeader";
+import NavBar from "../components/navbar";
 
 function MAI({ Component, pageProps }) {
   return (
-    <Layout>
+    <>
+      <DefaultHeader />
+      <NavBar />
       <Component {...pageProps} />
-    </Layout>
+    </>
   );
 }
 

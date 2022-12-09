@@ -1,12 +1,9 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { connectToDatabase } from "../../../utils/mongodb";
 import titleCase from "../../../utils/titleCase";
-import { AnswerChoice, GiftCardData } from "../../../utils/types";
 import { getCookie } from "cookies-next";
 export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
@@ -50,20 +47,6 @@ export default function DisperseCardPage({
   card_amounts,
   user_admin,
 }) {
-  if (!user_admin) {
-    return (
-      <main className="landing">
-        <h1>You are Unauthorized to View this Page</h1>
-        <br />
-        or
-        <br /> <h1>Not Signed in</h1>
-        <hr />
-        <Link href="/sign_in">Login</Link>
-        <br />
-        <Link href="/sign_up">Sign Up</Link>
-      </main>
-    );
-  }
   const { interview_type, PID, interview_id, _id } = card_record;
   const router = useRouter();
   const [date] = useState(
@@ -98,6 +81,20 @@ export default function DisperseCardPage({
     }).then((response) => response.json());
     res.acknowledged && router.push("/gift_card/records");
   };
+  if (!user_admin) {
+    return (
+      <main className="landing">
+        <h1>You are Unauthorized to View this Page</h1>
+        <br />
+        or
+        <br /> <h1>Not Signed in</h1>
+        <hr />
+        <Link href="/sign_in">Login</Link>
+        <br />
+        <Link href="/sign_up">Sign Up</Link>
+      </main>
+    );
+  }
   return (
     <main className="container">
       <h1>

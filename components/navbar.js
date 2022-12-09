@@ -36,7 +36,7 @@ export default function NavBar() {
     deleteCookie("user_editor");
     deleteCookie("username");
     deleteCookie("user_full_name");
-    router.reload();
+    router.push("/");
   };
   useEffect(() => {
     const links = document.getElementsByClassName("nav-link");

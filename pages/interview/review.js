@@ -1,11 +1,9 @@
 import { setCookie, getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";
-import { InterviewData } from "../../utils/types";
 
 export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();

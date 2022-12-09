@@ -1,9 +1,7 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { connectToDatabase } from "../../utils/mongodb";
-import { ClientOverview, AnswerChoice } from "../../utils/types";
 import { getCookie } from "cookies-next";
 export async function getServerSideProps({ req, res }) {
   const user_id = getCookie("user_id", { req, res });
@@ -25,10 +23,12 @@ export async function getServerSideProps({ req, res }) {
     .collection("answers")
     .findOne({ type: "TESTING_AGENCIES" });
   return {
-    logged_in,
-    testing_agencies,
-    admin: user.admin,
-    all_clients: JSON.parse(JSON.stringify(all_clients)),
+    props: {
+      logged_in,
+      testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
+      admin: user.admin,
+      all_clients: JSON.parse(JSON.stringify(all_clients)),
+    },
   };
 }
 

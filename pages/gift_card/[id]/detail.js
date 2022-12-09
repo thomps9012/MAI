@@ -1,9 +1,6 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { GiftCardData } from "../../../utils/types";
 import { getCookie } from "cookies-next";
 export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
@@ -22,11 +19,12 @@ export async function getServerSideProps({ req, query, res }) {
   }
   const card_record = await db
     .collection("cards")
-    .findOne({ _id: new ObjectId(query._id) });
+    .findOne({ _id: new ObjectId(query.id) });
+  console.log(card_record);
   return {
     props: {
       user_admin,
-      card_record,
+      card_record: JSON.parse(JSON.stringify(card_record)),
     },
   };
 }

@@ -4,7 +4,6 @@ import titleCase from "../../utils/titleCase";
 import { useRouter } from "next/router";
 import { deleteCookie, setCookie } from "cookies-next";
 import { connectToDatabase } from "../../utils/mongodb";
-import { AnswerChoice } from "../../utils/types";
 
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
@@ -31,7 +30,7 @@ export async function getServerSideProps() {
     .findOne({ type: "TESTING_AGENCIES" });
   return {
     props: {
-      testing_agencies,
+      testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
       AIDS_TASK_FORCE_RECORDS,
       NORA_RECORDS,
       CARE_ALLIANCE_RECORDS,

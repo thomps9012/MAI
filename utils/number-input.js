@@ -1,5 +1,3 @@
-import StateChecker from "./stateChecker";
-
 const NumberInput = ({ question, id, setCurrentQuestion }) => {
   const { state } = question;
   const handleChange = (e) => {

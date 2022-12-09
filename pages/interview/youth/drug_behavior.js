@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import InterviewHeader from "../../../components/interview-header";
 import { deleteCookie, getCookie } from "cookies-next";
-import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { QuestionChoice, AnswerChoice } from "../../../utils/types";
 import QuestionAndAnswers from "../../../components/questionAnswerSection";
 export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();

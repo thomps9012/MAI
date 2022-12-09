@@ -1,5 +1,0 @@
-{
-  "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
-  "appService.defaultWebAppToDeploy": "/subscriptions/dfaab4b2-b6f9-421d-8c47-02874b8d705f/resourceGroups/HIV_Prevention/providers/Microsoft.Web/sites/national-minority-aids-initiative",
-  "appService.deploySubpath": "."
-}

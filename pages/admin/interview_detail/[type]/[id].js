@@ -1,11 +1,8 @@
 import { setCookie, getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { connectToDatabase } from "../../../../utils/mongodb";
 import titleCase from "../../../../utils/titleCase";
-import { InterviewData } from "../../../../utils/types";
 export async function getServerSideProps({ req, query, res }) {
   const user_id = getCookie("user_id", { req, res });
   const logged_in = getCookie("logged_in", { req, res });

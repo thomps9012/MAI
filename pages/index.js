@@ -9,12 +9,18 @@ export async function getServerSideProps({ req, res }) {
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
+  console.log("admin", user?.admin ? user.admin : false);
+  console.log("logged in", logged_in ? true : false);
   return {
-    logged_in,
-    admin: user.admin,
+    props: {
+      logged_in: logged_in ? true : false,
+      admin: user?.admin ? user.admin : false,
+    },
   };
 }
 export default function BasePage({ admin, logged_in }) {
+  console.log(admin);
+  console.log(logged_in);
   const clear_data = () => {
     sessionStorage.clear();
     deleteCookie("interview_type");

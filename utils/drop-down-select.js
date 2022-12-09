@@ -1,5 +1,3 @@
-import StateChecker from "./stateChecker";
-
 const DropDownSelect = ({ question, id, setCurrentQuestion }) => {
   const { state, answer_choices } = question;
   const handleChange = (e) => {

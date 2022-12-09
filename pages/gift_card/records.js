@@ -1,10 +1,8 @@
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import CardGraphs from "../../components/cardGraphDisplay";
 import { connectToDatabase } from "../../utils/mongodb";
-import { AnswerChoice, GiftCardData } from "../../utils/types";
 import { getCookie } from "cookies-next";
 export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
@@ -41,9 +39,9 @@ export async function getServerSideProps({ req, res }) {
     props: {
       user_admin,
       card_records: JSON.parse(JSON.stringify(card_records)),
-      card_types,
-      card_amounts,
-      testing_agencies,
+      card_types: JSON.parse(JSON.stringify(card_types)),
+      card_amounts: JSON.parse(JSON.stringify(card_amounts)),
+      testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
     },
   };
 }
@@ -54,20 +52,6 @@ export default function CardRecordsPage({
   user_admin,
   testing_agencies,
 }) {
-  if (!user_admin) {
-    return (
-      <main className="landing">
-        <h1>You are Unauthorized to View this Page</h1>
-        <br />
-        or
-        <br /> <h1>Not Signed in</h1>
-        <hr />
-        <Link href="/sign_in">Login</Link>
-        <br />
-        <Link href="/sign_up">Sign Up</Link>
-      </main>
-    );
-  }
   const [gift_card_records, setGiftCards] = useState(card_records);
   const filter = () => {
     const selected_agency = document.getElementById("agency")?.value;
@@ -111,6 +95,20 @@ export default function CardRecordsPage({
           );
     }
   };
+  if (!user_admin) {
+    return (
+      <main className="landing">
+        <h1>You are Unauthorized to View this Page</h1>
+        <br />
+        or
+        <br /> <h1>Not Signed in</h1>
+        <hr />
+        <Link href="/sign_in">Login</Link>
+        <br />
+        <Link href="/sign_up">Sign Up</Link>
+      </main>
+    );
+  }
   return (
     <main className="container">
       <h1>Gift Card Records</h1>

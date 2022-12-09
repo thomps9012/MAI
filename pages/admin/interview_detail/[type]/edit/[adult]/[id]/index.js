@@ -1,19 +1,12 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextApiRequestQuery } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { connectToDatabase } from "../../../../../../../utils/mongodb";
 import titleCase from "../../../../../../../utils/titleCase";
-import { InterviewData } from "../../../../../../../utils/types";
-export async function getServerSideProps({
-  req,
-  query,
-  res,
-}) {
+export async function getServerSideProps({ req, query, res }) {
   const { db } = await connectToDatabase();
   const logged_in = getCookie("logged_in", { req, res });
-  const user_id = getCookie("user_id", { req, res }) ;
+  const user_id = getCookie("user_id", { req, res });
   const interview_type = query.type;
   const client_adult = query.adult;
   const interview_id = query.id;
@@ -36,7 +29,7 @@ export async function getServerSideProps({
   const interview_record = await db
     .collection(interview_type)
     .findOne(
-      { _id: new ObjectId(interview_id ) },
+      { _id: new ObjectId(interview_id) },
       { client_name: 1, agency: 1, PID: 1 }
     );
   return {
@@ -57,13 +50,6 @@ export default function EditInterviewPage({
   interview_id,
   logged_in,
   interview_record,
-}: {
-  user_editor;
-  adult;
-  interview_type;
-  interview_id;
-  logged_in;
-  interview_record: InterviewData;
 }) {
   const clear_interview_data = () => {
     sessionStorage.clear();

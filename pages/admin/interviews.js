@@ -46,7 +46,7 @@ export async function getServerSideProps({ req, res }) {
   return {
     props: {
       user_admin: admin_status,
-      testing_agencies,
+      testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
       baseline_records: JSON.parse(JSON.stringify(baseline_records)),
       testing_only_records: JSON.parse(JSON.stringify(testing_only_records)),
       follow_up_records: JSON.parse(JSON.stringify(follow_up_records)),

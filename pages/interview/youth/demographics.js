@@ -3,8 +3,6 @@ import InterviewHeader from "../../../components/interview-header";
 import { useRouter } from "next/router";
 import { deleteCookie, getCookie } from "cookies-next";
 import { connectToDatabase } from "../../../utils/mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
-import { QuestionChoice, AnswerChoice } from "../../../utils/types";
 import QuestionAndAnswers from "../../../components/questionAnswerSection";
 export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();

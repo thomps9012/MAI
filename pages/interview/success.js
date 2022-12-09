@@ -1,6 +1,5 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import { ObjectId } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 import Link from "next/link";
 import { connectToDatabase } from "../../utils/mongodb";
 import titleCase from "../../utils/titleCase";

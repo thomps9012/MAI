@@ -62,8 +62,8 @@ export async function getServerSideProps({ req, query, res }) {
       baseline_record: JSON.parse(JSON.stringify(baseline_record)),
       testing_only_record: JSON.parse(JSON.stringify(testing_only_record)),
       client_PID: query.id,
-      gender_options,
-      testing_agencies,
+      gender_options: JSON.parse(JSON.stringify(gender_options)),
+      testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
     },
   };
 }
