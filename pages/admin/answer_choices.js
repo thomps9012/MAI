@@ -13,8 +13,8 @@ export async function getServerSideProps({ req, res }) {
   const answers = await db.collection("answers").find().toArray();
   return {
     logged_in,
-    admin: user.admin,
-    editor: user.editor,
+    admin: user?.admin ? user.admin : false,
+    editor: user?.editor ? user.editor : false,
     answers: JSON.parse(JSON.stringify(answers)),
   };
 }

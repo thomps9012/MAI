@@ -35,8 +35,8 @@ export async function getServerSideProps({ req, res }) {
   return {
     props: {
       logged_in,
-      user_admin: user.admin,
-      user_editor: user.editor,
+      user_admin: user?.admin ? user.admin : false,
+      user_editor: user?.editor ? user.editor : false,
       adult_questions: JSON.parse(JSON.stringify(adult_questions)),
       youth_questions: JSON.parse(JSON.stringify(youth_questions)),
       agnostic_questions: JSON.parse(JSON.stringify(agnostic_questions)),

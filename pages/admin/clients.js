@@ -26,7 +26,7 @@ export async function getServerSideProps({ req, res }) {
     props: {
       logged_in,
       testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
-      admin: user.admin,
+      admin: user?.admin ? user.admin : false,
       all_clients: JSON.parse(JSON.stringify(all_clients)),
     },
   };

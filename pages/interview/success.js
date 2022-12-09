@@ -19,7 +19,7 @@ export async function getServerSideProps({ req, res }) {
       interview_id,
       interview_type,
       client_PID,
-      user_admin: user.admin,
+      user_admin: user?.admin ? user.admin : false,
     },
   };
 }

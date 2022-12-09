@@ -10,7 +10,7 @@ export async function getServerSideProps({ req, res }) {
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { admin: 1 });
-  const user_admin = user.admin;
+  const user_admin = user.admin ? user.admin : false;
   if (!user_admin) {
     return {
       props: {

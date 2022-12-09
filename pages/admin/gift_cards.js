@@ -21,8 +21,8 @@ export async function getServerSideProps({ req, res }) {
         ? JSON.parse(JSON.stringify(card_amounts))
         : [],
       card_types: card_types ? JSON.parse(JSON.stringify(card_types)) : [],
-      user_admin: user.admin,
-      user_editor: user.editor,
+      user_admin: user?.admin ? user.admin : false,
+      user_editor: user?.editor ? user.editor : false,
       logged_in,
     },
   };
