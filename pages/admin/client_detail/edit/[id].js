@@ -59,8 +59,12 @@ export async function getServerSideProps({ req, query, res }) {
   return {
     props: {
       user_editor,
-      baseline_record: JSON.parse(JSON.stringify(baseline_record)),
-      testing_only_record: JSON.parse(JSON.stringify(testing_only_record)),
+      baseline_record: baseline_record
+        ? JSON.parse(JSON.stringify(baseline_record))
+        : {},
+      testing_only_record: testing_only_record
+        ? JSON.parse(JSON.stringify(testing_only_record))
+        : {},
       client_PID: query.id,
       gender_options: JSON.parse(JSON.stringify(gender_options)),
       testing_agencies: JSON.parse(JSON.stringify(testing_agencies)),
@@ -89,7 +93,7 @@ export default function ClientEditPage({
     agency: "",
   });
   useEffect(() => {
-    baseline_record._id != null
+    baseline_record?._id != null
       ? setClientInfo({
           interview_id: baseline_record._id,
           client_name: baseline_record.client_name,
