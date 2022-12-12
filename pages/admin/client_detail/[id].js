@@ -91,7 +91,9 @@ export default function ClientDetailPage({
         {baseline_record._id != null && (
           <section className="interview_overview">
             <h1>{baseline_record.date}</h1>
-            <Link href={`/admin/interview_detail/${baseline_record._id}`}>
+            <Link
+              href={`/admin/interview_detail/baseline/${baseline_record._id}`}
+            >
               <a>
                 {titleCase(baseline_record.type.split("_").join(" "))} Interview
                 Detail
@@ -103,7 +105,9 @@ export default function ClientDetailPage({
         {testing_only_record._id != null && (
           <section className="interview_overview">
             <h1>{testing_only_record.date}</h1>
-            <Link href={`/admin/interview_detail/${testing_only_record._id}`}>
+            <Link
+              href={`/admin/interview_detail/testing_only/${testing_only_record._id}`}
+            >
               <a>
                 {titleCase(testing_only_record.type.split("_").join(" "))}{" "}
                 Interview Detail
@@ -115,7 +119,9 @@ export default function ClientDetailPage({
         {follow_up_record._id != null && (
           <section className="interview_overview">
             <h1>{follow_up_record.date}</h1>
-            <Link href={`/admin/interview_detail/${follow_up_record._id}`}>
+            <Link
+              href={`/admin/interview_detail/follow_up/${follow_up_record._id}`}
+            >
               <a>
                 {titleCase(follow_up_record.type.split("_").join(" "))}{" "}
                 Interview Detail
@@ -127,7 +133,7 @@ export default function ClientDetailPage({
         {exit_record._id != null && (
           <section className="interview_overview">
             <h1>{exit_record.date}</h1>
-            <Link href={`/admin/interview_detail/${exit_record._id}`}>
+            <Link href={`/admin/interview_detail/exit/${exit_record._id}`}>
               <a>
                 {titleCase(exit_record.type.split("_").join(" "))} Interview
                 Detail
@@ -148,7 +154,9 @@ export default function ClientDetailPage({
       {baseline_record._id != null && (
         <section className="interview_overview">
           <h1>{baseline_record.date}</h1>
-          <Link href={`/admin/interview_detail/${baseline_record._id}`}>
+          <Link
+            href={`/admin/interview_detail/baseline/${baseline_record._id}`}
+          >
             <a>
               {titleCase(baseline_record.type.split("_").join(" "))} Interview
               Detail
@@ -160,7 +168,9 @@ export default function ClientDetailPage({
       {testing_only_record._id != null && (
         <section className="interview_overview">
           <h1>{testing_only_record.date}</h1>
-          <Link href={`/admin/interview_detail/${testing_only_record._id}`}>
+          <Link
+            href={`/admin/interview_detail/testing_only/${testing_only_record._id}`}
+          >
             <a>
               {titleCase(testing_only_record.type.split("_").join(" "))}{" "}
               Interview Detail
@@ -172,7 +182,9 @@ export default function ClientDetailPage({
       {follow_up_record._id != null && (
         <section className="interview_overview">
           <h1>{follow_up_record.date}</h1>
-          <Link href={`/admin/interview_detail/${follow_up_record._id}`}>
+          <Link
+            href={`/admin/interview_detail/follow_up/${follow_up_record._id}`}
+          >
             <a>
               {titleCase(follow_up_record.type.split("_").join(" "))} Interview
               Detail
@@ -184,7 +196,7 @@ export default function ClientDetailPage({
       {exit_record._id != null && (
         <section className="interview_overview">
           <h1>{exit_record.date}</h1>
-          <Link href={`/admin/interview_detail/${exit_record._id}`}>
+          <Link href={`/admin/interview_detail/exit/${exit_record._id}`}>
             <a>
               {titleCase(exit_record.type.split("_").join(" "))} Interview
               Detail

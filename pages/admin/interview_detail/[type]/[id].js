@@ -27,12 +27,17 @@ export async function getServerSideProps({ req, query, res }) {
   const interview_record = await db
     .collection(interview_type)
     .findOne({ _id: new ObjectId(interview_id) });
+  console.log(logged_in);
+  console.log(editor_status);
+  console.log(admin_status);
   return {
     props: {
       logged_in,
       user_admin: admin_status,
       user_editor: editor_status,
-      interview_record: JSON.parse(JSON.stringify(interview_record)),
+      interview_record: interview_record
+        ? JSON.parse(JSON.stringify(interview_record))
+        : {},
     },
   };
 }
