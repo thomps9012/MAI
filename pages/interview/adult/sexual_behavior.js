@@ -1,31 +1,35 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import InterviewHeader from "../../../components/interview-header";
+import InterviewProgress from "../../../components/progress-bar";
 import { deleteCookie, getCookie } from "cookies-next";
 import { connectToDatabase } from "../../../utils/mongodb";
 import QuestionAndAnswers from "../../../components/questionAnswerSection";
 export async function getServerSideProps({ req, res }) {
   const { db } = await connectToDatabase();
-  const youth_sexual_behavior_questions = await db
+  const adult_sexual_behavior_questions = await db
     .collection("questions")
-    .find({ adult: false, section: "sexual_behavior" })
+    .find({ adult: true, section: "sexual_behavior" })
     .toArray();
   const all_answers = await db.collection("answers").find({}).toArray();
-  const youth_sexual_behavior_question_and_answers =
-    youth_sexual_behavior_questions.map(
-      (question) =>
-        (question.answer_choices = all_answers?.find(
-          (answer) => answer._id === question.answers
-        )?.choices)
-    );
+  const adult_sexual_behavior_question_and_answers =
+    adult_sexual_behavior_questions.map((question) => ({
+      ...question,
+      answer_choices: all_answers?.find(({ _id }) =>
+        _id.equals(question.answers)
+      )?.choices,
+    }));
   const interview_id = getCookie("interview_id", { req, res });
   const interview_type = getCookie("interview_type", { req, res });
+  const interview_date = getCookie("interview_date", { req, res });
+  const client_PID = getCookie("client_PID", { req, res });
   return {
     props: {
       interview_id,
+      interview_date,
+      client_PID,
       interview_type,
       question_and_answers: JSON.parse(
-        JSON.stringify(youth_sexual_behavior_question_and_answers)
+        JSON.stringify(adult_sexual_behavior_question_and_answers)
       ),
     },
   };
@@ -33,6 +37,8 @@ export async function getServerSideProps({ req, res }) {
 export default function SexualBehavior({
   interview_id,
   interview_type,
+  interview_date,
+  client_PID,
   question_and_answers,
 }) {
   const router = useRouter();
@@ -106,7 +112,13 @@ export default function SexualBehavior({
   };
   return (
     <main className="container">
-      <InterviewHeader section={3} edit={false} />
+      <InterviewProgress
+        section={3}
+        edit={false}
+        interview_date={interview_date}
+        interview_type={interview_type}
+        client_PID={client_PID}
+      />
       <h1 className="title">Sexual Behavior</h1>
       <h3>Over the past 30 days how many days, if any did you ...</h3>
       <form className="section_questions" onSubmit={pageSubmit}>

@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import InterviewHeader from "../../../../../../../components/interview-header";
+import InterviewProgress from "../../../../../../../components/progress-bar";
 import EditButtonSelect from "../../../../../../../utils/edit-button-select";
 import EditDropDownSelect from "../../../../../../../utils/edit-drop-down-select";
 import EditMultipleSelect from "../../../../../../../utils/edit-multiple-select";
@@ -27,10 +27,12 @@ export async function getServerSideProps({ req, query, res }) {
     .toArray();
   const all_answers = await db.collection("answers").find({}).toArray();
   const demographics_question_and_answers = demographics_questions.map(
-    (question) =>
-      (question.answer_choices = all_answers?.find(
-        (answer) => answer._id === question.answers
-      )?.choices)
+    (question) => ({
+      ...question,
+      answer_choices: all_answers?.find(({ _id }) =>
+        _id.equals(question.answers)
+      )?.choices,
+    })
   );
   if (!user_editor) {
     return {
@@ -52,6 +54,7 @@ export async function getServerSideProps({ req, query, res }) {
       interview_record: JSON.parse(JSON.stringify(interview_record)),
       adult: JSON.parse(JSON.stringify(client_adult)),
       interview_type,
+      interview_date: interview_record.date,
       interview_id,
       logged_in,
       demographics_question_and_answers: JSON.parse(
@@ -66,6 +69,7 @@ export default function EditInterviewPage({
   adult,
   user_editor,
   interview_type,
+  interview_date,
   logged_in,
   demographics_question_and_answers,
 }) {
@@ -157,7 +161,13 @@ export default function EditInterviewPage({
   return (
     <main className="container">
       <h1 className="title">Edit Demographic Information</h1>
-      <InterviewHeader section={1} edit={true} />
+      <InterviewProgress
+        section={1}
+        edit={true}
+        interview_date={interview_date}
+        interview_type={interview_type}
+        client_PID={client_PID}
+      />
       <hr />
       <h2>Date of Birth</h2>
       <input type="date" onChange={set_DOB} value={date_of_birth} />

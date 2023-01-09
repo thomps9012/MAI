@@ -22,7 +22,6 @@ export async function getServerSideProps({ req, res }) {
   const interview_type = getCookie("interview_type", { req, res });
   const interview_date = getCookie("interview_date", { req, res });
   const client_PID = getCookie("client_PID", { req, res });
-  console.log(adult_demographic_question_and_answers);
   return {
     props: {
       interview_id,

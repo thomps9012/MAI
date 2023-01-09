@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import InterviewHeader from "../../../components/interview-header";
+import InterviewProgress from "../../../components/progress-bar";
 import { deleteCookie, getCookie } from "cookies-next";
 import { connectToDatabase } from "../../../utils/mongodb";
 import QuestionAndAnswers from "../../../components/questionAnswerSection";
@@ -12,17 +12,21 @@ export async function getServerSideProps({ req, res }) {
     .toArray();
   const all_answers = await db.collection("answers").find({}).toArray();
   const adult_risk_attitude_question_and_answers =
-    adult_risk_attitude_questions.map(
-      (question) =>
-        (question.answer_choices = all_answers?.find(
-          (answer) => answer._id === question.answers
-        )?.choices)
-    );
+    adult_risk_attitude_questions.map((question) => ({
+      ...question,
+      answer_choices: all_answers?.find(({ _id }) =>
+        _id.equals(question.answers)
+      )?.choices,
+    }));
   const interview_id = getCookie("interview_id", { req, res });
   const interview_type = getCookie("interview_type", { req, res });
+  const interview_date = getCookie("interview_date", { req, res });
+  const client_PID = getCookie("client_PID", { req, res });
   return {
     props: {
       interview_id,
+      interview_date,
+      client_PID,
       interview_type,
       question_and_answers: JSON.parse(
         JSON.stringify(adult_risk_attitude_question_and_answers)
@@ -33,6 +37,8 @@ export async function getServerSideProps({ req, res }) {
 export default function Attitudes({
   interview_id,
   interview_type,
+  interview_date,
+  client_PID,
   question_and_answers,
 }) {
   const [current_question, setCurrentQuestion] = useState(0);
@@ -107,7 +113,13 @@ export default function Attitudes({
   };
   return (
     <main className="container">
-      <InterviewHeader section={2} edit={false} />
+      <InterviewProgress
+        section={2}
+        edit={false}
+        interview_date={interview_date}
+        interview_type={interview_type}
+        client_PID={client_PID}
+      />
       <h1 className="title">Attitudes and Knowledge</h1>
       <h3>
         What level of risk do you think people have of harming themselves
