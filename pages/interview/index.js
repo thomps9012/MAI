@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
-import GenerateID from "../../utils/generate-id";
 import titleCase from "../../utils/titleCase";
 import { useRouter } from "next/router";
 import { deleteCookie, setCookie } from "cookies-next";
 import { connectToDatabase } from "../../utils/mongodb";
-
+const GenerateID = (
+  testing_agency,
+  AIDS_TASK_FORCE_RECORDS,
+  NORA_RECORDS,
+  CARE_ALLIANCE_RECORDS
+) => {
+  switch (testing_agency) {
+    case "AIDS Task Force":
+      return `ATF${AIDS_TASK_FORCE_RECORDS + 1}`;
+    case "NORA":
+      return `NORA${NORA_RECORDS + 1}`;
+    case "Care Alliance":
+      return `CA${CARE_ALLIANCE_RECORDS + 1}`;
+  }
+};
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
   const collections = ["baseline", "testing_only"];
@@ -96,7 +109,7 @@ export default function InterviewSelect({
   const handleCategorySelect = (e) => {
     const { id } = e.target;
     setInterview(id);
-    let generateId;
+    let generatedID;
     switch (id) {
       case "baseline":
         document
@@ -113,13 +126,13 @@ export default function InterviewSelect({
         document
           .querySelector(".name_input")
           ?.setAttribute("style", "display: flex; flex-direction: column;");
-        generateId = GenerateID(
+        generatedID = GenerateID(
           agency,
           AIDS_TASK_FORCE_RECORDS,
           NORA_RECORDS,
           CARE_ALLIANCE_RECORDS
         );
-        setPID(generateId);
+        setPID(generatedID);
         break;
       case "testing_only":
         document.getElementById("baseline")?.setAttribute("class", "button");
@@ -134,13 +147,13 @@ export default function InterviewSelect({
         document
           .querySelector(".name_input")
           ?.setAttribute("style", "display: flex; flex-direction: column;");
-        generateId = GenerateID(
+        generatedID = GenerateID(
           agency,
           AIDS_TASK_FORCE_RECORDS,
           NORA_RECORDS,
           CARE_ALLIANCE_RECORDS
         );
-        setPID(generateId);
+        setPID(generatedID);
         break;
       case "follow_up":
         document.getElementById("baseline")?.setAttribute("class", "button");
@@ -175,6 +188,7 @@ export default function InterviewSelect({
           ?.setAttribute("style", "display: none");
         break;
     }
+    console.log(generatedID);
   };
   const handleAgencySelect = (e) => {
     const { id } = e.target;
@@ -251,9 +265,9 @@ export default function InterviewSelect({
     ) {
       return;
     }
-
-    const PID_exists = await fetch("/api/client/PID_exists").then((res) =>
-      res.json()
+    console.log("PID", PID);
+    const PID_exists = await fetch("/api/client/PID_exists?PID=" + PID).then(
+      (res) => res.json()
     );
     if (
       (PID_exists && type === "testing_only") ||

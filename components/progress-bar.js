@@ -1,6 +1,11 @@
-import { getCookie } from "cookies-next";
 import titleCase from "../utils/titleCase";
-export default function InterviewProgress({ section, edit }) {
+export default function InterviewProgress({
+  section,
+  edit,
+  interview_type,
+  interview_date,
+  client_PID,
+}) {
   let percentage = 0;
   switch (section) {
     case 1:
@@ -19,9 +24,7 @@ export default function InterviewProgress({ section, edit }) {
       percentage = 100;
       break;
   }
-  const interview_type = getCookie("interview_type");
-  const interview_date = getCookie("interview_date");
-  const client_PID = getCookie("client_PID");
+
   return (
     <div className="interview_header">
       <h2 style={{ textAlign: "center" }}>

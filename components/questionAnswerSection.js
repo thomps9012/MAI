@@ -10,8 +10,8 @@ export default function QuestionAndAnswers({
   return (
     <>
       {question_and_answers?.map((question, i) => {
-        const { multiple, number_input, drop_down, _id } = question;
-        if (multiple) {
+        const { _id } = question;
+        if (question.multiple) {
           return (
             <MultipleSelect
               question={question}
@@ -20,7 +20,7 @@ export default function QuestionAndAnswers({
               setCurrentQuestion={setCurrentQuestion}
             />
           );
-        } else if (number_input) {
+        } else if (question.number_input) {
           return (
             <NumberInput
               question={question}
@@ -29,7 +29,7 @@ export default function QuestionAndAnswers({
               setCurrentQuestion={setCurrentQuestion}
             />
           );
-        } else if (drop_down) {
+        } else if (question.drop_down) {
           return (
             <DropDownSelect
               question={question}
