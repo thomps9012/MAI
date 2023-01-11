@@ -95,6 +95,7 @@ export default function DrugBehavior({
     }).then((response) => response.json());
     if (res.acknowledged) {
       router.push("/interview/review");
+      return;
     }
     if (
       confirm(

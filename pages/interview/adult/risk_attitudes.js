@@ -93,7 +93,10 @@ export default function Attitudes({
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
-    if (res.acknowledged) router.push("/interview/adult/sexual_behavior");
+    if (res.acknowledged) {
+      router.push("/interview/adult/sexual_behavior");
+      return;
+    }
     if (
       confirm(
         "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."

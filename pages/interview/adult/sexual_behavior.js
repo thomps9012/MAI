@@ -92,7 +92,10 @@ export default function SexualBehavior({
       },
       body: JSON.stringify(section_info),
     }).then((response) => response.json());
-    if (res.acknowledged) router.push("/interview/adult/drug_behavior");
+    if (res.acknowledged) {
+      router.push("/interview/adult/drug_behavior");
+      return;
+    }
     if (
       confirm(
         "Your cellular or internet connection is unstable \n \n Please try starting again on the homepage \n - or - \n See a test administrator for help."

@@ -94,6 +94,7 @@ export default function SexualBehavior({
     }).then((response) => response.json());
     if (res.acknowledged) {
       router.push("/interview/youth/drug_behavior");
+      return;
     }
     if (
       confirm(

@@ -106,6 +106,7 @@ export default function Demographics({
     }).then((response) => response.json());
     if (res.acknowledged) {
       router.push("/interview/youth/risk_attitudes");
+      return;
     }
     if (
       confirm(

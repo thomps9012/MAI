@@ -11,7 +11,7 @@ export async function getServerSideProps({ req, res }) {
   const user = await db
     .collection("users")
     .findOne({ _id: new ObjectId(user_id) }, { editor: 1 });
-  const user_editor = user.editor;
+  const user_editor = user?.editor;
   const interview_type = getCookie("interview_type", { req, res });
   const interview_id = getCookie("interview_id", { req, res });
   const client_PID = getCookie("client_PID", { req, res });
@@ -29,10 +29,10 @@ export async function getServerSideProps({ req, res }) {
       interview_type,
       interview_id,
       client_PID,
-      user_editor,
-      interview_data,
-      gift_card_exists: gift_card._id ? true : false,
-      gift_card_id: gift_card._id,
+      user_editor: user ? user_editor : false,
+      interview_data: JSON.parse(JSON.stringify(interview_data)),
+      gift_card_exists: gift_card?._id ? true : false,
+      gift_card_id: gift_card?._id ? gift_card._id : "",
     },
   };
 }
@@ -63,6 +63,7 @@ export default function DataReview({
     e.preventDefault();
     if (gift_card_exists) {
       sessionStorage.setItem("gift_card_id", gift_card_id);
+      setCookie("gift_card_id", gift_card_id);
       router.push("/interview/success");
     }
     const res = await fetch("/api/cards/create", {
@@ -73,8 +74,11 @@ export default function DataReview({
         PID: client_PID,
       }),
     }).then((response) => response.json());
-    res.acknowledged && sessionStorage.setItem("gift_card_id", res.insertedId);
-    res.acknowledged && router.push("/interview/success");
+    if (res.acknowledged) {
+      sessionStorage.setItem("gift_card_id", res.insertedId);
+      setCookie("gift_card_id", res.insertedId);
+      router.push("/interview/success");
+    }
   };
   if (!user_editor) {
     return (
