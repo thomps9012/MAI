@@ -1,15 +1,14 @@
 import { connectToDatabase } from "../../../utils/mongodb";
 
 export default async function handler(req, res) {
-  let params = req.query;
+  const { Client_PID } = JSON.parse(req.body);
   const { db } = await connectToDatabase();
-  let PID = params?.PID;
   const baseline_response = await db
     .collection("baseline")
-    .countDocuments({ PID: PID });
+    .countDocuments({ PID: Client_PID });
   const testing_only_response = await db
     .collection("testing_only")
-    .countDocuments({ PID: PID });
+    .countDocuments({ PID: Client_PID });
   baseline_response != 0 && res.json(true);
   testing_only_response != 0 && res.json(true);
   res.json(false);

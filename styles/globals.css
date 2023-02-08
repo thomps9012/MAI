@@ -39,7 +39,9 @@ body {
 .pid_input,
 .name_input,
 #page_submit,
-.section_question {
+.section_question, 
+.client_select,
+.client_name_display {
   display: none;
   margin-top: 10px;
   margin-bottom: 10px;

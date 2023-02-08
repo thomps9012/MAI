@@ -1,10 +1,13 @@
 import { connectToDatabase } from "../../../utils/mongodb";
 
 export default async function handler(req, res) {
-  let params = req.query;
+  const { Client_PID } = JSON.parse(req.body);
+  console.log(Client_PID);
   const { db } = await connectToDatabase();
-  let client_pid = params?.client_pid;
-  const response = await db.collection("baseline").findOne({ PID: client_pid });
-  const { client_name } = response.demographics;
-  res.json({ client_name });
+  const response = await db
+    .collection("baseline")
+    .find({ PID: Client_PID }, { _id: 1, client_name: 1, phone_number: 1, demographics: 0, gift_card_received: 0, date: 0 })
+    .toArray();
+  console.log(response);
+  res.json(response);
 }

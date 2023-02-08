@@ -68,24 +68,88 @@ export default function InterviewSelect({
   const [phone_number, setPhone] = useState("");
   const [client_name, setName] = useState("");
   const [adult, setAdult] = useState(false);
-  useEffect(() => {
-    PID != "" &&
+  const router = useRouter();
+  const handleNameInput = (e) => {
+    const name = e.target.value;
+    if(name != "") {
+      setName(name)
+      document
+      .querySelector(".phone_input")
+      ?.setAttribute("style", "display: flex; flex-direction: column;");
+      return
+    }
+    document
+    .querySelector(".phone_input")
+    ?.setAttribute("style", "display: none;");
+  }
+  const updateStateShowSubmit = ({ PID, phone, name }) => {
+    if (PID) {
+      setPID(PID);
+    }
+    setName(name);
+    setPhone(phone);
+    document
+      .querySelector(".client_name_display")
+      .setAttribute("style", "display: flex; flex-direction: column;");
+    document
+      .querySelector(".phone_input")
+      ?.setAttribute("style", "display: flex; flex-direction: column;");
+    document
+      .querySelector("#page_submit")
+      ?.setAttribute("style", "display: flex; flex-direction: column;");
+  };
+  const retrieveClientName = async () => {
+    const res = await fetch(`/api/client/find_name`, {
+      method: "POST",
+      body: JSON.stringify({
+        Client_PID: PID,
+      }),
+    }).then((res) => res.json());
+    if (res.length == 0) {
+      document
+        .getElementById("valid-pid-input")
+        ?.setAttribute("class", "display-input-validation");
+    }
+    if (res.length > 1) {
+      document
+        .getElementById("valid-pid-input")
+        ?.setAttribute("class", "input-validation");
+      let clientOpts = document.querySelector(".client-options");
+      clientOpts?.innerHTML(`<option value="">Name - PID</option>`);
+      document
+        .querySelector(".client_select")
+        ?.setAttribute("style", "display: flex; flex-direction: column;");
+      document
+        .querySelector(".client_name_display")
+        .setAttribute("style", "display: none");
       document
         .querySelector(".phone_input")
-        ?.setAttribute("style", "display: flex; flex-direction: column;");
-  }, [PID]);
-  const router = useRouter();
-  const retrieveClientName = async (PID) => {
-    const res = await fetch(`/api/client/find_name?client_pid=${PID}`, {
-      method: "GET",
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const { client_name } = data;
-      setName(client_name);
+        ?.setAttribute("style", "display: none");
+      document
+        .querySelector("#page_submit")
+        ?.setAttribute("style", "display: none");
+      res.forEach(({ client_name, PID, phone_number }) => {
+        const client_info = JSON.stringify({
+          name: client_name,
+          PID,
+          phone: phone_number,
+        });
+        const option = document.createElement("option");
+        option.setAttribute("value", client_info);
+        option.append(client_name + " - " + phone_number);
+        document.getElementById("client-options").appendChild(option);
+      });
     } else {
-      setName("N/A");
+      if (res[0]?.client_name && res[0]?.phone_number) {
+        const { client_name, phone_number } = res[0];
+        updateStateShowSubmit({ name: client_name, phone: phone_number });
+      }
     }
+  };
+
+  const selectClient = (e) => {
+    const { name, PID, phone } = JSON.parse(e.target.value);
+    updateStateShowSubmit({ PID: PID, name: name, phone: phone });
   };
   const handleAdultSelect = (e) => {
     const adult = e.target.id;
@@ -188,7 +252,6 @@ export default function InterviewSelect({
           ?.setAttribute("style", "display: none");
         break;
     }
-    console.log(generatedID);
   };
   const handleAgencySelect = (e) => {
     const { id } = e.target;
@@ -265,15 +328,20 @@ export default function InterviewSelect({
     ) {
       return;
     }
-    console.log("PID", PID);
-    const PID_exists = await fetch("/api/client/PID_exists?PID=" + PID).then(
-      (res) => res.json()
-    );
+    const PID_exists = await fetch("/api/client/PID_exists", {
+      method: "POST",
+      body: JSON.stringify({
+        Client_PID: PID,
+      }),
+    }).then((res) => res.json());
     if (
       (PID_exists && type === "testing_only") ||
       (type === "baseline" && PID_exists)
     ) {
+      document.getElementById("duplicate-PID").setAttribute("class", "display-input-validation");
       return;
+    } else {
+      document.getElementById("duplicate-PID").setAttribute("class", "input-validation");
     }
     const res = await fetch("/api/client/create", {
       method: "POST",
@@ -391,7 +459,27 @@ export default function InterviewSelect({
           type="text"
           placeholder="NORA123"
           onChange={(e) => setPID(e.target.value)}
-          onBlur={() => retrieveClientName(PID)}
+        />
+        <label className="input-validation" id="valid-pid-input">
+          No Client with that PID Found
+        </label>
+        <a className="button" onClick={retrieveClientName}>
+          Find Client
+        </a>
+      </div>
+      <div className="client_select">
+        <h2>Select Client</h2>
+        <label>Multiple Clients with Matching PID</label>
+        <select onChange={selectClient} defaultValue="" id="client-options">
+          <option value="">Name - PID</option>
+        </select>
+      </div>
+      <div className="client_name_display">
+        <h2>Client Name</h2>
+        <input
+          type="text"
+          defaultValue={client_name}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
       <div className="name_input">
@@ -399,7 +487,7 @@ export default function InterviewSelect({
         <input
           type="text"
           placeholder="First Name"
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleNameInput}
         />
       </div>
       <div className="phone_input">
@@ -407,6 +495,7 @@ export default function InterviewSelect({
         <input
           type="text"
           placeholder="555-555-5555"
+          defaultValue={phone_number}
           onChange={(e) => setPhone(e.target.value)}
           onBlur={validPhoneNumber}
         />
@@ -423,6 +512,9 @@ export default function InterviewSelect({
       >
         Begin Interview
       </a>
+      <label className="input-validation" id="duplicate-PID">
+        A client with this PID already exists
+      </label>
     </main>
   );
 }
