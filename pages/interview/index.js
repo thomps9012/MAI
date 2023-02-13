@@ -363,7 +363,7 @@ export default function InterviewSelect({
       sessionStorage.setItem("client_phone_number", phone_number);
       sessionStorage.setItem("client_name", client_name);
       sessionStorage.setItem("client_adult", JSON.stringify(adult));
-      sessionStorage.setItem("interview_id", res.insertedIds[0]);
+      sessionStorage.setItem("interview_id", res.insertedId);
       setCookie("interview_type", type);
       setCookie("interview_date", date);
       setCookie("testing_agency", agency);
@@ -371,7 +371,7 @@ export default function InterviewSelect({
       setCookie("client_phone_number", phone_number);
       setCookie("client_name", client_name);
       setCookie("client_adult", JSON.stringify(adult));
-      setCookie("interview_id", res.insertedIds[0]);
+      setCookie("interview_id", res.insertedId);
       if (
         confirm(
           `This is a(n) \n\n ${titleCase(
