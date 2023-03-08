@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import titleCase from "../../utils/titleCase";
 import { useRouter } from "next/router";
 import { deleteCookie, setCookie } from "cookies-next";
@@ -9,13 +9,17 @@ const GenerateID = (
   NORA_RECORDS,
   CARE_ALLIANCE_RECORDS
 ) => {
+  let PID;
   switch (testing_agency) {
     case "AIDS Task Force":
-      return `ATF${AIDS_TASK_FORCE_RECORDS + 1}`;
+      PID = Math.floor(Math.random() * 100 + AIDS_TASK_FORCE_RECORDS);
+      return `ATF${PID}`;
     case "NORA":
-      return `NORA${NORA_RECORDS + 1}`;
+      PID = Math.floor(Math.random() * 100 + NORA_RECORDS);
+      return `NORA${PID}`;
     case "Care Alliance":
-      return `CA${CARE_ALLIANCE_RECORDS + 1}`;
+      PID = Math.floor(Math.random() * 100 + CARE_ALLIANCE_RECORDS);
+      return `CA${PID}`;
   }
 };
 export async function getServerSideProps() {
@@ -71,17 +75,17 @@ export default function InterviewSelect({
   const router = useRouter();
   const handleNameInput = (e) => {
     const name = e.target.value;
-    if(name != "") {
-      setName(name)
+    if (name != "") {
+      setName(name);
       document
-      .querySelector(".phone_input")
-      ?.setAttribute("style", "display: flex; flex-direction: column;");
-      return
+        .querySelector(".phone_input")
+        ?.setAttribute("style", "display: flex; flex-direction: column;");
+      return;
     }
     document
-    .querySelector(".phone_input")
-    ?.setAttribute("style", "display: none;");
-  }
+      .querySelector(".phone_input")
+      ?.setAttribute("style", "display: none;");
+  };
   const updateStateShowSubmit = ({ PID, phone, name }) => {
     if (PID) {
       setPID(PID);
@@ -338,10 +342,15 @@ export default function InterviewSelect({
       (PID_exists && type === "testing_only") ||
       (type === "baseline" && PID_exists)
     ) {
-      document.getElementById("duplicate-PID").setAttribute("class", "display-input-validation");
+      let newID = GenerateID(
+        agency,
+        AIDS_TASK_FORCE_RECORDS,
+        NORA_RECORDS,
+        CARE_ALLIANCE_RECORDS
+      );
+      setPID(newID);
+      Submit(type, date, agency, PID, phone_number, client_name, adult);
       return;
-    } else {
-      document.getElementById("duplicate-PID").setAttribute("class", "input-validation");
     }
     const res = await fetch("/api/client/create", {
       method: "POST",
